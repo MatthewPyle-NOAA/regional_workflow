@@ -60,41 +60,77 @@ while (test "$hour" -le "$end_hour")
     hour_name=$hour
   fi
 
-cat <<EOF >fort.41
-&config
- mosaic_file_target_grid="$FIXsar/${CASE}_mosaic.nc"
- fix_dir_target_grid="$FIXsar"
- orog_dir_target_grid="$FIXsar"
- orog_files_target_grid="${CASE}_oro_data.tile7.halo4.nc"
- vcoord_file_target_grid="${FIXam}/global_hyblev.l${LEVS}.txt"
- mosaic_file_input_grid="NULL"
- orog_dir_input_grid="NULL"
- orog_files_input_grid="NULL"
- data_dir_input_grid="${INIDIR}"
- atm_files_input_grid="gfs.t${cyc}z.atmf${hour_name}.nemsio"
- sfc_files_input_grid="gfs.t${cyc}z.sfcanl.nemsio"
- cycle_mon=$month
- cycle_day=$day
- cycle_hour=$cyc
- convert_atm=.true.
- convert_sfc=.false.
- convert_nst=.false.
- input_type="gaussian"
- tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"
- tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"
- regional=${REGIONAL}
- halo_bndy=${HALO}
-/
-EOF
 
-  time ${APRUNC} ./regional_chgres_cube.x
-  hour=`expr $hour + $hour_inc`
+rm poe.${hour_name}
+
+mkdir -p ${hour_name}
+cd ${hour_name}
+
+rm ./*
+
+echo "&config" > fort.41
+echo ' mosaic_file_target_grid="_FIXsar_/_CASE__mosaic.nc"' >> fort.41
+echo ' fix_dir_target_grid="_FIXsar_"' >> fort.41
+echo ' orog_dir_target_grid="_FIXsar_"' >> fort.41
+echo ' orog_files_target_grid="_CASE__oro_data.tile7.halo4.nc"' >> fort.41 
+echo ' vcoord_file_target_grid="_FIXam_/global_hyblev.l_LEVS_.txt"' >> fort.41 
+echo ' mosaic_file_input_grid="NULL"' >> fort.41
+echo ' orog_dir_input_grid="NULL"' >> fort.41
+echo ' orog_files_input_grid="NULL"' >> fort.41
+echo ' data_dir_input_grid="_INIDIR_"' >> fort.41
+echo ' atm_files_input_grid="gfs.t_cyc_z.atmf_hour_name_.nemsio"' >> fort.41
+echo ' sfc_files_input_grid="gfs.t_cyc_z.sfcanl.nemsio"' >> fort.41
+echo " cycle_mon=$month" >> fort.41
+echo " cycle_day=$day" >> fort.41
+echo " cycle_hour=$cyc" >> fort.41
+echo " convert_atm=.true." >> fort.41
+echo " convert_sfc=.false." >> fort.41
+echo " convert_nst=.false." >> fort.41
+echo ' input_type="gaussian"' >> fort.41
+echo ' tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"' >> fort.41
+echo ' tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"' >> fort.41
+echo " regional=${REGIONAL}" >> fort.41
+echo " halo_bndy=${HALO}" >> fort.41
+echo "/" >>  fort.41
+
+
+cat fort.41 | sed s:_FIXsar_:${FIXsar}:g \
+            | sed s:_CASE_:${CASE}:g \
+            | sed s:_FIXam_:${FIXam}:g  \
+            | sed s:_LEVS_:${LEVS}:g \
+            | sed s:_INIDIR_:${INIDIR}:g \
+            | sed s:_cyc_:${cyc}:g \
+            | sed s:_hour_name_:${hour_name}:g > fort.41.new
+
+mv fort.41 fort.41.old
+mv fort.41.new fort.41
+            
+
+cd ../
+
+echo "cd ${hour_name}" >  poe.${hour_name}
+
+echo "cp ../regional_chgres_cube.x ." >> poe.${hour_name}
+
+echo "${APRUNC} ./regional_chgres_cube.x" >> poe.${hour_name}
+
+echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name}
+
+chmod u+x poe.${hour_name}
+./poe.${hour_name} &
+
+hour=`expr $hour + $hour_inc`
 
 #
 # move output files to save directory
 #
-  mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+#   mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+
 done
+
+wait
+
+echo " All poe scripts completed - normal finish "
 
 
 exit 0
