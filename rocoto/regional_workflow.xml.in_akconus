@@ -202,7 +202,7 @@
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
     &RESERVATION;
-    &MAKE_BC_RESOURCES;
+    &MAKE_BC_RESOURCES_AK;
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
     <envar><name>job</name><value>regional_make_bc_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
