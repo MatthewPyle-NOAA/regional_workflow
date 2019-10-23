@@ -290,6 +290,398 @@ C Getting start time
           end if
           Status = nf90_inquire_dimension(ncid,varid,len=lm)
 
+!
+!
+! PHY file
+!
+!
+
+!        float acond(time, grid_yt, grid_xt) ;
+!                acond:long_name = "Aerodynamic conductance" ;
+!        float albdo_ave(time, grid_yt, grid_xt) ;
+!                albdo_ave:long_name = "surface albedo" ;
+!        float alnsf(time, grid_yt, grid_xt) ;
+!                alnsf:long_name = "mean nir albedo with strong cosz dependency" ;
+!        float alnwf(time, grid_yt, grid_xt) ;
+!                alnwf:long_name = "mean nir albedo with weak cosz dependency" ;
+!        float alvsf(time, grid_yt, grid_xt) ;
+!                alvsf:long_name = "mean vis albedo with strong cosz dependency" ;
+!        float alvwf(time, grid_yt, grid_xt) ;
+!                alvwf:long_name = "mean vis albedo with weak cosz dependency" ;
+!        float c0(time, grid_yt, grid_xt) ;
+!                c0:long_name = "nsst coefficient1 to calculate d(tz)/d(ts)" ;
+!        float cd(time, grid_yt, grid_xt) ;
+!                cd:long_name = "nsst coefficient2 to calculate d(tz)/d(ts)" ;
+!        float cduvb_ave(time, grid_yt, grid_xt) ;
+!                cduvb_ave:long_name = "Clear sky UV-B Downward Solar Flux" ;
+!        float cnwat(time, grid_yt, grid_xt) ;
+!                cnwat:long_name = "canopy water (cnwat in gfs data)" ;
+!        float cpofp(time, grid_yt, grid_xt) ;
+!                cpofp:long_name = "Percent frozen precipitation" ;
+!        float cprat_ave(time, grid_yt, grid_xt) ;
+!                cprat_ave:long_name = "averaged surface convective precipitation rate" ;
+!        float cpratb_ave(time, grid_yt, grid_xt) ;
+!!                cpratb_ave:long_name = "averaged bucket surface convective precipitation rate" ;
+!        float csdlf(time, grid_yt, grid_xt) ;
+!                csdlf:long_name = "Clear Sky Downward Long Wave Flux" ;
+!        float csdsf(time, grid_yt, grid_xt) ;
+!                csdsf:long_name = "Clear Sky Downward Short Wave Flux" ;
+!        float csulf(time, grid_yt, grid_xt) ;
+!                csulf:long_name = "Clear Sky Upward Long Wave Flux" ;
+!        float csulftoa(time, grid_yt, grid_xt) ;
+!                csulftoa:long_name = "Clear Sky Upward Long Wave Flux at toa" ;
+!        float csusf(time, grid_yt, grid_xt) ;
+!                csusf:long_name = "Clear Sky Upward Short Wave Flux" ;
+!        float csusftoa(time, grid_yt, grid_xt) ;
+!                csusftoa:long_name = "Clear Sky Upward Short Wave Flux at toa" ;
+!        float cwork_aveclm(time, grid_yt, grid_xt) ;
+!                cwork_aveclm:long_name = "cloud work function (valid only with sas)" ;
+!        float dconv(time, grid_yt, grid_xt) ;
+!                dconv:long_name = "nsst thickness of free convection layer" ;
+!        float dlwrf(time, grid_yt, grid_xt) ;
+!                dlwrf:long_name = "instantaneous surface downward longwave flux" ;
+!       float dlwrf_ave(time, grid_yt, grid_xt) ;
+!                dlwrf_ave:long_name = "surface downward longwave flux" ;
+!       float dswrf(time, grid_yt, grid_xt) ;
+!                dswrf:long_name = "instantaneous surface downward shortwave flux" ;
+!        float dswrf_ave(time, grid_yt, grid_xt) ;
+!                dswrf_ave:long_name = "averaged surface downward shortwave flux" ;
+!        float dswrf_avetoa(time, grid_yt, grid_xt) ;
+!                dswrf_avetoa:long_name = "top of atmos downward shortwave flux" ;
+!        float dtcool(time, grid_yt, grid_xt) ;
+!                dtcool:long_name = "nsst sub-layer cooling amount" ;
+!        float duvb_ave(time, grid_yt, grid_xt) ;
+!                duvb_ave:long_name = "UV-B Downward Solar Flux" ;
+!        float evbs_ave(time, grid_yt, grid_xt) ;
+!                evbs_ave:long_name = "Direct Evaporation from Bare Soil - GFS lsm" ;
+!        float evcw_ave(time, grid_yt, grid_xt) ;
+!                evcw_ave:long_name = "Canopy water evaporation - GFS lsm" ;
+!        float f10m(time, grid_yt, grid_xt) ;
+!                f10m:long_name = "10-meter wind speed divided by lowest model wind speed" ;
+!        float facsf(time, grid_yt, grid_xt) ;
+!                facsf:long_name = "fractional coverage with strong cosz dependency" ;
+!        float facwf(time, grid_yt, grid_xt) ;
+!                facwf:long_name = "fractional coverage with weak cosz dependency" ;
+!        float ffhh(time, grid_yt, grid_xt) ;
+!                ffhh:long_name = "fh parameter from PBL scheme" ;
+!        float ffmm(time, grid_yt, grid_xt) ;
+!                ffmm:long_name = "fm parameter from PBL scheme" ;
+!        float fldcp(time, grid_yt, grid_xt) ;
+!                fldcp:long_name = "Field Capacity (volumetric)" ;
+!       float fricv(time, grid_yt, grid_xt) ;
+!                fricv:long_name = "uustar surface frictional wind" ;
+!        float gflux(time, grid_yt, grid_xt) ;
+!                gflux:long_name = "instantaneous surface ground heat flux" ;
+!        float gflux_ave(time, grid_yt, grid_xt) ;
+!                gflux_ave:long_name = "surface ground heat flux" ;
+!        float hgt_hyblev1(time, grid_yt, grid_xt) ;
+!                hgt_hyblev1:long_name = "layer 1 height" ;
+!        float hpbl(time, grid_yt, grid_xt) ;
+!                hpbl:long_name = "surface planetary boundary layer height" ;
+!        float icec(time, grid_yt, grid_xt) ;
+!                icec:long_name = "surface ice concentration (ice=1; no ice=0)" ;
+!        float icetk(time, grid_yt, grid_xt) ;
+!                icetk:long_name = "sea ice thickness (icetk in gfs_data)" ;
+!        float land(time, grid_yt, grid_xt) ;
+!                land:long_name = "sea-land-ice mask (0-sea, 1-land, 2-ice)" ;
+!        float lhtfl(time, grid_yt, grid_xt) ;
+!                lhtfl:long_name = "instantaneous surface latent heat net flux" ;
+!        float lhtfl_ave(time, grid_yt, grid_xt) ;
+!                lhtfl_ave:long_name = "surface latent heat flux" ;
+!        float nbdsf_ave(time, grid_yt, grid_xt) ;
+!                nbdsf_ave:long_name = "Near IR Beam Downward Solar Flux" ;
+!        float nddsf_ave(time, grid_yt, grid_xt) ;
+!                nddsf_ave:long_name = "Near IR Diffuse Downward Solar Flux" ;
+!        float orog(time, grid_yt, grid_xt) ;
+!                orog:long_name = "surface geopotential height" ;
+!        float pevpr(time, grid_yt, grid_xt) ;
+!                pevpr:long_name = "instantaneous surface potential evaporation" ;
+!        float pevpr_ave(time, grid_yt, grid_xt) ;
+!                pevpr_ave:long_name = "averaged potential evaporation rate" ;
+!        float prate_ave(time, grid_yt, grid_xt) ;
+!                prate_ave:long_name = "surface precipitation rate" ;
+!        float prateb_ave(time, grid_yt, grid_xt) ;
+!                prateb_ave:long_name = "bucket surface precipitation rate" ;
+!        float pres_avehcb(time, grid_yt, grid_xt) ;
+!                pres_avehcb:long_name = "pressure high cloud bottom level" ;
+!        float pres_avehct(time, grid_yt, grid_xt) ;
+!                pres_avehct:long_name = "pressure high cloud top level" ;
+!        float pres_avelcb(time, grid_yt, grid_xt) ;
+!                pres_avelcb:long_name = "pressure low cloud bottom level" ;
+!        float pres_avelct(time, grid_yt, grid_xt) ;
+!                pres_avelct:long_name = "pressure low cloud top level" ;
+!        float pres_avemcb(time, grid_yt, grid_xt) ;
+!                pres_avemcb:long_name = "pressure middle cloud bottom level" ;
+!        float pres_avemct(time, grid_yt, grid_xt) ;
+!                pres_avemct:long_name = "pressure middle cloud top level" ;
+!        float prescnvclb(time, grid_yt, grid_xt) ;
+!                prescnvclb:long_name = "pressure at convective cloud bottom level" ;
+!        float prescnvclt(time, grid_yt, grid_xt) ;
+!                prescnvclt:long_name = "pressure at convective cloud top level" ;
+!        float pressfc(time, grid_yt, grid_xt) ;
+!                pressfc:long_name = "surface pressure" ;
+!        float pwatclm(time, grid_yt, grid_xt) ;
+!                pwatclm:long_name = "atmos column precipitable water" ;
+!        float qrain(time, grid_yt, grid_xt) ;
+!                qrain:long_name = "nsst sensible heat flux due to rainfall" ;
+!        float refdmax(time, grid_yt, grid_xt) ;
+!                refdmax:long_name = "max hourly 1-km agl reflectivity" ;
+!        float refdmax263k(time, grid_yt, grid_xt) ;
+!                refdmax263k:long_name = "max hourly -10C reflectivity" ;
+!        float refl_10cm(time, pfull, grid_yt, grid_xt) ;
+!                refl_10cm:long_name = "Radar reflectivity" ;
+!        float rh02max(time, grid_yt, grid_xt) ;
+!                rh02max:long_name = "max hourly 2m RH" ;
+!        float rh02min(time, grid_yt, grid_xt) ;
+!                rh02min:long_name = "min hourly 2m RH" ;
+!        float sbsno_ave(time, grid_yt, grid_xt) ;
+!                sbsno_ave:long_name = "Sublimation (evaporation from snow) - GFS lsm" ;
+!        float sfcr(time, grid_yt, grid_xt) ;
+!                sfcr:long_name = "surface roughness" ;
+!        float sfexc(time, grid_yt, grid_xt) ;
+!                sfexc:long_name = "Exchange Coefficient" ;
+!        float shdmax(time, grid_yt, grid_xt) ;
+!                shdmax:long_name = "maximum fractional coverage of green vegetation" ;
+!        float shdmin(time, grid_yt, grid_xt) ;
+!                shdmin:long_name = "minimum fractional coverage of green vegetation" ;
+!        float shtfl(time, grid_yt, grid_xt) ;
+!                shtfl:long_name = "instantaneous surface sensible heat net flux" ;
+!        float shtfl_ave(time, grid_yt, grid_xt) ;
+!                shtfl_ave:long_name = "surface sensible heat flux" ;
+!        float sltyp(time, grid_yt, grid_xt) ;
+!                sltyp:long_name = "surface slope type" ;
+!        float snoalb(time, grid_yt, grid_xt) ;
+!                snoalb:long_name = "maximum snow albedo in fraction" ;
+!        float snod(time, grid_yt, grid_xt) ;
+!                snod:long_name = "surface snow depth" ;
+!        float snohf(time, grid_yt, grid_xt) ;
+!                snohf:long_name = "Snow Phase Change Heat Flux - GFS lsm" ;
+!        float snowc_ave(time, grid_yt, grid_xt) ;
+!                snowc_ave:long_name = "snow cover - GFS lsm" ;
+!        float soill1(time, grid_yt, grid_xt) ;
+!                soill1:long_name = "liquid soil mositure at layer-1" ;
+!        float soill2(time, grid_yt, grid_xt) ;
+!                soill2:long_name = "liquid soil mositure at layer-2" ;
+!        float soill3(time, grid_yt, grid_xt) ;
+!                soill3:long_name = "liquid soil mositure at layer-3" ;
+!        float soill4(time, grid_yt, grid_xt) ;
+!                soill4:long_name = "liquid soil mositure at layer-4" ;
+!        float soilm(time, grid_yt, grid_xt) ;
+!                soilm:long_name = "total column soil moisture content" ;
+!        float soilt1(time, grid_yt, grid_xt) ;
+!                soilt1:long_name = "soil temperature 0-10cm" ;
+!        float soilt2(time, grid_yt, grid_xt) ;
+!                soilt2:long_name = "soil temperature 10-40cm" ;
+!        float soilt3(time, grid_yt, grid_xt) ;
+!                soilt3:long_name = "soil temperature 40-100cm" ;
+!        float soilt4(time, grid_yt, grid_xt) ;
+!                soilt4:long_name = "soil temperature 100-200cm" ;
+!        float soilw1(time, grid_yt, grid_xt) ;
+!                soilw1:long_name = "volumetric soil moisture 0-10cm" ;
+!        float soilw2(time, grid_yt, grid_xt) ;
+!                soilw2:long_name = "volumetric soil moisture 10-40cm" ;
+!        float soilw3(time, grid_yt, grid_xt) ;
+!                soilw3:long_name = "volumetric soil moisture 40-100cm" ;
+!        float soilw4(time, grid_yt, grid_xt) ;
+!                soilw4:long_name = "volumetric soil moisture 100-200cm" ;
+!        float sotyp(time, grid_yt, grid_xt) ;
+!                sotyp:long_name = "soil type in integer 1-9" ;
+!        float spd10max(time, grid_yt, grid_xt) ;
+!                spd10max:long_name = "hourly maximum wind speed" ;
+!        float spfh2m(time, grid_yt, grid_xt) ;
+!                spfh2m:long_name = "2m specific humidity" ;
+!        float spfh_hyblev1(time, grid_yt, grid_xt) ;
+!                spfh_hyblev1:long_name = "layer 1 specific humidity" ;
+!        float spfhmax_max2m(time, grid_yt, grid_xt) ;
+!                spfhmax_max2m:long_name = "maximum specific humidity" ;
+!        float spfhmin_min2m(time, grid_yt, grid_xt) ;
+!                spfhmin_min2m:long_name = "minimum specific humidity" ;
+!        float ssrun_acc(time, grid_yt, grid_xt) ;
+!                ssrun_acc:long_name = "surface storm water runoff - GFS lsm" ;
+!        float sunsd_acc(time, grid_yt, grid_xt) ;
+!                sunsd_acc:long_name = "Sunshine Duration" ;
+!        float t02max(time, grid_yt, grid_xt) ;
+!                t02max:long_name = "max hourly 2m Temperature" ;
+!        float t02min(time, grid_yt, grid_xt) ;
+!                t02min:long_name = "min hourly 2m Temperature" ;
+!        float tcdc_avebndcl(time, grid_yt, grid_xt) ;
+!                tcdc_avebndcl:long_name = "boundary layer cloud layer total cloud cover" ;
+!        float tcdc_aveclm(time, grid_yt, grid_xt) ;
+!                tcdc_aveclm:long_name = "atmos column total cloud cover" ;
+!        float tcdc_avehcl(time, grid_yt, grid_xt) ;
+!                tcdc_avehcl:long_name = "high cloud level total cloud cover" ;
+!        float tcdc_avelcl(time, grid_yt, grid_xt) ;
+!                tcdc_avelcl:long_name = "low cloud level total cloud cover" ;
+!        float tcdc_avemcl(time, grid_yt, grid_xt) ;
+!                tcdc_avemcl:long_name = "mid cloud level total cloud cover" ;
+!        float tcdccnvcl(time, grid_yt, grid_xt) ;
+!                tcdccnvcl:long_name = "convective cloud layer total cloud cover" ;
+!        float tg3(time, grid_yt, grid_xt) ;
+!                tg3:long_name = "deep soil temperature" ;
+!        float tisfc(time, grid_yt, grid_xt) ;
+!                tisfc:long_name = "surface temperature over ice fraction" ;
+!        float tmax_max2m(time, grid_yt, grid_xt) ;
+!                tmax_max2m:long_name = "max temperature at 2m height" ;
+!        float tmin_min2m(time, grid_yt, grid_xt) ;
+!                tmin_min2m:long_name = "min temperature at 2m height" ;
+!        float tmp2m(time, grid_yt, grid_xt) ;
+!                tmp2m:long_name = "2m temperature" ;
+!        float tmp_avehct(time, grid_yt, grid_xt) ;
+!                tmp_avehct:long_name = "temperature high cloud top level" ;
+!        float tmp_avelct(time, grid_yt, grid_xt) ;
+!                tmp_avelct:long_name = "temperature low cloud top level" ;
+!        float tmp_avemct(time, grid_yt, grid_xt) ;
+!                tmp_avemct:long_name = "temperature middle cloud top level" ;
+!        float tmp_hyblev1(time, grid_yt, grid_xt) ;
+!                tmp_hyblev1:long_name = "layer 1 temperature" ;
+!        float tmpsfc(time, grid_yt, grid_xt) ;
+!                tmpsfc:long_name = "surface temperature" ;
+!        float tprcp(time, grid_yt, grid_xt) ;
+!                tprcp:long_name = "total precipitation" ;
+!        float trans_ave(time, grid_yt, grid_xt) ;
+!                trans_ave:long_name = "transpiration - GFS lsm" ;
+!        float tref(time, grid_yt, grid_xt) ;
+!                tref:long_name = "nsst reference or foundation temperature" ;
+!        float u-gwd_ave(time, grid_yt, grid_xt) ;
+!                u-gwd_ave:long_name = "surface zonal gravity wave stress" ;
+!        float u10max(time, grid_yt, grid_xt) ;
+!                u10max:long_name = "hourly maximum (magnitude) u-wind" ;
+!        float uflx_ave(time, grid_yt, grid_xt) ;
+!                uflx_ave:long_name = "surface zonal momentum flux" ;
+!        float ugrd10m(time, grid_yt, grid_xt) ;
+!                ugrd10m:long_name = "10 meter u wind" ;
+!        float ugrd_hyblev1(time, grid_yt, grid_xt) ;
+!                ugrd_hyblev1:long_name = "layer 1 zonal wind" ;
+!        float ulwrf(time, grid_yt, grid_xt) ;
+!                ulwrf:long_name = "instantaneous surface upward longwave flux" ;
+!        float ulwrf_ave(time, grid_yt, grid_xt) ;
+!                ulwrf_ave:long_name = "surface upward longwave flux" ;
+!        float ulwrf_avetoa(time, grid_yt, grid_xt) ;
+!                ulwrf_avetoa:long_name = "top of atmos upward longwave flux" ;
+!        float uswrf(time, grid_yt, grid_xt) ;
+!                uswrf:long_name = "instantaneous surface upward shortwave flux" ;
+!        float uswrf_ave(time, grid_yt, grid_xt) ;
+!                uswrf_ave:long_name = "averaged surface upward shortwave flux" ;
+!        float uswrf_avetoa(time, grid_yt, grid_xt) ;
+!                uswrf_avetoa:long_name = "top of atmos upward shortwave flux" ;
+!        float v-gwd_ave(time, grid_yt, grid_xt) ;
+!                v-gwd_ave:long_name = "surface meridional gravity wave stress" ;
+!        float v10max(time, grid_yt, grid_xt) ;
+!                v10max:long_name = "hourly maximum (magnitude) v-wind" ;
+!        float vbdsf_ave(time, grid_yt, grid_xt) ;
+!                vbdsf_ave:long_name = "Visible Beam Downward Solar Flux" ;
+!        float vddsf_ave(time, grid_yt, grid_xt) ;
+!                vddsf_ave:long_name = "Visible Diffuse Downward Solar Flux" ;
+!        float veg(time, grid_yt, grid_xt) ;
+!                veg:long_name = "vegetation fraction" ;
+!        float vflx_ave(time, grid_yt, grid_xt) ;
+!                vflx_ave:long_name = "surface meridional momentum flux" ;
+!        float vgrd10m(time, grid_yt, grid_xt) ;
+!                vgrd10m:long_name = "10 meter v wind" ;
+!        float vgrd_hyblev1(time, grid_yt, grid_xt) ;
+!                vgrd_hyblev1:long_name = "layer 1 meridional wind" ;
+!        float vtype(time, grid_yt, grid_xt) ;
+!                vtype:long_name = "vegetation type in integer 1-13" ;
+!        float w0(time, grid_yt, grid_xt) ;
+!                w0:long_name = "nsst coefficient3 to calculate d(tz)/d(ts)" ;
+!        float watr_acc(time, grid_yt, grid_xt) ;
+!                watr_acc:long_name = "total water runoff" ;
+!        float wd(time, grid_yt, grid_xt) ;
+!                wd:long_name = "nsst coefficient4 to calculate d(tz)/d(ts)" ;
+!        float weasd(time, grid_yt, grid_xt) ;
+!                weasd:long_name = "surface snow water equivalent" ;
+!        float wilt(time, grid_yt, grid_xt) ;
+!                wilt:long_name = "wiltimg point (volumetric)" ;
+!        float xs(time, grid_yt, grid_xt) ;
+!                xs:long_name = "nsst salinity content in diurnal thermocline layer" ;
+!        float xt(time, grid_yt, grid_xt) ;
+!                xt:long_name = "nsst heat content in diurnal thermocline layer" ;
+!        float xtts(time, grid_yt, grid_xt) ;
+!                xtts:long_name = "nsst d(xt)/d(ts)" ;
+!        float xu(time, grid_yt, grid_xt) ;
+!                xu:long_name = "nsst u-current content in diurnal thermocline layer" ;
+!        float xv(time, grid_yt, grid_xt) ;
+!                xv:long_name = "nsst v-current content in diurnal thermocline layer" ;
+!        float xz(time, grid_yt, grid_xt) ;
+!                xz:long_name = "nsst diurnal thermocline layer thickness" ;
+!        float xzts(time, grid_yt, grid_xt) ;
+!                xzts:long_name = "nsst d(xt)/d(ts)" ;
+!        float zc(time, grid_yt, grid_xt) ;
+!                zc:long_name = "nsst sub-layer cooling thickness" ;
+!
+
+
+!
+! DYN
+!
+
+! 3D
+!
+!        float cld_amt(time, pfull, grid_yt, grid_xt) ;
+!                cld_amt:long_name = "cloud amount" ;
+!        float clwmr(time, pfull, grid_yt, grid_xt) ;
+!                clwmr:long_name = "cloud water mixing ratio" ;
+!        float delz(time, pfull, grid_yt, grid_xt) ;
+!                delz:long_name = "height thickness" ;
+!        float dpres(time, pfull, grid_yt, grid_xt) ;
+!                dpres:long_name = "pressure thickness" ;
+!        float dzdt(time, pfull, grid_yt, grid_xt) ;
+!                dzdt:long_name = "vertical wind" ;
+!        float grle(time, pfull, grid_yt, grid_xt) ;
+!                grle:long_name = "graupel mixing ratio" ;
+!        float icmr(time, pfull, grid_yt, grid_xt) ;
+!                icmr:long_name = "cloud ice mixing ratio" ;
+!        float o3mr(time, pfull, grid_yt, grid_xt) ;
+!                o3mr:long_name = "ozone mixing ratio" ;
+!        float rwmr(time, pfull, grid_yt, grid_xt) ;
+!                rwmr:long_name = "rain mixing ratio" ;
+!        float snmr(time, pfull, grid_yt, grid_xt) ;
+!                snmr:long_name = "snow mixing ratio" ;
+!        float spfh(time, pfull, grid_yt, grid_xt) ;
+!                spfh:long_name = "specific humidity" ;
+!        float tmp(time, pfull, grid_yt, grid_xt) ;
+!                tmp:long_name = "temperature" ;
+!        float ugrd(time, pfull, grid_yt, grid_xt) ;
+!                ugrd:long_name = "zonal wind" ;
+!        float vgrd(time, pfull, grid_yt, grid_xt) ;
+!                vgrd:long_name = "meridional wind" ;
+
+! 2D 
+!
+!        float hgtsfc(time, grid_yt, grid_xt) ;
+!                hgtsfc:long_name = "surface geopotential height" ;
+!        float pressfc(time, grid_yt, grid_xt) ;
+!                pressfc:long_name = "surface pressure" ;
+!        float dnvvelmax(time, grid_yt, grid_xt) ;
+!                dnvvelmax:long_name = "Max hourly downdraft velocity" ;
+!        float srh01(time, grid_yt, grid_xt) ;
+!                srh01:long_name = "0-1km srh" ;
+!        float srh03(time, grid_yt, grid_xt) ;
+!                srh03:long_name = "0-3km srh" ;
+!        float uhmax03(time, grid_yt, grid_xt) ;
+!                uhmax03:long_name = "Max hourly 0-3km updraft helicity" ;
+!        float uhmax25(time, grid_yt, grid_xt) ;
+!                uhmax25:long_name = "Max hourly 2-5km updraft helicity" ;
+!        float uhmin03(time, grid_yt, grid_xt) ;
+!                uhmin03:long_name = "Max hourly 0-3km updraft helicity" ;
+!        float uhmin25(time, grid_yt, grid_xt) ;
+!                uhmin25:long_name = "Max hourly 2-5km updraft helicity" ;
+!        float upvvelmax(time, grid_yt, grid_xt) ;
+!                upvvelmax:long_name = "Max hourly updraft velocity" ;
+!        float ustm(time, grid_yt, grid_xt) ;
+!                ustm:long_name = "u comp of storm motion" ;
+!        float vstm(time, grid_yt, grid_xt) ;
+!                vstm:long_name = "v comp of storm motion" ;
+!        float maxvort01(time, grid_yt, grid_xt) ;
+!                maxvort01:long_name = "Max hourly 0-1km vert. vorticity" ;
+!        float maxvort02(time, grid_yt, grid_xt) ;
+!                maxvort02:long_name = "Max hourly 0-2km vert. vorticity" ;
+!        float maxvorthy1(time, grid_yt, grid_xt) ;
+!                maxvorthy1:long_name = "Max hourly lev 1 vert vort." ;
+!
+!
+!
+!
 
 
         write(6,*) 'allocate with IM, JM, LM: ', IM, JM, LM
@@ -2477,4 +2869,97 @@ C---------------------------------------------------------------------
          stop "Stopped"
        end if
       end subroutine check
+
+
+
+!!! do a non-scatter version like did for 2D?
+
+      subroutine read_netcdf_3d_scatter(me,ncid,ifhr,im,jm,jsta,jsta_2l &
+      ,jend_2u,MPI_COMM_COMP,icnt,idsp,spval,VarName &
+      ,l,buf)
+
+      use netcdf
+      implicit none
+      INCLUDE "mpif.h"
+      character(len=20),intent(in) :: VarName
+      real,intent(in)    :: spval
+      integer,intent(in) :: me,ncid,ifhr,im,jm,jsta_2l,jend_2u,jsta, &
+                            MPI_COMM_COMP,l
+      integer,intent(in) :: ICNT(0:1023), IDSP(0:1023)
+      real,intent(out)   :: buf(im,jsta_2l:jend_2u)
+      integer            :: iret,i,j,jj,varid
+      real dummy(im,jm),dummy2(im,jm)
+      real,parameter     :: spval_netcdf=-1.e+10
+
+      if(me == 0) then
+        iret = nf90_inq_varid(ncid,trim(varname),varid)
+        !print*,stat,varname,varid
+        iret = nf90_get_var(ncid,varid,dummy2,start=(/1,1,l,ifhr/), &
+             count=(/im,jm,1,1/))
+        if (iret /= 0) then
+          print*,VarName,l," not found -Assigned missing values"
+          do j=1,jm
+            do i=1,im
+              dummy(i,j) = spval
+            end do
+          end do
+        else
+          do j=1,jm
+!            jj=jm-j+1
+            jj=j
+            do i=1,im
+              dummy(i,j)=dummy2(i,jj)
+              if(dummy(i,j)==spval_netcdf)dummy(i,j)=spval
+            end do
+           end do
+        end if
+      end if
+
+      call mpi_scatterv(dummy(1,1),icnt,idsp,mpi_real &
+                    ,buf(1,jsta),icnt(me),mpi_real,0,MPI_COMM_COMP,iret)
+
+      end subroutine read_netcdf_3d_scatter
+
+
+      subroutine read_netcdf_2d(ncid,ifhr,im,jm,
+     &  spval,VarName,buf)
+
+      use netcdf
+      implicit none
+      character(len=20),intent(in) :: VarName
+      real,intent(in)    :: spval
+      integer,intent(in) :: ncid,ifhr,im,jm
+      real,intent(out)   :: buf(im,jm)
+      integer            :: iret,i,j,jj,varid
+      real,parameter     :: spval_netcdf=9.99e+20
+! dong for hgtsfc 2d var but with 3d missing value
+      real,parameter     :: spval_netcdf_3d=-1.e+10
+      real dummy(im,jm),dummy2(im,jm)
+
+
+        iret = nf90_inq_varid(ncid,trim(varname),varid)
+        write(0,*) ncid,trim(varname),varid
+        iret = nf90_get_var(ncid,varid,dummy)
+        write(0,*) 'past nf90_get_var call with iret: ' , iret
+        write(0,*) 'maxval(dummy): ', maxval(dummy)
+        if (iret /= 0) then
+          print*,VarName, " not found -Assigned missing values"
+          do j=1,jm
+            do i=1,im
+              dummy(i,j) = spval
+            end do
+          end do
+
+        else
+
+          do j=1,jm
+            do i=1,im
+             buf(i,j)=dummy(i,j)
+            enddo
+          enddo
+
+        endif
+
+
+      end subroutine read_netcdf_2d
 
