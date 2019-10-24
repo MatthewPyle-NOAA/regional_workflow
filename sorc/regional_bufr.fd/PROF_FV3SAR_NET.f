@@ -1,6 +1,4 @@
-C      SUBROUTINE PROF(NHB,LRSTRT,ITAG,LCLAS1)
-C      SUBROUTINE PROF(ITAG,LCLAS1)
-      SUBROUTINE PROF_EM_NET(filename,datestr,ITAG,INCR)
+      UBROUTINE PROF_FV3SAR_NET(filedyn,filephys,datestr,ITAG,INCR)
 C
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C                .      .    .
@@ -63,7 +61,8 @@ C------------------------------------------------------------------------
      & (ITB=76,JTB=134)
                              P A R A M E T E R
      & (A2=17.2693882,A3=273.16,A4=35.86,PQ0=379.90516,DTR=1.74532925E-2
-     &, G=9.81,GI=1./G,RD=287.04,CP=1004.6,CAPA=RD/CP,RHCRIT=0.9999)
+     &, G=9.81,GI=1./G,RD=287.04,CP=1004.6,CAPA=RD/CP,RHCRIT=0.9999
+     &, con_rd=287.05,con_rt=461.5,con_fvirt=con_rv/con_rd-1.)
 
 
 C------------------------------------------------------------------------
@@ -87,7 +86,7 @@ C
      &,SMC(:,:),CMC(:),STC(:,:),SH2O(:,:)
      &,VEGFRC(:),POTFLX(:),PSLP(:),PDSL1(:)
      &,EGRID2(:),SM(:),SICE(:)
-     &,HBM2(:),FACTR(:)
+     &,HBM2(:),FACTR(:),PSFC(:)
      &,PTBL(:,:),TTBL(:,:)
      &,STATPR(:),STACPR(:),STAEVP(:)
      &,STAPOT(:),STASHX(:),STASUB(:),STAPCX(:)
@@ -111,14 +110,16 @@ C
      &,                   OMGALF(:,:),CWM(:,:),TRAIN(:,:),TCUCN(:,:)
      &,                   RSWTT(:,:),RLWTT(:,:),CCR(:,:),RTOP(:,:)
      &,                   HTM(:,:),OMGA(:,:),p_hold(:,:),t_hold(:,:)
-     &,                   PINT(:,:),UL(:)
+     &,                   PINT(:,:),UL(:),DPRES(:,:),DZ(:,:)
 C  
 
       REAL, ALLOCATABLE:: DHCNVC(:,:),DHRAIN(:,:),STADHC(:),STADHR(:),
      &                      TCUCN0(:,:),TRAIN0(:,:)
 
       REAL,ALLOCATABLE:: DUM(:,:,:),DUMMY(:,:),DUMMY2(:,:),
-     &  DUM3D(:,:,:),DUM3D2(:,:,:),DUM3D3(:,:,:),GDLAT(:,:),GDLON(:,:)
+     & DUM3D(:,:,:),DUM3D2(:,:,:),DUM3D3(:,:,:),GDLAT(:,:),GDLON(:,:),
+     & DUM3D4(:,:,:)
+
 
       REAL, ALLOCATABLE:: PRODAT(:),FPACK(:)
 
@@ -150,7 +151,7 @@ C------------------------------------------------------------------------
 
 C	new stuff
       character(len=31) :: VarName,varin
-	character(len=90) :: fileName
+	character(len=90) :: fileName,filedyn,filephys
 	character(len=90) :: fileNamehold
       integer :: Status, DataHandle
       character(len=19):: startdate,datestr,datestrold
@@ -214,81 +215,65 @@ c	endif
 
        if ( frst ) then
          frst = .false.
-!         CALL ext_ncd_ioinit(Status)
-!          print*,'CALLed ioinit', Status
-	write(6,*) 'filename early in PROF= ', filename
-!         CALL ext_ncd_open_for_read( trim(fileName), 0, 0, " ",
-!     &  DataHandle, Status)
+	write(6,*) 'filedyn early in PROF= ', filedyn
+	write(6,*) 'filephys early in PROF= ', filephys
 
-          call check( nf90_open(fileName, NF90_NOWRITE, ncid) )
+         call check( nf90_open(filedyn, NF90_NOWRITE, ncid_dyn) )
+         call check( nf90_open(filephys, NF90_NOWRITE, ncid_phys) )
 
-          print*,'CALLed open for read', Status
+         print*,'CALLed open for read', Status
        else
            Status = 0
        endif
        if ( Status /= 0 ) then
-         print*,'error opening ',fileName, ' Status = ', Status ; stop
+         print*,'error opening ',filedyn,filephys, ' Status = ', Status ; stop
        endif
 
-!	write(6,*) 'js, je, jev: ', js,je,jev
-
 C Getting start time
-!      CALL ext_ncd_get_dom_ti_char(DataHandle
-!     1 ,'START_DATE',startdate, status )
-
 
         varname='time'
-        iret = nf90_inq_varid(ncid,trim(varname),varid)
+        iret = nf90_inq_varid(ncid_dyn,trim(varname),varid)
         write(0,*) ncid,trim(varname),varid
-        iret = nf90_get_var(ncid,varid,ihr)
+        iret = nf90_get_var(ncid_dyn,varid,ihr)
 
-        iret = nf_get_att_text(ncid,varid,'units',varin)
+        iret = nf_get_att_text(ncid_dyn,varid,'units',varin)
         write(0,*) 'varin is: ', varin, ' and end'
 
         read(varin,101)idate(1),idate(2),idate(3),idate(4),idate(5)
  101    format(T13,i4,1x,i2,1x,i2,1x,i2,1x,i2)
 
 
-!        print*,'startdate= ',startdate
-
         iyear=IDATE(1)
         imn=IDATE(2)
         iday=IDATE(3)
         ihrst=IDATE(5)
 
-         IDATE(2)=imn
-         IDATE(3)=iday
-         IDATE(1)=iyear
-         IDATE(5)=ihrst
-
  15   format(i4,1x,i2,1x,i2,1x,i2)
       print*,'start yr mo day hr =',iyear,imn,iday,ihrst
-
-
 
       ifhr=ITAG
       print*,' in INITPOST ifhr fileName=',ifhr,fileName
 
-          Status = nf90_inq_dimid(ncid,'grid_xt',varid)
+          Status = nf90_inq_dimid(ncid_dyn,'grid_xt',varid)
           if ( Status /= 0 ) then
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid,varid,len=im)
+          Status = nf90_inquire_dimension(ncid_dyn,varid,len=im)
 
-          Status = nf90_inq_dimid(ncid,'grid_yt',varid)
+          Status = nf90_inq_dimid(ncid_dyn,'grid_yt',varid)
           if ( Status /= 0 ) then
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid,varid,len=jm)
+          Status = nf90_inquire_dimension(ncid_dyn,varid,len=jm)
 
-          Status = nf90_inq_dimid(ncid,'pfull',varid)
+          Status = nf90_inq_dimid(ncid_dyn,'pfull',varid)
           if ( Status /= 0 ) then
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid,varid,len=lm)
+          Status = nf90_inquire_dimension(ncid_dyn,varid,len=lm)
 
 !
 !
@@ -307,7 +292,7 @@ C Getting start time
 !        float alvsf(time, grid_yt, grid_xt) ;
 !                alvsf:long_name = "mean vis albedo with strong cosz dependency" ;
 !        float alvwf(time, grid_yt, grid_xt) ;
-!                alvwf:long_name = "mean vis albedo with weak cosz dependency" ;
+!               alvwf:long_name = "mean vis albedo with weak cosz dependency" ;
 !        float c0(time, grid_yt, grid_xt) ;
 !                c0:long_name = "nsst coefficient1 to calculate d(tz)/d(ts)" ;
 !        float cd(time, grid_yt, grid_xt) ;
@@ -321,7 +306,7 @@ C Getting start time
 !        float cprat_ave(time, grid_yt, grid_xt) ;
 !                cprat_ave:long_name = "averaged surface convective precipitation rate" ;
 !        float cpratb_ave(time, grid_yt, grid_xt) ;
-!!                cpratb_ave:long_name = "averaged bucket surface convective precipitation rate" ;
+!                cpratb_ave:long_name = "averaged bucket surface convective precipitation rate" ;
 !        float csdlf(time, grid_yt, grid_xt) ;
 !                csdlf:long_name = "Clear Sky Downward Long Wave Flux" ;
 !        float csdsf(time, grid_yt, grid_xt) ;
@@ -467,7 +452,7 @@ C Getting start time
 !        float soill4(time, grid_yt, grid_xt) ;
 !                soill4:long_name = "liquid soil mositure at layer-4" ;
 !        float soilm(time, grid_yt, grid_xt) ;
-!                soilm:long_name = "total column soil moisture content" ;
+!                soilm:long_name = "total column soil oisture content" ;
 !        float soilt1(time, grid_yt, grid_xt) ;
 !                soilt1:long_name = "soil temperature 0-10cm" ;
 !        float soilt2(time, grid_yt, grid_xt) ;
@@ -728,7 +713,7 @@ C Getting start time
        ALLOCATE(ASWIN0(NUMSTA),ASWOUT0(NUMSTA),ALWIN0(NUMSTA))
        ALLOCATE(ALWOUT0(NUMSTA),ALWTOA0(NUMSTA),ASWTOA0(NUMSTA))
        ALLOCATE(ACSNOW0(NUMSTA),ACSNOM0(NUMSTA),SSROFF0(NUMSTA))
-       ALLOCATE(BGROFF0(NUMSTA))
+       ALLOCATE(BGROFF0(NUMSTA),PSFC(NUMSTA))
 
 
 	ALLOCATE(T(NUMSTA,LM))
@@ -752,6 +737,8 @@ C Getting start time
         ALLOCATE(W(NUMSTA,LM+1))
         ALLOCATE(WH(NUMSTA,LM))
         ALLOCATE(IW(NUMSTA,LM))
+        ALLOCATE(DPRES(NUMSTA,LM))
+        ALLOCATE(DZ(NUMSTA,LM))
 
         ALLOCATE(STADHC(LM))
         ALLOCATE(STADHR(LM))
@@ -775,11 +762,13 @@ C Getting start time
         if (ALLOCATED(DUMMY2)) deallocate(DUMMY2);
      &                          allocate(DUMMY2(IM,JM))
         if (ALLOCATED(DUM3D)) deallocate(DUM3D);
-     &                          allocate(DUM3D(IM+1,JM+1,LM+1))
+     &                          allocate(DUM3D(IM,JM,LM))
         if (ALLOCATED(DUM3D2)) deallocate(DUM3D2);
-     &                          allocate(DUM3D2(IM+1,JM+1,LM+1))
+     &                          allocate(DUM3D2(IM,JM,LM))
         if (ALLOCATED(DUM3D3)) deallocate(DUM3D3);
-     &                          allocate(DUM3D3(IM+1,JM+1,LM+1))
+     &                          allocate(DUM3D3(IM,JM,LM))
+        if (ALLOCATED(DUM3D4)) deallocate(DUM3D4);
+     &                          allocate(DUM3D4(IM,JM,LM))
         if (ALLOCATED(GDLAT)) deallocate(GDLAT);
      &                          allocate(GDLAT(IM,JM))
         if (ALLOCATED(GDLON)) deallocate(GDLON);
@@ -793,58 +782,47 @@ C Getting start time
 !!!!!
 
 
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"cen_lat", cenlat))
+       cenlat=nint(1000.0*cenlat)
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"cen_lon", cenlon))
+       cenlon=nint(1000.0*cenlon)
 
 
-        call ext_ncd_get_dom_ti_real(DataHandle,'DX',tmp
-     + ,1,ioutcount,istatus)
-        dxval=nint(tmp)
+
         write(6,*) 'dxval= ', dxval
-        call ext_ncd_get_dom_ti_real(DataHandle,'DY',tmp
-     + ,1,ioutcount,istatus)
-        dyval=nint(tmp)
         write(6,*) 'dyval= ', dyval
-        call ext_ncd_get_dom_ti_real(DataHandle,'CEN_LAT',tmp
-     + ,1,ioutcount,istatus)
-        cenlat=nint(1000.*tmp)
         write(6,*) 'cenlat= ', cenlat
-        call ext_ncd_get_dom_ti_real(DataHandle,'CEN_LON',tmp
-     + ,1,ioutcount,istatus)
-        cenlon=nint(1000.*tmp)
         write(6,*) 'cenlon= ', cenlon
-        call ext_ncd_get_dom_ti_real(DataHandle,'TRUELAT1',tmp
-     + ,1,ioutcount,istatus)
-        truelat1=nint(1000.*tmp)
+
+        truelat1=0.
+        truelat2=0.
         write(6,*) 'truelat1= ', truelat1
-        call ext_ncd_get_dom_ti_real(DataHandle,'TRUELAT2',tmp
-     + ,1,ioutcount,istatus)
-        truelat2=nint(1000.*tmp)
         write(6,*) 'truelat2= ', truelat2
-        call ext_ncd_get_dom_ti_integer(DataHandle,'MAP_PROJ',itmp
-     + ,1,ioutcount,istatus)
-        maptype=itmp
+        maptype=5
         write(6,*) 'maptype is ', maptype
 !need to get DT
-        call ext_ncd_get_dom_ti_real(DataHandle,'DT',tmp
-     +    ,1,ioutcount,istatus)
-	write(6,*) 'status from DT get: ', istatus
-	write(6,*) 'returned value for DT: ', tmp
-        DT=tmp
+       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dtp", DT))
         print*,'DT= ',DT
 
 ! get 3-D variables
       print*,'im,jm,lm= ',im,jm,lm
 c
 	write(6,*) 'DateStr: ', DateStr
-      VarName='U'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM+1,JS,JE,LM)
+
+
+	! start reading 3d netcdf output
+      do L=1,LM
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'ugrd',l,DUM3D(1,1,L))
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'vgrd',l,DUM3D2(1,1,L))
+       enddo
 
 	write(6,*) 'U: ', DUM3D(20,20,20)
-
-      VarName='V'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D2,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JEV,LM)
-
 	write(6,*) 'V: ', DUM3D2(20,20,20)
 
         DO L = 1, LM
@@ -857,69 +835,110 @@ c
 
 	write(6,*) 'U,V defined: '
 
-      VarName='W'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM+1)
+
+! W defined over LM, not LM+1??
+
+      do L=1,LM
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'dzdt',l,DUM3D(1,1,L))
+      enddo
 
 	write(6,*) 'W: ', DUM3D(20,20,20)
 
-      DO l = 1, lm+1
+      DO l = 1, lm
       DO N=1,NUMSTA
 	I=IHINDX(N)	
 	J=JHINDX(N)
             w ( N,L ) = dum3d ( i, j, l )
+            WH ( N,L ) = dum3d ( i, j, l )
       END DO
       END DO
 
-      DO L = 1,LM
-      DO N=1,NUMSTA
-	I=IHINDX(N)	
-	J=JHINDX(N)
-            WH(N,L) = (W(N,L)+W(N,L+1))*0.5
-      END DO
-      END DO
+!      DO L = 1,LM
+!      DO N=1,NUMSTA
+!	I=IHINDX(N)	
+!	J=JHINDX(N)
+!            WH(N,L) = (W(N,L)+W(N,L+1))*0.5
+!      END DO
+!      END DO
 
 
-      VarName='PH'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM+1)
-	write(6,*) 'PH: ', DUM3D(20,20,20)
+      do L=1,LM
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'tmp',l,DUM3D(1,1,L))
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'spfh',l,DUM3D2(1,1,L))
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'dpres',l,DUM3D3(1,1,L))
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,'delz',l,DUM3D4(1,1,L))
+      enddo
 
-      VarName='PHB'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM+1)
-	write(6,*) 'PHB: ', DUM3D(20,20,20)
+       call read_netcdf_2d(me,ncid_dyn,1,im,jm
+     & ,'pressfc',l,DUMMY(1,1))
 
-      VarName='T'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
-	write(6,*) 'T: ', DUM3D(20,20,20)
-
-      do l = 1, lm
-       do N = 1, NUMSTA
+	DO N=1,NUMSTA
          I=IHINDX(N)
          J=JHINDX(N)
-             t_hold ( N , L ) = dum3d ( i, j, l ) + 300.
-        end do
-       end do
+         PSFC(N)=DUMMY(I,J)
+        ENDDO
 
-      VarName='MU'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+	DO L=1,LM
+	DO N=1,NUMSTA
+         I=IHINDX(N)
+         J=JHINDX(N)
+	 Q(N,L)=DUM3D2(I,J,L)  ! need to convert in any way?
+         T_hold( N , L ) = dum3d ( i, j, l ) 
+         DPRES(N,L) = DUM3D3(I,J,L)
+         DZ(N,L) = DUM3D4(I,J,L)
+	ENDDO
+	ENDDO
 
-      VarName='MUB'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY2,
-     &  IM,1,JM,1,IM,JS,JE,1)
 
-  633	format(15(f6.0,1x))
+! think interface vs. midlayer pressure - this below might not be correct.
 
-!	write(6,*) 'past MU, MUB'
+	DO N=1,NUMSTA
+         I=IHINDX(N)
+         J=JHINDX(N)
+         PMID(N,LM)=PSFC(N)-0.5*DPRES(N,LM)
+	do L=LM-1,1,-1
+         PMID(N,L)=PMID(N,L+1)-(DPRES(N,L))
+        enddo
+        ENDDO
+
+	write(6,*) 'T: ', DUM3D(20,20,20)
+
 
         if (allocated(pint_part)) deallocate(pint_part)
         allocate(pint_part(NUMSTA))
 
         if (allocated(PDS)) deallocate(PDS)
         allocate(PDS(NUMSTA))
+
+	if (allocated(PMID)) deallocate(PMID)
+	allocate(PMID(NUMSTA,LM))
+
+
+
+! Did I mistranslate something wrong here?  the PMID/DPRES business seems weird.
+
+      do L=1,LM
+	DO N=1,NUMSTA
+           if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. &
+           Q(N,L)/=spval .and. DZ(N,L)/=spval)then
+            PMID(N,L)=con_rd*DPRES(N,L)* 
+     &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
+           else
+            PMID(N,L)=spval
+           end if
+!! dong add missing value
+           if (w(N,L) < spval) then
+            omga(N,L)=(-1.)*w(N,L)*DPRES(N,L)/DZ(N,L)
+           else
+            omga(N,L) = spval
+           end if
+        ENDDO 
+       ENDDO
 
 
 	DO N=1,NUMSTA
@@ -928,39 +947,11 @@ c
   	 pint_part(N)=DUMMY(I,J)+DUMMY2(I,J)
 	ENDDO
 
-
-!      VarName='MU0'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
-
-      VarName='P'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D2,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
-
-	DO L=1,LM
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-	 p_hold(N,L)=DUM3D2(I,J,L)
-	ENDDO
-	ENDDO
-
-      VarName='QVAPOR'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
-
-	DO L=1,LM
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-	 Q(N,L)=DUM3D(I,J,L)/(1.0+DUM3D(I,J,L))
-	ENDDO
-	ENDDO
-
-
-      VarName='QCLOUD'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
+       varname='clwmr'
+      do L=1,LM
+       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+     & ,varname,l,DUM3D(1,1,L))
+      enddo
 
         DO L = 1, LM
         DO N=1,NUMSTA
@@ -970,9 +961,65 @@ c
         ENDDO
 
 
-      VarName='TSLB'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,NSOIL)
+      VarName='soilt1'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D(:,:,1)=DUMMY(:,:)
+
+      VarName='soilt2'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D(:,:,2)=DUMMY(:,:)
+
+      VarName='soilt3'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D(:,:,3)=DUMMY(:,:)
+
+      VarName='soilt4'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D(:,:,4)=DUMMY(:,:)
+
+      VarName='soilw1'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D2(:,:,1)=DUMMY(:,:)
+
+      VarName='soilw2'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D2(:,:,2)=DUMMY(:,:)
+
+      VarName='soilw3'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D2(:,:,3)=DUMMY(:,:)
+
+      VarName='soilw4'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D2(:,:,4)=DUMMY(:,:)
+
+      VarName='soill1'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D3(:,:,1)=DUMMY(:,:)
+
+      VarName='soill2'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D3(:,:,2)=DUMMY(:,:)
+
+      VarName='soill3'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D3(:,:,3)=DUMMY(:,:)
+
+      VarName='soill4'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+        DUM3D3(:,:,4)=DUMMY(:,:)
 
       DO L = 1, NSOIL
         DO N=1,NUMSTA
@@ -981,52 +1028,45 @@ c
 ! flip soil layer again because wrf soil variable vertical indexing
 ! is the same with eta and vertical indexing was flipped for both
 ! atmospheric and soil layers within getVariable
-            STC(N,L) = DUM3D(I,J,NSOIL-L+1)
+
+!! assuming this isn't needed for FV3SAR
+!
+            STC(N,L) = DUM3D(I,J,L)
+            SMC(N,L) = DUM3D2(I,J,L)
+            SH2O(N,L) = DUM3D3(I,J,L)
         END DO
       END DO
 
 
-      call getVariable(fileName,DateStr,DataHandle,'ZS',SLDPTH2,
-     & NSOIL,1,1,1,NSOIL,1,1,1)
-
-      call getVariable(fileName,DateStr,DataHandle,'DZS',SLDPTH2,
-     & NSOIL,1,1,1,NSOIL,1,1,1)
-
-      VarName='Q2'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='spfh2m'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
-!!! conversion needed for QSHLTR?  (spec hum, mix ratio, what??)
-!!! conversion needed for QSHLTR?  (spec hum, mix ratio, what??)
-!!! conversion needed for QSHLTR?  (spec hum, mix ratio, what??)
+! should QSHLTER be specific humidity?
         QSHLTR(N)=DUMMY(IHINDX(N),JHINDX(N))
       ENDDO
 
 
-      VarName='T2'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='TH2'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='tmp2m'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
-        TH2_hold(N)=DUMMY(IHINDX(N),JHINDX(N))
+        TSHLTR(N)=DUMMY(IHINDX(N),JHINDX(N))
       ENDDO
 
-      VarName='U10'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='ugrd10m'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
         U10(N)=DUMMY(IHINDX(N),JHINDX(N))
       ENDDO
 
-      VarName='V10'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='vgrd10m'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
         V10(N)=DUMMY(IHINDX(N),JHINDX(N))
@@ -1039,24 +1079,15 @@ c
         Q10(N)=-9999.
        END DO
 
-      VarName='SMOIS'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,NSOIL)
-
-      VarName='SH2O'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D2,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,NSOIL)
+      VarName='cnwat'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO L = 1, NSOIL
         DO N=1,NUMSTA
         I=IHINDX(N)
         J=JHINDX(N)
-! flip soil layer again because wrf soil variable vertical indexing
-! is the same with eta and vertical indexing was flipped for both
-! atmospheric and soil layers within getVariable
-        SMC(N,L) = DUM3D (I,J,NSOIL-L+1)
-        CMC(N)   = DUM3D (I,J,1)  ! ??????
-        SH2O(N,L)= DUM3D2(I,J,NSOIL-L+1)
+        CMC(N)   = DUM3D (I,J,1)  ! canopy water 
         END DO
       END DO
 
@@ -1072,22 +1103,11 @@ c reading SMSTAV
         SMSTAV(N)=DUMMY(I,J)
       ENDDO
 
-      VarName='SFROFF'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='UDROFF'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='IVGTYP'
-      call getIVariable(fileName,DateStr,DataHandle,VarName,IDUM
-     &  ,IM,1,JM,1,IM,JS,JE,1)
-      VarName='ISLTYP'
-      call getIVariable(fileName,DateStr,DataHandle,VarName,IDUM
-     &  ,IM,1,JM,1,IM,JS,JE,1)
 
-      VarName='VEGFRA'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='veg'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
+
       DO N=1,NUMSTA
         I=IHINDX(N)
         J=JHINDX(N)
@@ -1096,10 +1116,6 @@ c reading SMSTAV
 !	write(6,*) 'N, VEGFRC(N): ', N, VEGFRC(N)
 !	endif
       ENDDO
-
-      VarName='GRDFLX'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
 
       VarName='ACSNOW'
       call getVariable(fileName,DateStr,DataHandle,VarName,DUM(:,:,1),
@@ -1124,44 +1140,10 @@ c reading SMSTAV
       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
      &  IM,1,JM,1,IM,JS,JE,1)
 
-      VarName='CANWAT'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='SST'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='THZ0'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='QZ0'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='UZ0'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='VZ0'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='QSFC'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='AKHS'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='AKMS'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
       VarName='PB'
       call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
      &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
 
-	if (allocated(PMID)) deallocate(PMID)
-	allocate(PMID(NUMSTA,LM))
 
 	write(6,*) 'to PMID DEFINITIONS '
 	DO L=1,LM
@@ -1169,7 +1151,7 @@ c reading SMSTAV
          I=IHINDX(N)
          J=JHINDX(N)
 	 PMID(N,L)=p_hold(N,L)+DUM3D(I,J,L)
-         T(N,L)=t_hold(N,L)*(PMID(N,L)*1.e-5)**CAPA
+         T(N,L)=t_hold(N,L)
  	 OMGA(N,L)=-WH(N,L)*PMID(N,L)*G/
      &              (RD*T(N,L)*(1+.608*Q(N,L)))
 
@@ -1188,34 +1170,6 @@ c reading SMSTAV
 	ENDDO
 	ENDDO
 
-      VarName='MAPFAC_M'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='MAPFAC_U'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='MAPFAC_V'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-
-      VarName='F'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='E'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='SINALPHA'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='COSALPHA'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
 
       VarName='HGT'
       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
@@ -1228,9 +1182,9 @@ c reading SMSTAV
 
 !HERENOW
 
-      VarName='TSK'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='tmp2m'
+       call read_netcdf_2d(me,ncid_phys,1,im,jm
+     & ,varname,DUMMY(1,1))
 
       VarName='P_TOP'
       call getVariable(fileName,DateStr,DataHandle,VarName,PT,
@@ -1244,10 +1198,7 @@ c reading SMSTAV
          PINT (N,LM+1)=pint_part(N)+PT
          PINT (N,1)=PT
 
-!        PD(I,J)=PINT (N,LM+1) - PINT(N,1)
-
-        TSHLTR(N)=TH2_hold(N)*(PINT(N,LM+1)/100000.)**CAPA
-	THS(N)=DUMMY(I,J)*(100000./PINT(N,LM+1))**CAPA
+	THS(N)=TSHLTR(N)*(100000./PINT(N,LM+1))**CAPA
 
         HBOT(N)=-9999.
         CFRACL(N)=-9999.
@@ -1264,60 +1215,6 @@ c reading SMSTAV
 
         ENDDO
 
-
-!      VarName='FNM'
-!	write(6,*) 'FNM'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!	write(6,*) 'FNP'
-!      VarName='FNP'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!	write(6,*) 'RDNW'
-!      VarName='RDNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-!	write(6,*) 'return getVariable'
-
-!	write(6,*) 'RDN'
-!      VarName='RDN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!	write(6,*) 'DNW'
-!      VarName='DNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!	write(6,*) 'DN'
-!      VarName='DN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='ZNU'
-!	write(6,*) 'ZNU'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='ZNW'
-!	write(6,*) 'ZNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM+1,1,1,1,LM+1,1,1,1)
-
-!      VarName='CFN'
-!	write(6,*) 'CFN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
-
-!      VarName='CFN1'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
-
-!      VarName='EPSTS'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
 
 CC
 CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
@@ -1338,12 +1235,6 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
      &                  DUM(IHINDX(N),JHINDX(N),2) )*.001
       ENDDO
 
-      VarName='GSW'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='GLW'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
 
       VarName='XLAT'
       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
@@ -1818,137 +1709,7 @@ c
           ACSNOM0(N)=DUMMY(IHINDX(N),JHINDX(N))
 	ENDDO
 
-      VarName='SNOW'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
 
-      VarName='SNOWH'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='CANWAT'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='SST'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='THZ0'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='QZ0'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='UZ0'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='VZ0'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='QSFC'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='AKHS'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='AKMS'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='PB'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUM3D3,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
-
-      VarName='MAPFAC_M'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='MAPFAC_U'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='MAPFAC_V'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='F'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='E'
-      call getVariable(fileName,DateStrold,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-!      VarName='SINALPHA'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-!     &  IM,1,JM,1,IM,JS,JE,1)
-
-!      VarName='COSALPHA'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-!     &  IM,1,JM,1,IM,JS,JE,1)
-
-!      VarName='HGT'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-!     &  IM,1,JM,1,IM,JS,JE,1)
-
-!      VarName='TSK'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-!     &  IM,1,JM,1,IM,JS,JE,1)
-
-!      VarName='P_TOP'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,PT,
-!     &  1,1,1,1,1,1,1,1)
-
-!      VarName='FNM'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='FNP'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='RDNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='RDN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='DNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='DN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='ZNU'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM,1,1,1,LM,1,1,1)
-
-!      VarName='ZNW'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM1D,
-!     &  LM+1,1,1,1,LM+1,1,1,1)
-
-!      VarName='CFN'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
-
-!      VarName='CFN1'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
-
-!      VarName='EPSTS'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM0D,
-!     &  1,1,1,1,1,1,1,1)
 
 CC
 CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
@@ -2564,9 +2325,6 @@ C
 !	write(6,*) 'PRODAT definition, PMID: ', N,L,PMID(N,LV)
 	endif
 	
-!	if (LVL .eq. 1 .and. mod(N,25) .eq. 0) then
-!	write(6,*) 'N, PSFC: ', N,PRODAT(1)
-!	endif
 
         PRODAT(LMHK+LVL) = T(N,LV)
 
@@ -2836,7 +2594,7 @@ C---------------------------------------------------------------------
      &,TH10,Q10,U10,V10
      &,TLMIN,TLMAX
      &,SMC,CMC,STC,SH2O
-     &,VEGFRC,POTFLX,PSLP,PDSL1
+     &,VEGFRC,POTFLX,PSLP,PSFC,PDSL1
      &,EGRID2,SM,SICE
      &,HBM2,FACTR
      &,PTBL,TTBL
@@ -2872,7 +2630,7 @@ C---------------------------------------------------------------------
 
 
 
-!!! do a non-scatter version like did for 2D?
+! --------------------------------
 
       subroutine read_netcdf_3d_scatter(me,ncid,ifhr,im,jm,jsta,jsta_2l &
       ,jend_2u,MPI_COMM_COMP,icnt,idsp,spval,VarName &
@@ -2920,6 +2678,44 @@ C---------------------------------------------------------------------
 
       end subroutine read_netcdf_3d_scatter
 
+! --------------------------------
+
+      subroutine read_netcdf_3d(ncid,ifhr,im,jm,
+     &,spval,VarName,l,buf) 
+
+      use netcdf
+      implicit none
+      character(len=20),intent(in) :: VarName
+      real,intent(in)    :: spval
+      integer,intent(in) :: ncid,ifhr,im,jm,l
+      real,intent(out)   :: buf(im,jm)
+      integer            :: iret,i,j,jj,varid
+      real dummy(im,jm),dummy2(im,jm)
+      real,parameter     :: spval_netcdf=-1.e+10
+
+        iret = nf90_inq_varid(ncid,trim(varname),varid)
+        !print*,stat,varname,varid
+        iret = nf90_get_var(ncid,varid,dummy2,start=(/1,1,l,ifhr/), 
+     &       count=(/im,jm,1,1/))
+        if (iret /= 0) then
+          print*,VarName,l," not found -Assigned missing values"
+          do j=1,jm
+            do i=1,im
+              dummy(i,j) = spval
+            end do
+          end do
+        else
+          do j=1,jm
+            do i=1,im
+              dummy(i,j)=dummy2(i,j)
+              if(dummy(i,j)==spval_netcdf)dummy(i,j)=spval
+            end do
+           end do
+        end if
+
+      end subroutine read_netcdf_3d_scatter
+
+! --------------------------------
 
       subroutine read_netcdf_2d(ncid,ifhr,im,jm,
      &  spval,VarName,buf)
