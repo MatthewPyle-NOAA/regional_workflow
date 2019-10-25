@@ -36,6 +36,7 @@ c      use vrbls2d
 c      use soil
 c      use masks
 C
+       use netcdf
       include 'wrf_io_flags.h'
 
 !      INCLUDE "parmeta"
@@ -159,6 +160,7 @@ C	new stuff
 
 	real:: rinc(5)
 	integer:: IDATE(8),JDATE(8),im,jm,lm
+        integer :: varid, ncid_dyn, ncid_phys
 
 C------------------------------------------------------------------------
       DATA BLANK/'    '/
@@ -235,7 +237,7 @@ C Getting start time
         varname='time'
         call check( nf90_inq_varid(ncid_dyn,trim(varname),varid))
         write(0,*) ncid,trim(varname),varid
-        iret = nf90_get_var(ncid_dyn,varid,ihr)
+        call check( nf90_get_var(ncid_dyn,varid,ihr))
 
         call check( nf_get_att_text(ncid_dyn,varid,'units',varin))
         write(0,*) 'varin is: ', varin, ' and end'
@@ -255,25 +257,13 @@ C Getting start time
       ifhr=ITAG
       print*,' in INITPOST ifhr fileName=',ifhr,fileName
 
-          Status = nf90_inq_dimid(ncid_dyn,'grid_xt',varid)
-          if ( Status /= 0 ) then
-           print*,Status,varid
-           STOP 1
-          end if
+          call check( nf90_inq_dimid(ncid_dyn,'grid_xt',varid))
           call check( nf90_inquire_dimension(ncid_dyn,varid,len=im))
 
           call check( nf90_inq_dimid(ncid_dyn,'grid_yt',varid) )
-          if ( Status /= 0 ) then
-           print*,Status,varid
-           STOP 1
-          end if
           call check( nf90_inquire_dimension(ncid_dyn,varid,len=jm))
 
-          Status = nf90_inq_dimid(ncid_dyn,'pfull',varid)
-          if ( Status /= 0 ) then
-           print*,Status,varid
-           STOP 1
-          end if
+          call check(nf90_inq_dimid(ncid_dyn,'pfull',varid))
           call check(nf90_inquire_dimension(ncid_dyn,varid,len=lm))
 
 !

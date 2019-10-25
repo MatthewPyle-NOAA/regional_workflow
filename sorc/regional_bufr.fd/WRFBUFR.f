@@ -169,8 +169,8 @@ c20080707	filename=filename(1:len-19)//DateStr
 
 	if (ioform(1:6) .eq. 'netcdf') then 
 
-	if (model(1:4) .eq. 'NCEP') then
-        CALL PROF_NMM_NET(fileName,DateStr,IHR,INCR)
+	if (model(1:4) .eq. 'FV3S') then
+        CALL PROF_FV3SAR_NET(fileNamedyn,filenamephys,DateStr,IHR,INCR)
 	elseif (model(1:4) .eq. 'NCAR') then
 	CALL PROF_EM_NET(fileName,DateStr,IHR,INCR)
 	endif

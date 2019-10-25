@@ -56,7 +56,7 @@ LDFLAGS  =
 LIBS     = $(WRFLIB) \
            $(NEMSIO_LIB) \
            $(W3EMC_LIB4) $(W3NCO_LIB4) $(BACIO_LIB4) \
-           $(NETCDF_LDFLAGS_F)
+           $(NETCDF_LDFLAGS)  $(NETCDF_INCLUDE)
 #
 #
 # free-format object files
