@@ -62,8 +62,9 @@ C
           integer iii
       character(len=6) :: IOFORM,model
       character(len=98) :: newname
-      character(len=256) :: fileName
-      character(len=256) :: prefileName
+      character(len=256) :: fileName,fileNamedyn,fileNamephys
+      character(len=256) :: prefileName,prefileNamedyn,
+     &                      prefileNamephys
       character(len=19) :: DateStr
       integer :: DataHandle, IHR, INCR
 !      integer, parameter:: INCR=3
@@ -74,7 +75,8 @@ C
 C     START PROGRAM WRFBUFR.
 C
 !	write(0,*) 'to read statements'
-       read(11,111) fileName
+       read(11,111) fileNameDyn
+       read(11,111) fileNamePhys
 !	write(0,*) 'initial filename= ', filename
        read(11,113) model
 !	write(0,*) 'model type= ', model
@@ -85,7 +87,8 @@ C
        read(11,*) NFILES
        read(11,*) INCR
        read(11,*) IHR
-       read(11,111) prefileName
+       read(11,111) prefileNameDyn
+       read(11,111) prefileNamephys
 !        write(0,*) 'previous filename= ', prefilename
 
 !!!! CHANGE THIS ASSUMPTION???
