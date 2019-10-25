@@ -1,4 +1,4 @@
-      UBROUTINE PROF_FV3SAR_NET(filedyn,filephys,datestr,ITAG,INCR)
+      SUBROUTINE PROF_FV3SAR_NET(filedyn,filephys,datestr,ITAG,INCR)
 C
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C                .      .    .
@@ -155,9 +155,10 @@ C	new stuff
 	character(len=90) :: fileNamehold
       integer :: Status, DataHandle
       character(len=19):: startdate,datestr,datestrold
+      character(len=2):: fhroldchar
 
 	real:: rinc(5)
-	integer:: IDATE(8),JDATE(8)
+	integer:: IDATE(8),JDATE(8),im,jm,lm
 
 C------------------------------------------------------------------------
       DATA BLANK/'    '/
@@ -232,11 +233,11 @@ c	endif
 C Getting start time
 
         varname='time'
-        iret = nf90_inq_varid(ncid_dyn,trim(varname),varid)
+        call check( nf90_inq_varid(ncid_dyn,trim(varname),varid))
         write(0,*) ncid,trim(varname),varid
         iret = nf90_get_var(ncid_dyn,varid,ihr)
 
-        iret = nf_get_att_text(ncid_dyn,varid,'units',varin)
+        call check( nf_get_att_text(ncid_dyn,varid,'units',varin))
         write(0,*) 'varin is: ', varin, ' and end'
 
         read(varin,101)idate(1),idate(2),idate(3),idate(4),idate(5)
@@ -259,21 +260,21 @@ C Getting start time
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid_dyn,varid,len=im)
+          call check( nf90_inquire_dimension(ncid_dyn,varid,len=im))
 
-          Status = nf90_inq_dimid(ncid_dyn,'grid_yt',varid)
+          call check( nf90_inq_dimid(ncid_dyn,'grid_yt',varid) )
           if ( Status /= 0 ) then
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid_dyn,varid,len=jm)
+          call check( nf90_inquire_dimension(ncid_dyn,varid,len=jm))
 
           Status = nf90_inq_dimid(ncid_dyn,'pfull',varid)
           if ( Status /= 0 ) then
            print*,Status,varid
            STOP 1
           end if
-          Status = nf90_inquire_dimension(ncid_dyn,varid,len=lm)
+          call check(nf90_inquire_dimension(ncid_dyn,varid,len=lm))
 
 !
 !
@@ -816,9 +817,9 @@ c
 
 	! start reading 3d netcdf output
       do L=1,LM
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'ugrd',l,DUM3D(1,1,L))
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'vgrd',l,DUM3D2(1,1,L))
        enddo
 
@@ -839,7 +840,7 @@ c
 ! W defined over LM, not LM+1??
 
       do L=1,LM
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'dzdt',l,DUM3D(1,1,L))
       enddo
 
@@ -864,17 +865,17 @@ c
 
 
       do L=1,LM
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'tmp',l,DUM3D(1,1,L))
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'spfh',l,DUM3D2(1,1,L))
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'dpres',l,DUM3D3(1,1,L))
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,'delz',l,DUM3D4(1,1,L))
       enddo
 
-       call read_netcdf_2d(me,ncid_dyn,1,im,jm
+       call read_netcdf_2d(ncid_dyn,ifhr,im,jm
      & ,'pressfc',l,DUMMY(1,1))
 
 	DO N=1,NUMSTA
@@ -949,7 +950,7 @@ c
 
        varname='clwmr'
       do L=1,LM
-       call read_netcdf_3d(me,ncid_dyn,1,im,jm
+       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
      & ,varname,l,DUM3D(1,1,L))
       enddo
 
@@ -962,62 +963,62 @@ c
 
 
       VarName='soilt1'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D(:,:,1)=DUMMY(:,:)
 
       VarName='soilt2'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D(:,:,2)=DUMMY(:,:)
 
       VarName='soilt3'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D(:,:,3)=DUMMY(:,:)
 
       VarName='soilt4'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D(:,:,4)=DUMMY(:,:)
 
       VarName='soilw1'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D2(:,:,1)=DUMMY(:,:)
 
       VarName='soilw2'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D2(:,:,2)=DUMMY(:,:)
 
       VarName='soilw3'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D2(:,:,3)=DUMMY(:,:)
 
       VarName='soilw4'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D2(:,:,4)=DUMMY(:,:)
 
       VarName='soill1'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D3(:,:,1)=DUMMY(:,:)
 
       VarName='soill2'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D3(:,:,2)=DUMMY(:,:)
 
       VarName='soill3'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D3(:,:,3)=DUMMY(:,:)
 
       VarName='soill4'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
         DUM3D3(:,:,4)=DUMMY(:,:)
 
@@ -1039,7 +1040,7 @@ c
 
 
       VarName='spfh2m'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
@@ -1049,7 +1050,7 @@ c
 
 
       VarName='tmp2m'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
@@ -1057,7 +1058,7 @@ c
       ENDDO
 
       VarName='ugrd10m'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
@@ -1065,7 +1066,7 @@ c
       ENDDO
 
       VarName='vgrd10m'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
@@ -1080,7 +1081,7 @@ c
        END DO
 
       VarName='cnwat'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO L = 1, NSOIL
@@ -1104,7 +1105,7 @@ c reading SMSTAV
 
 
       VarName='veg'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
@@ -1117,7 +1118,7 @@ c reading SMSTAV
       ENDDO
 
       VarName='snod'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
 
@@ -1171,7 +1172,7 @@ c reading SMSTAV
 !HERENOW
 
       VarName='tmp2m'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       VarName='P_TOP'
@@ -1479,31 +1480,20 @@ C***
 
 
 !! this needs to change significantly
-!! this needs to change significantly
-!! this needs to change significantly
-!! this needs to change significantly
 
-        RINC(1)=0.
-        RINC(2)=float(ITAG0)
-        RINC(3)=0.
-        RINC(4)=0.
         RINC(5)=0.
+        write(fhroldchar,301) ITAG0
+ 301  format(i2.2)
 
-	write(6,*) 'RINC(2): ', rinc(2)
-        call w3movdat(rinc,idate,jdate)
-        write(DateStrold,301) JDATE(1),JDATE(2),JDATE(3),JDATE(5)
- 301  format(i4,'-',i2.2,'-',i2.2,'_',i2.2,':00:00')
-
-	write(6,*) 'filename later in PROF: ', filename, '_END'
-        len=index(filename,' ')-1
+	write(6,*) 'filedyn later in PROF: ', filedyn, '_END'
+        len=index(filedyn,' ')-1
 	write(6,*) 'LEN= ', LEN
-        filename=filename(1:len-19)//DateStrold
+        filedyn(len-5:len-4)=fhroldchar
 
-	filename(len-2:len-2)='_'
-	filename(len-5:len-5)='_'
-
-!	write(6,*) 'old filename is ', trim(filename)
-	write(6,*) 'date for old file is: ', datestrold
+	write(6,*) 'filephys later in PROF: ', filephys, '_END'
+        len=index(filephys,' ')-1
+	write(6,*) 'LEN= ', LEN
+        filephys(len-5:len-4)=fhroldchar
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1514,11 +1504,6 @@ C***
 
          call check( nf90_open(filedyn, NF90_NOWRITE, ncid_dyn) )
          call check( nf90_open(filephys, NF90_NOWRITE, ncid_phys) )
-
-         CALL ext_ncd_open_for_read( trim(fileName), 0, 0, " ",
-     &  DataHandle, Status)
-          print*,'CALLed open for read', Status
-	  print*,'associated DataHandle: ', DataHandle
 
        if ( Status /= 0 ) then
          print*,'error opening ',fileName, ' Status = ', Status ; stop
@@ -1576,7 +1561,7 @@ C Getting start time
 c
 
       VarName='snod'
-       call read_netcdf_2d(me,ncid_phys,1,im,jm
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
         DO N=1,NUMSTA
@@ -2455,7 +2440,6 @@ C***  END OF PROFILE SITE LOOP
 C
 C***  END PROFILE POSTING CODE.
 C---------------------------------------------------------------------
-      RETURN
       END
 
       subroutine check(status)
@@ -2474,7 +2458,7 @@ C---------------------------------------------------------------------
 
 
       subroutine read_netcdf_3d(ncid,ifhr,im,jm,
-     &,spval,VarName,l,buf) 
+     & spval,VarName,l,buf) 
 
       use netcdf
       implicit none
@@ -2506,7 +2490,9 @@ C---------------------------------------------------------------------
            end do
         end if
 
-      end subroutine read_netcdf_3d_scatter
+        buf=dummy
+
+      end subroutine read_netcdf_3d
 
 ! --------------------------------
 

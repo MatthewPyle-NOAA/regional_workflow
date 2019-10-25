@@ -50,7 +50,7 @@ DEBUG    = -g # -traceback -fpe0 -ftrapuv # -check all
 #
 # Assemble Options
 #
-FFLAGS   = $(OPTS) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC)
+FFLAGS   = $(OPTS) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC) $(NETCDF_INCLUDE)
 FFLAGST  = $(OPTS) $(FREE) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC)
 LDFLAGS  =
 LIBS     = $(WRFLIB) \
