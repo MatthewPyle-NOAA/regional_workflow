@@ -133,7 +133,7 @@ C
        REAL, ALLOCATABLE :: PMID(:,:),W(:,:), WH(:,:),
      &                      pint_part(:),PDS(:)
 
-	real, allocatable:: CROT(:),SROT(:)
+	real, allocatable:: CROT(:),SROT(:),ak(:)
 C------------------------------------------------------------------------
                              I N T E G E R
      & IDSTN(NSTAT),IHINDX(NSTAT),JHINDX(NSTAT)
@@ -266,6 +266,7 @@ C Getting start time
           call check(nf90_inq_dimid(ncid_dyn,'pfull',varid))
           call check(nf90_inquire_dimension(ncid_dyn,varid,len=lm))
 
+          if (allocated(ak)) deallocate(ak); allocate(ak(LM))
 !
 !
 ! PHY file
@@ -796,7 +797,7 @@ C Getting start time
         maptype=5
         write(6,*) 'maptype is ', maptype
 !need to get DT
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dtp", DT))
+       call check (nf90_get_att(ncid_phys, NF90_GLOBAL,"dtp", DT))
         print*,'DT= ',DT
 
 ! get 3-D variables
@@ -804,13 +805,15 @@ C Getting start time
 c
 	write(6,*) 'DateStr: ', DateStr
 
-
 	! start reading 3d netcdf output
       do L=1,LM
+ 
+       varname='ugrd'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'ugrd',l,DUM3D(1,1,L))
+     & ,varname,l,DUM3D(1,1,L))
+       varname='vgrd'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'vgrd',l,DUM3D2(1,1,L))
+     & ,varname,l,DUM3D2(1,1,L))
        enddo
 
 	write(6,*) 'U: ', DUM3D(20,20,20)
@@ -829,9 +832,10 @@ c
 
 ! W defined over LM, not LM+1??
 
+       varname='dzdt'
       do L=1,LM
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'dzdt',l,DUM3D(1,1,L))
+     & ,varname,l,DUM3D(1,1,L))
       enddo
 
 	write(6,*) 'W: ', DUM3D(20,20,20)
@@ -855,18 +859,29 @@ c
 
 
       do L=1,LM
+       varname='tmp'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'tmp',l,DUM3D(1,1,L))
+     & ,varname,l,DUM3D(1,1,L))
+
+       varname='spfh'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'spfh',l,DUM3D2(1,1,L))
+     & ,varname,l,DUM3D2(1,1,L))
+
+       varname='dpres'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'dpres',l,DUM3D3(1,1,L))
+     & ,varname,l,DUM3D3(1,1,L))
+
+       varname='delz'
        call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,'delz',l,DUM3D4(1,1,L))
+     & ,varname,l,DUM3D4(1,1,L))
       enddo
 
+        varname='pressfc'
        call read_netcdf_2d(ncid_dyn,ifhr,im,jm
-     & ,'pressfc',l,DUMMY(1,1))
+     & ,varname,DUMMY(1,1))
+
+       write(0,*) 'past read_netcdf_2d'
+       write(0,*) 'shape(psfc): ', shape(psfc)
 
 	DO N=1,NUMSTA
          I=IHINDX(N)
@@ -874,6 +889,7 @@ c
          PSFC(N)=DUMMY(I,J)
         ENDDO
 
+       write(0,*) 'past PSFC def'
 	DO L=1,LM
 	DO N=1,NUMSTA
          I=IHINDX(N)
@@ -884,9 +900,15 @@ c
          DZ(N,L) = DUM3D4(I,J,L)
 	ENDDO
 	ENDDO
+       write(0,*) 'past big def block'
+	write(0,*) 'Q(1,1),T_hold(1,1),dpres(1,1),dz(1,1): ', 
+     &              Q(1,1),T_hold(1,1),dpres(1,1),dz(1,1)
 
 
 ! think interface vs. midlayer pressure - this below might not be correct.
+
+	if (allocated(PMID)) deallocate(PMID)
+	allocate(PMID(NUMSTA,LM))
 
 	DO N=1,NUMSTA
          I=IHINDX(N)
@@ -905,11 +927,6 @@ c
 
         if (allocated(PDS)) deallocate(PDS)
         allocate(PDS(NUMSTA))
-
-	if (allocated(PMID)) deallocate(PMID)
-	allocate(PMID(NUMSTA,LM))
-
-
 
 ! Did I mistranslate something wrong here?  the PMID/DPRES business seems weird.
 
@@ -1115,13 +1132,13 @@ c reading SMSTAV
       DO N=1,NUMSTA
         I=IHINDX(N)
         J=JHINDX(N)
-        ACSNOW(N)=DUM(I,J,1)
+        ACSNOW(N)=DUMMY(I,J)
         ACSNOM(N)=-9999.
       ENDDO
 
-      VarName='PB'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
+!      VarName='PB'
+!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
+!     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
 
 
 	write(6,*) 'to PMID DEFINITIONS '
@@ -1154,6 +1171,10 @@ c reading SMSTAV
       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
      &  IM,1,JM,1,IM,JS,JE,1)
 
+      VarName='hgtsfc'
+       call read_netcdf_2d(ncid_dyn,ifhr,im,jm
+     & ,varname,DUMMY(1,1))
+
       DO N=1,NUMSTA
         RES(N)=1.0
         FIS(N)=DUMMY(IHINDX(N),JHINDX(N))*G
@@ -1165,9 +1186,9 @@ c reading SMSTAV
        call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
-      VarName='P_TOP'
-      call getVariable(fileName,DateStr,DataHandle,VarName,PT,
-     &  1,1,1,1,1,1,1,1)
+       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"ak",ak))
+
+       PT=ak(1)
 
 	write(6,*) 'returned P_TOP into PT as : ', PT
 
@@ -1199,25 +1220,24 @@ CC
 CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
 CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
-        write(6,*) 'getting RAINC'
-      VarName='RAINC'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM(:,:,1),
-     &  IM,1,JM,1,IM,JS,JE,1)
-      write(6,*) 'getting RAINNC'
-      VarName='RAINNC'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM(:,:,2),
-     &  IM,1,JM,1,IM,JS,JE,1)
+        write(6,*) 'getting tprcp'
+      VarName='tprcp'
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
-        CUPREC(N)=DUM(IHINDX(N),JHINDX(N),1)*.001
-        ACPREC(N)=( DUM(IHINDX(N),JHINDX(N),1)+
-     &                  DUM(IHINDX(N),JHINDX(N),2) )*.001
+        ACPREC(N)=( DUMMY(IHINDX(N),JHINDX(N)))*0.001
+        CUPREC(N)=0.
       ENDDO
 
 
-      VarName='XLAT'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+
+      write(0,*) 'calling for lat'
+      VarName='lat'
+      call read_netcdf_2d(ncid_phys,ifhr,im,jm,
+     & ,VarName,DUMMY(1,1))
+
+	write(0,*) 'past netcdf_2d call for lat'
 
       do j = 1, jm
         do i = 1, im
@@ -1226,9 +1246,10 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
        end do
 
 
-      VarName='XLONG'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      write(0,*) 'calling for lon'
+      VarName='lon'
+      call read_netcdf_2d(ncid_phys,ifhr,im,jm,
+     & ,VarName,DUMMY)
 
       do j = 1, jm
         do i = 1, im
@@ -1236,42 +1257,43 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
         end do
        end do
 
-      VarName='LU_INDEX'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-      VarName='TMN'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUM(:,:,1),
-     &  IM,1,JM,1,IM,JS,JE,1)
-
 ! XLAND 1 land 2 sea
-      VarName='XLAND'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+      VarName='land'
+      call read_netcdf_2d(ncid_phys,1,im,jm,
+     & ,VarName,DUMMY)
 
       DO N=1,NUMSTA
         I=IHINDX(N)
         J=JHINDX(N)
-        SM(N)=DUMMY(I,J)-1.0
-        SOILTB(N)=DUM(I,J,1) ! NOT 100% sure on this definition
+	if (DUMMY(I,J) .lt. 0.5) then
+            SM(N)=1.
+            SICE(N)=0.
+        elseif (DUMMY(I,J) .ge. 0.5 .and. DUMMY(i,J) .lt. 1.5 ) then
+            SM(N)=0.
+            SICE(N)=0.
+        elseif (DUMMY(I,J) .ge. 1.5) then
+            SM(N)=0.
+            SICE(N)=1.
+	endif
       ENDDO
 
+!   SOILTB??
 
-      VarName='HFX'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='QFX'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
+!      VarName='HFX'
+!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
+!     &  IM,1,JM,1,IM,JS,JE,1)
+!      VarName='QFX'
+!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
+!     &  IM,1,JM,1,IM,JS,JE,1)
+!
+!       VarName='LH'
+!       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
+!     &   IM,1,JM,1,IM,JS,JE,1)
+!      VarName='SNOWC'
+!      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
+!     &  IM,1,JM,1,IM,JS,JE,1)
 
-       VarName='LH'
-       call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &   IM,1,JM,1,IM,JS,JE,1)
-      VarName='SNOWC'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
-        call ext_ncd_ioclose(DataHandle)
+!        call ext_ncd_ioclose(DataHandle)
 
 
 
@@ -1570,19 +1592,14 @@ CC
 CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
 CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
-      VarName='RAINC'
-      call getVariable(fileName,DateStrold,DataHandle,
-     &  VarName,DUM(:,:,1),
-     &  IM,1,JM,1,IM,JS,JE,1)
-      VarName='RAINNC'
-      call getVariable(fileName,DateStrold,DataHandle,
-     &  VarName,DUM(:,:,2),
-     &  IM,1,JM,1,IM,JS,JE,1)
+        write(6,*) 'getting tprcp'
+      VarName='tprcp'
+       call read_netcdf_2d(ncid_phys,ifhr,im,jm
+     & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
-        CUPREC0(N)=DUM(IHINDX(N),JHINDX(N),1)*.001
-        ACPREC0(N)=( DUM(IHINDX(N),JHINDX(N),1)+
-     &                  DUM(IHINDX(N),JHINDX(N),2) )*.001
+        CUPREC0(N)=0.
+        ACPREC0(N)=( DUMMY(IHINDX(N),JHINDX(N)))*0.001
       ENDDO
 
 
@@ -2448,34 +2465,37 @@ C---------------------------------------------------------------------
 
 
       subroutine read_netcdf_3d(ncid,ifhr,im,jm,
-     & spval,VarName,l,buf) 
+     & VarName,L,buf) 
 
       use netcdf
       implicit none
-      character(len=20),intent(in) :: VarName
-      real,intent(in)    :: spval
-      integer,intent(in) :: ncid,ifhr,im,jm,l
+      character(len=31),intent(in) :: VarName
+!      real,intent(in)    :: spval
+      integer,intent(in) :: ncid,ifhr,im,jm,L
       real,intent(out)   :: buf(im,jm)
       integer            :: iret,i,j,jj,varid
       real dummy(im,jm),dummy2(im,jm)
       real,parameter     :: spval_netcdf=-1.e+10
 
+!        write(0,*) 'inside with ncid, trim(varname): ', 
+!     &            ncid, trim(varname)
         iret = nf90_inq_varid(ncid,trim(varname),varid)
         !print*,stat,varname,varid
-        iret = nf90_get_var(ncid,varid,dummy2,start=(/1,1,l,ifhr/), 
+        iret = nf90_get_var(ncid,varid,dummy2,start=(/1,1,L,1/),
      &       count=(/im,jm,1,1/))
         if (iret /= 0) then
-          print*,VarName,l," not found -Assigned missing values"
+          print*,VarName,L," not found ", IRET
+          
           do j=1,jm
             do i=1,im
-              dummy(i,j) = spval
+              dummy(i,j) = -9999.
             end do
           end do
         else
           do j=1,jm
             do i=1,im
               dummy(i,j)=dummy2(i,j)
-              if(dummy(i,j)==spval_netcdf)dummy(i,j)=spval
+              if(dummy(i,j)==spval_netcdf)dummy(i,j)=-9999.
             end do
            end do
         end if
@@ -2487,12 +2507,11 @@ C---------------------------------------------------------------------
 ! --------------------------------
 
       subroutine read_netcdf_2d(ncid,ifhr,im,jm,
-     &  spval,VarName,buf)
+     &  VarName,buf)
 
       use netcdf
       implicit none
-      character(len=20),intent(in) :: VarName
-      real,intent(in)    :: spval
+      character(len=31),intent(in) :: VarName
       integer,intent(in) :: ncid,ifhr,im,jm
       real,intent(out)   :: buf(im,jm)
       integer            :: iret,i,j,jj,varid
@@ -2505,23 +2524,19 @@ C---------------------------------------------------------------------
         iret = nf90_inq_varid(ncid,trim(varname),varid)
         write(0,*) ncid,trim(varname),varid
         iret = nf90_get_var(ncid,varid,dummy)
-        write(0,*) 'past nf90_get_var call with iret: ' , iret
-        write(0,*) 'maxval(dummy): ', maxval(dummy)
+        write(0,*) 'maxval(dummy): ', maxval(dummy), iret
+
         if (iret /= 0) then
           print*,VarName, " not found -Assigned missing values"
           do j=1,jm
             do i=1,im
-              dummy(i,j) = spval
+              dummy(i,j) = -9999.
             end do
           end do
 
         else
 
-          do j=1,jm
-            do i=1,im
-             buf(i,j)=dummy(i,j)
-            enddo
-          enddo
+        buf=dummy
 
         endif
 
