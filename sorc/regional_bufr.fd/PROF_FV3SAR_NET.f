@@ -218,8 +218,8 @@ c	endif
 
        if ( frst ) then
          frst = .false.
-	write(6,*) 'filedyn early in PROF= ', filedyn
-	write(6,*) 'filephys early in PROF= ', filephys
+	write(6,*) 'filedyn early in PROF= ', trim(filedyn)
+	write(6,*) 'filephys early in PROF= ', trim(filephys)
 
          call check( nf90_open(filedyn, NF90_NOWRITE, ncid_dyn) )
          call check( nf90_open(filephys, NF90_NOWRITE, ncid_phys) )
@@ -255,7 +255,6 @@ C Getting start time
       print*,'start yr mo day hr =',iyear,imn,iday,ihrst
 
       ifhr=ITAG
-      print*,' in INITPOST ifhr fileName=',ifhr,fileName
 
           call check( nf90_inq_dimid(ncid_dyn,'grid_xt',varid))
           call check( nf90_inquire_dimension(ncid_dyn,varid,len=im))
@@ -779,8 +778,10 @@ C Getting start time
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
        call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lat",cenlat))
+       TPH0D=cenlat
        cenlat=nint(1000.0*cenlat)
        call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lon",cenlon))
+       TLM0D=cenlon
        cenlon=nint(1000.0*cenlon)
 
 
@@ -1166,11 +1167,6 @@ c reading SMSTAV
 	ENDDO
 	ENDDO
 
-
-      VarName='HGT'
-      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
-     &  IM,1,JM,1,IM,JS,JE,1)
-
       VarName='hgtsfc'
        call read_netcdf_2d(ncid_dyn,ifhr,im,jm
      & ,varname,DUMMY(1,1))
@@ -1235,7 +1231,7 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
       write(0,*) 'calling for lat'
       VarName='lat'
       call read_netcdf_2d(ncid_phys,ifhr,im,jm,
-     & ,VarName,DUMMY(1,1))
+     & VarName,DUMMY(1,1))
 
 	write(0,*) 'past netcdf_2d call for lat'
 
@@ -1249,7 +1245,7 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
       write(0,*) 'calling for lon'
       VarName='lon'
       call read_netcdf_2d(ncid_phys,ifhr,im,jm,
-     & ,VarName,DUMMY)
+     & VarName,DUMMY)
 
       do j = 1, jm
         do i = 1, im
@@ -1260,7 +1256,7 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 ! XLAND 1 land 2 sea
       VarName='land'
       call read_netcdf_2d(ncid_phys,1,im,jm,
-     & ,VarName,DUMMY)
+     & VarName,DUMMY)
 
       DO N=1,NUMSTA
         I=IHINDX(N)
@@ -1295,6 +1291,8 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
 !        call ext_ncd_ioclose(DataHandle)
 
+       call check(nf90_close(ncid_dyn))
+       call check(nf90_close(ncid_phys))
 
 
 !!!!!!!!!!!!!!!!! END INSERT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
@@ -1335,50 +1333,50 @@ C
 C       Define a GDS, then use GDSWIZ to find N.N. point
 
 
-        GDS=-1
-        if(maptype .eq. 1)THEN  ! Lambert conformal
-          GDS(1)=3
-          GDS(2)=im
-          GDS(3)=jm
-          GDS(4)=int(GDLAT(1,1)*1000)
-          GDS(5)=int(GDLON(1,1)*1000)
-          GDS(6)=8
-          GDS(7)=CENLON
-          GDS(8)=DXVAL
-          GDS(9)=DYVAL
-          GDS(10)=0
-          GDS(11)=64
-          GDS(12)=TRUELAT2
-          GDS(13)=TRUELAT1
-        ELSE IF(MAPTYPE .EQ. 2)THEN  !Polar stereographic
-          GDS(1)=5
-          GDS(2)=im
-          GDS(3)=jm
-          GDS(4)=int(GDLAT(1,1)*1000)
-          GDS(5)=int(GDLON(1,1)*1000)
-          GDS(6)=8
-          GDS(7)=CENLON
-          GDS(8)=DXVAL
-          GDS(9)=DYVAL
-          GDS(10)=0
-          GDS(11)=64
-        ELSE IF(MAPTYPE .EQ. 3)THEN  !Mercator
-          GDS(1)=1
-          GDS(2)=im
-          GDS(3)=jm
-          GDS(4)=int(GDLAT(1,1)*1000)
-          GDS(5)=int(GDLON(1,1)*1000)
-          GDS(6)=8
-          GDS(7)=int(GDLAT(IM,JM)*1000)
-          GDS(8)=int(GDLON(IM,JM)*1000)
-          GDS(9)=TRUELAT1
-          GDS(10)=0
-          GDS(11)=64
-          GDS(12)=DXVAL
-          GDS(13)=DYVAL
-        END IF
-
-	write(6,*) 'GDS= ', (GDS(NN),NN=1,13)
+!        GDS=-1
+!        if(maptype .eq. 1)THEN  ! Lambert conformal
+!          GDS(1)=3
+!          GDS(2)=im
+!          GDS(3)=jm
+!          GDS(4)=int(GDLAT(1,1)*1000)
+!          GDS(5)=int(GDLON(1,1)*1000)
+!          GDS(6)=8
+!          GDS(7)=CENLON
+!          GDS(8)=DXVAL
+!          GDS(9)=DYVAL
+!          GDS(10)=0
+!          GDS(11)=64
+!          GDS(12)=TRUELAT2
+!          GDS(13)=TRUELAT1
+!        ELSE IF(MAPTYPE .EQ. 2)THEN  !Polar stereographic
+!          GDS(1)=5
+!          GDS(2)=im
+!          GDS(3)=jm
+!          GDS(4)=int(GDLAT(1,1)*1000)
+!          GDS(5)=int(GDLON(1,1)*1000)
+!          GDS(6)=8
+!          GDS(7)=CENLON
+!          GDS(8)=DXVAL
+!          GDS(9)=DYVAL
+!          GDS(10)=0
+!          GDS(11)=64
+!        ELSE IF(MAPTYPE .EQ. 3)THEN  !Mercator
+!          GDS(1)=1
+!          GDS(2)=im
+!          GDS(3)=jm
+!          GDS(4)=int(GDLAT(1,1)*1000)
+!          GDS(5)=int(GDLON(1,1)*1000)
+!          GDS(6)=8
+!          GDS(7)=int(GDLAT(IM,JM)*1000)
+!          GDS(8)=int(GDLON(IM,JM)*1000)
+!          GDS(9)=TRUELAT1
+!          GDS(10)=0
+!          GDS(11)=64
+!          GDS(12)=DXVAL
+!          GDS(13)=DYVAL
+!        END IF
+!
+!	write(6,*) 'GDS= ', (GDS(NN),NN=1,13)
 
 
 C
@@ -1392,16 +1390,16 @@ C
 	CROT=0.	
 	SROT=0.
 
-	DO N=1,NUMSTA
-	I=IHINDX(N)
-	J=JHINDX(N)
-	RLATX=GDLAT(I,J)
-	RLONX=GDLON(I,J)
-	
-        CALL GDSWIZ(GDS,-1,1,-9999.,xout,yout,
-     &                  RLONX,RLATX,NRET,1,CROT(N),SROT(N))
-
-	ENDDO
+!	DO N=1,NUMSTA
+!	I=IHINDX(N)
+!	J=JHINDX(N)
+!	RLATX=GDLAT(I,J)
+!	RLONX=GDLON(I,J)
+!	
+!        CALL GDSWIZ(GDS,-1,1,-9999.,xout,yout,
+!     &                  RLONX,RLATX,NRET,1,CROT(N),SROT(N))
+!
+!	ENDDO
 
       NTSPH=INT(3600./DT+0.50)
 
@@ -1492,20 +1490,22 @@ C***
 
 
 !! this needs to change significantly
+	write(0,*) 'ITAG0: ', ITAG0
 
         RINC(5)=0.
         write(fhroldchar,301) ITAG0
+        write(0,*) 'fhroldchar: ', fhroldchar
  301  format(i2.2)
 
-	write(6,*) 'filedyn later in PROF: ', filedyn, '_END'
         len=index(filedyn,' ')-1
 	write(6,*) 'LEN= ', LEN
-        filedyn(len-5:len-4)=fhroldchar
+        filedyn(len-4:len-3)=fhroldchar
+	write(6,*) 'filedyn older in PROF: ', trim(filedyn), '_END'
 
-	write(6,*) 'filephys later in PROF: ', filephys, '_END'
         len=index(filephys,' ')-1
 	write(6,*) 'LEN= ', LEN
-        filephys(len-5:len-4)=fhroldchar
+        filephys(len-4:len-3)=fhroldchar
+	write(6,*) 'filephys older in PROF: ', trim(filephys), '_END'
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1541,7 +1541,6 @@ C Getting start time
         ihrst=IDATE(5)
 
 
-
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
@@ -1565,7 +1564,7 @@ C Getting start time
         maptype=5
         write(6,*) 'maptype is ', maptype
 !need to get DT
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dtp", DT))
+       call check (nf90_get_att(ncid_phys, NF90_GLOBAL,"dtp", DT))
         print*,'DT= ',DT
 
 ! get 3-D variables
@@ -1949,8 +1948,8 @@ C
 C***  FOR ROTATION OF WINDS FROM E-GRID TO GEODETIC ORIENTATION
 C***  WE NEED THE TWO QUANTITIES BELOW.
 C
-c      SINPH0=SIN(TPH0D*DTR)
-c      COSPH0=COS(TPH0D*DTR)
+      SINPH0=SIN(TPH0D*DTR)
+      COSPH0=COS(TPH0D*DTR)
 C
 C***  INITIAL CALCULATIONS/PREPARATIONS.  WE LOAD SEVERAL
 C***  ARRAYS WITH PROFILE VARIABLES.
@@ -2128,17 +2127,17 @@ C
 C
 C***  WIND ROTATION SINES AND COSINES
 C
-c     DLM    = STNLON(N)+TLM0D*DTR
-c     XX     = COSPH0*COS(STNLAT(N))*COS(DLM)
-c    1        +SINPH0*SIN(STNLAT(N))
-c     YY     = -COS(STNLAT(N))*SIN(DLM)
-c     TLON   = ATAN(YY/XX)
-c     ALPHA  = ASIN(SINPH0*SIN(TLON)/COS(STNLAT(N)))
-C      SINALP = SIN(ALPHA)
-C      COSALP = COS(ALPHA)
+      DLM    = STNLON(N)+TLM0D*DTR
+      XX     = COSPH0*COS(STNLAT(N))*COS(DLM)
+     1        +SINPH0*SIN(STNLAT(N))
+      YY     = -COS(STNLAT(N))*SIN(DLM)
+      TLON   = ATAN(YY/XX)
+      ALPHA  = ASIN(SINPH0*SIN(TLON)/COS(STNLAT(N)))
+      SINALP = SIN(ALPHA)
+      COSALP = COS(ALPHA)
 
-      SINALP = SROT(N)
-      COSALP = CROT(N)
+C      SINALP = SROT(N)
+C      COSALP = CROT(N)
 C
 C------------------------------------------------------------------
 C***  EXTRACT PRESSURE AND TEMPERATURE PROFILES.
@@ -2241,9 +2240,9 @@ C
       STAPRX=PRODAT(NWORD13+7)-STATPR(N)
       STACRX=PRODAT(NWORD13+8)-STACPR(N)
 
-!	if (STAPRX .gt. 0) then
-!	write(6,*) '1hr precip: ',  N,STAPRX
-!	endif
+	if (STAPRX .gt. 0) then
+	write(6,*) '1hr precip: ',  N,STAPRX
+	endif
 C
 C***  ROTATE WINDS
 C
@@ -2452,9 +2451,8 @@ C---------------------------------------------------------------------
       subroutine check(status)
       integer, intent ( in) :: status
 
-       write(0,*) 'in check...status, nf90_noerr: ', status, nf90_noerr
        if(status /= nf90_noerr) then
-         print*, 'trouble'
+         print*, 'trouble... status: ', status
          stop "Stopped"
        end if
       end subroutine check
