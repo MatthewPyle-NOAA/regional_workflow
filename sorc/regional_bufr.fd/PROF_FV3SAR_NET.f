@@ -43,7 +43,7 @@ C
       INCLUDE "parmsoil"
 C-----------------------------------------------------------------------
                              P A R A M E T E R
-     & (NSTAT=1500,LCL1ML=13,LCL1SL=50)
+     & (NSTAT=1500,LCL1ML=15,LCL1SL=52)
 !       NWORDM=(LCL1ML+1)*LM+2*LCL1SL
 !     &, LRECPR=4*(8+9+LCL1ML*LM+LCL1SL))
 
@@ -63,7 +63,8 @@ C------------------------------------------------------------------------
                              P A R A M E T E R
      & (A2=17.2693882,A3=273.16,A4=35.86,PQ0=379.90516,DTR=1.74532925E-2
      &, G=9.81,GI=1./G,RD=287.04,CP=1004.6,CAPA=RD/CP,RHCRIT=0.9999
-     &, con_rd=287.05,con_rv=461.5,con_fvirt=con_rv/con_rd-1.)
+     &, con_rd=287.05,con_rv=461.5,con_fvirt=con_rv/con_rd-1.
+     &, spval=1.e+10)
 
 
 C------------------------------------------------------------------------
@@ -111,7 +112,7 @@ C
      &,                   OMGALF(:,:),CWM(:,:),TRAIN(:,:),TCUCN(:,:)
      &,                   RSWTT(:,:),RLWTT(:,:),CCR(:,:),RTOP(:,:)
      &,                   HTM(:,:),OMGA(:,:),p_hold(:,:),t_hold(:,:)
-     &,                   PINT(:,:),UL(:),DPRES(:,:),DZ(:,:)
+     &,                   PINT(:,:),UL(:),DPRES(:,:),DZ(:,:),CLDFRA(:,:)
 C  
 
       REAL, ALLOCATABLE:: DHCNVC(:,:),DHRAIN(:,:),STADHC(:),STADHR(:),
@@ -154,7 +155,7 @@ C	new stuff
       character(len=31) :: VarName,varin
 	character(len=90) :: fileName,filedyn,filephys
 	character(len=90) :: fileNamehold
-      integer :: Status, DataHandle
+      integer ::  DataHandle
       character(len=19):: startdate,datestr,datestrold
       character(len=2):: fhroldchar
 
@@ -224,19 +225,13 @@ c	endif
          call check( nf90_open(filedyn, NF90_NOWRITE, ncid_dyn) )
          call check( nf90_open(filephys, NF90_NOWRITE, ncid_phys) )
 
-         print*,'CALLed open for read', Status
-       else
-           Status = 0
-       endif
-       if ( Status /= 0 ) then
-         print*,'error opening ',filedyn,filephys, ' Status = ', Status ; stop
        endif
 
 C Getting start time
 
         varname='time'
         call check( nf90_inq_varid(ncid_dyn,trim(varname),varid))
-        write(0,*) ncid,trim(varname),varid
+        write(0,*) ncid_dyn,trim(varname),varid
         call check( nf90_get_var(ncid_dyn,varid,ihr))
 
         call check( nf_get_att_text(ncid_dyn,varid,'units',varin))
@@ -719,6 +714,7 @@ C Getting start time
 	ALLOCATE(RSWTT(NUMSTA,LM))
 	ALLOCATE(RLWTT(NUMSTA,LM))
 	ALLOCATE(CCR(NUMSTA,LM))
+	ALLOCATE(CLDFRA(NUMSTA,LM))
 	ALLOCATE(RTOP(NUMSTA,LM))
 	ALLOCATE(HTM(NUMSTA,LM))
 	ALLOCATE(OMGA(NUMSTA,LM))
@@ -890,7 +886,8 @@ c
          PSFC(N)=DUMMY(I,J)
         ENDDO
 
-       write(0,*) 'past PSFC def'
+       write(0,*) 'past PSFC def with min/max: ', 
+     &           minval(psfc),maxval(psfc)
 	DO L=1,LM
 	DO N=1,NUMSTA
          I=IHINDX(N)
@@ -917,6 +914,15 @@ c
          PMID(N,LM)=PSFC(N)-0.5*DPRES(N,LM)
 	do L=LM-1,1,-1
          PMID(N,L)=PMID(N,L+1)-(DPRES(N,L))
+	if (PMID(N,L) .eq. -9999.) then
+	  write(0,*) 'bad at N, L: ', N, L
+          write(0,*) 'PMID(N,L+1),DPRES(N,L): ', PMID(N,L+1),DPRES(N,L)
+	endif
+
+	if (N .eq. 1) then
+	 write(0,*) 'L, DPRES(N,L), PMID(N,L): ', L, DPRES(N,L), 
+     &                                          PMID(N,L)
+        endif
         enddo
         ENDDO
 
@@ -933,13 +939,14 @@ c
 
       do L=1,LM
 	DO N=1,NUMSTA
-           if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. 
-     &     Q(N,L)/=spval .and. DZ(N,L)/=spval)then
-            PMID(N,L)=con_rd*DPRES(N,L)* 
-     &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
-           else
-            PMID(N,L)=spval
-           end if
+!tst           if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. 
+!     &     Q(N,L)/=spval .and. DZ(N,L)/=spval)then
+!            PMID(N,L)=con_rd*DPRES(N,L)* 
+!     &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
+!           else
+!            PMID(N,L)=spval
+!
+!tst           end if
 !! dong add missing value
            if (w(N,L) < spval) then
             omga(N,L)=(-1.)*w(N,L)*DPRES(N,L)/DZ(N,L)
@@ -1142,12 +1149,11 @@ c reading SMSTAV
 !     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
 
 
-	write(6,*) 'to PMID DEFINITIONS '
 	DO L=1,LM
 	DO N=1,NUMSTA
          I=IHINDX(N)
          J=JHINDX(N)
-	 PMID(N,L)=p_hold(N,L)+DUM3D(I,J,L)
+!?	 PMID(N,L)=p_hold(N,L)+DUM3D(I,J,L)
          T(N,L)=t_hold(N,L)
  	 OMGA(N,L)=-WH(N,L)*PMID(N,L)*G/
      &              (RD*T(N,L)*(1+.608*Q(N,L)))
@@ -1166,6 +1172,12 @@ c reading SMSTAV
 
 	ENDDO
 	ENDDO
+
+	do L=53,54
+	write(0,*) 'L, PMID(1,L),OMGA(1,L): ', L, PMID(1,L),OMGA(1,L)
+        enddo
+		
+ 	
 
       VarName='hgtsfc'
        call read_netcdf_2d(ncid_dyn,ifhr,im,jm
@@ -1517,16 +1529,13 @@ C***
          call check( nf90_open(filedyn, NF90_NOWRITE, ncid_dyn) )
          call check( nf90_open(filephys, NF90_NOWRITE, ncid_phys) )
 
-       if ( Status /= 0 ) then
-         print*,'error opening ',fileName, ' Status = ', Status ; stop
-       endif
 
 
 C Getting start time
 
         varname='time'
         iret = nf90_inq_varid(ncid_dyn,trim(varname),varid)
-        write(0,*) ncid,trim(varname),varid
+        write(0,*) ncid_dyn,trim(varname),varid
         iret = nf90_get_var(ncid_dyn,varid,ihr)
 
         iret = nf_get_att_text(ncid_dyn,varid,'units',varin)
@@ -1613,14 +1622,16 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
 
 C
-          DO N=1,NUMSTA
+        DO L=1,LM
+        DO N=1,NUMSTA
 c           TRAIN0(N,L)=DUM(IHINDX(N),JHINDX(N),1)
 c           TCUCN0(N,L)=DUM(IHINDX(N),JHINDX(N),2)
-	TRAIN0(N,L)=-9999.
-	TCUCN0(N,L)=-9999.
+	TRAIN0(L,N)=-9999.
+	TCUCN0(L,N)=-9999.
           ENDDO
 C
 c       ENDDO      
+        ENDDO
 C
 
 !!!
@@ -1676,6 +1687,7 @@ C-----------------------------------------------------------------------
       DO N=1,NUMSTA
         IW(N,1)=-9999
         CCR(N,1)=-9999.
+        CLDFRA(N,1)=-9999.
 !        PDSL1(N)=PD(IHINDX(N),JHINDX(N))*RES(N)
         PDSL1(N)=pint_part(N)*RES(N)
       ENDDO
@@ -1697,6 +1709,7 @@ C
       DO 210 N=1,NUMSTA
 	IW(N,L)=-9999
         CCR(N,L)=-9999.
+        CLDFRA(N,L)=-9999.
 
 !      LML=LM-LMH(IHINDX(N),JHINDX(N))
 !	write(6,*) 'LML, IHINDX,JHINDX,LMH: ', IHINDX(N), 
@@ -1841,7 +1854,7 @@ c     TIME=(NTSD-1)*DT
 c     RESET0=TIME-(NTSD/NPREC)*NPREC*DT
 c     RESET1=(NPHS-1)*DT+3600.
 
-	TIME=IFCST
+!	TIME=IFCST
 !	write(6,*) 'here (3)'
 
 	RESET0=25.  ! designed to prevent resets.  Reconsider later
@@ -1933,12 +1946,12 @@ c           DHRAIN(L,N)=0.
 c         ENDDO
 c       ENDDO
 c     ELSE
-c       DO N=1,NUMSTA
-c         DO L=1,LM
-            DHCNVC(L,N)=TCUCN0(N,L)
-            DHRAIN(L,N)=TRAIN0(N,L)
-c         ENDDO
-c       ENDDO
+       DO N=1,NUMSTA
+         DO L=1,LM
+            DHCNVC(L,N)=TCUCN0(L,N)
+            DHRAIN(L,N)=TRAIN0(L,N)
+         ENDDO
+       ENDDO
 c     ENDIF
  
 C------------------------------------------------------------------
@@ -2037,8 +2050,8 @@ C***  VARIOUS PHYSICS ROUTINES HAVE BEEN
 C***  CALLED SINCE LAST OUTPUT OF PROFILER DATA.  NECESSARY FOR
 C***  CORRECT AVERAGING OF VARIABLES.
 C
-	write(6,*) 'APHTIM, ACUTIM, ARATIM were: ', 
-     &                APHTIM, ACUTIM, ARATIM
+C	write(6,*) 'APHTIM, ACUTIM, ARATIM were: ', 
+C     &                APHTIM, ACUTIM, ARATIM
       
 	APHTIM=0.
 	ACUTIM=0.
@@ -2110,15 +2123,13 @@ C
       NWORD13  = 13*LMHK
       ISTAT    = IDSTN(N)
       CISTAT   = CIDSTN_SAVE(N)
-!	write(6,*) 'CISTAT: ', CISTAT
-C
       FPACK(1) = STNLAT(N)/DTR
 !mp      FPACK(2) = -STNLON(N)/DTR
       FPACK(2) = STNLON(N)/DTR
       IF(FPACK(2).LT.-180.)FPACK(2)=FPACK(2)+360.
       FPACK(3) = FIS(N)*GI
       FPACK(4) = FLOAT(LMHK)
-      FPACK(5) = LCL1ML
+      FPACK(5) = LCL1ML -2 !20080708: B Zhou don't store 13 and 14th sounding
       FPACK(6) = LCL1SL
       FPACK(7) = 9+FPACK(5)*FPACK(4)+FPACK(6)
       FPACK(8) = 999.
@@ -2150,10 +2161,9 @@ C------------------------------------------------------------------
 C
       DO LV=1,LMHK
         LVL=LMHK-LV+1
-!        PRODAT(LVL)      = PDSL1(N)*AETA(LV)+PT
         PRODAT(LVL)      = PMID(N,LV)
-	if (mod(LV,15) .eq. 0 .and. mod(N,50) .eq. 0) then
-!	write(6,*) 'PRODAT definition, PMID: ', N,L,PMID(N,LV)
+	if (N .eq. 1) then
+	write(6,*) 'PRODAT definition, PMID: ', N,LV,PMID(N,LV)
 	endif
 	
 
@@ -2192,7 +2202,7 @@ C
         PRODAT(NWORD8+LVL) = TRAIN(N,LV)
         PRODAT(NWORD9+LVL) = RSWTT(N,LV)
         PRODAT(NWORD10+LVL)= RLWTT(N,LV)
-        PRODAT(NWORD11+LVL)= CCR(N,LV)*100.
+        PRODAT(NWORD11+LVL)= CLDFRA(N,LV)*100.
 
 C
         IF(LV.EQ.1)THEN
@@ -2405,7 +2415,7 @@ C---------------------------------------------------------------------
  1000 CONTINUE
       CLOSE(LCLAS1)
 	DEALLOCATE(T,Q,U,V,Q2,OMGALF,CWM,TRAIN,TCUCN)
-	DEALLOCATE(RSWTT,RLWTT,CCR,RTOP,HTM,OMGA,p_hold)
+	DEALLOCATE(RSWTT,RLWTT,CCR,CLDFRA,RTOP,HTM,OMGA,p_hold)
 	DEALLOCATE(t_hold,PINT)
 
        DEALLOCATE(DHCNVC,DHRAIN,STADHC,STADHR,TCUCN0,TRAIN0)
@@ -2449,6 +2459,7 @@ C---------------------------------------------------------------------
       END
 
       subroutine check(status)
+      use netcdf
       integer, intent ( in) :: status
 
        if(status /= nf90_noerr) then
