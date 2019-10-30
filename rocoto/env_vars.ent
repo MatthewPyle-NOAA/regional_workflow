@@ -5,6 +5,9 @@
    <name>HOMEfv3</name><value>&HOMEfv3;</value>
  </envar>
  <envar>
+   <name>UTILush</name><value>&HOMEfv3;/util/ush</value>
+ </envar>
+ <envar>
    <name>USER</name><value>&USER;</value>
  </envar>
  <envar>

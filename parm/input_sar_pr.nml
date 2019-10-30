@@ -41,13 +41,13 @@
        npx      = 577
        npy      = 433
        ntiles   = 1,
-       npz    = 64
+       npz    = 60
 !       grid_type = -1
        make_nh = .T.
        fv_debug = .F.
        range_warn = .F.
        reset_eta = .F.
-       n_sponge = 24
+       n_sponge = 20
        nudge_qv = .F.
        tau = 5.
        rf_cutoff = 20.e2
@@ -79,7 +79,7 @@
        ke_bg = 0.
        do_vort_damp = .true.
        external_ic = .T.
-       external_eta = .T.
+       external_eta = .F.
        gfs_phil = .false.
        nggps_ic = .T.
        mountain = .F.

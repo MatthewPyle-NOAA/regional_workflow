@@ -34,7 +34,7 @@ CPPFLAGS =
 OPTS     = -O2 -xAVX  -convert big_endian -assume noold_ldout_format
 FREE     = -FR
 TRAPS    = 
-DEBUG    = -g # -traceback -fpe0 -ftrapuv # -check all 
+DEBUG    = -g -traceback #  -fpe0 -ftrapuv  -check all 
 
  WRFLIB    = ./wrflibs/libwrflib.a  \
              ./wrflibs/pack_utils.o  \
