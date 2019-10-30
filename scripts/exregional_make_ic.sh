@@ -20,7 +20,14 @@ export TILE_NUM=7
 
 if [ $tmmark = tm00 ] ; then
   # input data is FV3GFS (ictype is 'pfv3gfs')
-  export ANLDIR=$INIDIR
+#tst  export ANLDIR=$INIDIR
+
+   python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.atm --exact=yes --gfs_nemsio=yes --filetype=atm
+
+   ANLDIR=`head -n1 tmp.atm`
+   ATMFILE=`tail -n1 tmp.atm`
+   python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.sfc --exact=yes --gfs_nemsio=yes --filetype=sfc
+   SFCFILE=`tail -n1 tmp.sfc`
 fi
 if [ $tmmark = tm12 ] ; then
   # input data is FV3GFS (ictype is 'pfv3gfs')
@@ -57,8 +64,8 @@ cat <<EOF >fort.41
  orog_dir_input_grid="NULL"
  orog_files_input_grid="NULL"
  data_dir_input_grid="${ANLDIR}"
- atm_files_input_grid="gfs.t${cyc}z.atmanl.nemsio"
- sfc_files_input_grid="gfs.t${cyc}z.sfcanl.nemsio"
+ atm_files_input_grid="${ATMFILE}"
+ sfc_files_input_grid="${SFCFILE}"
  cycle_mon=$month
  cycle_day=$day
  cycle_hour=$cyc

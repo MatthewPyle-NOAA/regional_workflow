@@ -61,7 +61,8 @@ C------------------------------------------------------------------------
                              P A R A M E T E R
      & (ITB=76,JTB=134)
                              P A R A M E T E R
-     & (A2=17.2693882,A3=273.16,A4=35.86,PQ0=379.90516,DTR=1.74532925E-2
+     & (A2=17.2693882,A3=273.16,A4=35.86,PQ0=379.90516
+     &, DTR=1.74532925E-2
      &, G=9.81,GI=1./G,RD=287.04,CP=1004.6,CAPA=RD/CP,RHCRIT=0.9999
      &, con_rd=287.05,con_rv=461.5,con_fvirt=con_rv/con_rd-1.
      &, spval=1.e+10)
@@ -1261,9 +1262,18 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
       do j = 1, jm
         do i = 1, im
-            GDLON ( i, j ) = DUMMY ( i, j )
+	    if (DUMMY(I,J) .gt. 180) then
+            GDLON ( i, j ) = DUMMY ( i, j ) - 360.0
+            elseif (DUMMY(I,J) .lt. -180.) then
+            GDLON ( i, j ) = DUMMY ( i, j ) + 360.0
+            else
+            GDLON ( i, j ) = DUMMY ( i, j ) 
+            endif
         end do
        end do
+
+	write(0,*) 'min/max of gdlon: ', 
+     &   minval(gdlon),maxval(gdlon)
 
 ! XLAND 1 land 2 sea
       VarName='land'
@@ -2124,10 +2134,11 @@ C
       ISTAT    = IDSTN(N)
       CISTAT   = CIDSTN_SAVE(N)
       FPACK(1) = STNLAT(N)/DTR
-!mp      FPACK(2) = -STNLON(N)/DTR
-      FPACK(2) = STNLON(N)/DTR
+      FPACK(2) = -STNLON(N)/DTR
       IF(FPACK(2).LT.-180.)FPACK(2)=FPACK(2)+360.
+      IF(FPACK(2).GT. 180.)FPACK(2)=FPACK(2)-360.
       FPACK(3) = FIS(N)*GI
+      write(0,*) 'FPACK(2): ', FPACK(2)
       FPACK(4) = FLOAT(LMHK)
       FPACK(5) = LCL1ML -2 !20080708: B Zhou don't store 13 and 14th sounding
       FPACK(6) = LCL1SL

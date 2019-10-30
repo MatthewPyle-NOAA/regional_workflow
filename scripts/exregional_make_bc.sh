@@ -68,6 +68,14 @@ cd ${hour_name}
 
 rm ./*
 
+export SDATE=`$NDATE ${hour_name} $CDATE`
+python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $SDATE -t 72 -o tmp.atm --exact=yes --gfs_nemsio=yes --filetype=atm
+ATMDIR=`head -n1 tmp.atm`
+ATMFILE=`tail -n1 tmp.atm`
+
+python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.sfc --exact=yes --gfs_nemsio=yes --filetype=sfc
+SFCFILE=`tail -n1 tmp.sfc`
+
 echo "&config" > fort.41
 echo ' mosaic_file_target_grid="_FIXsar_/_CASE__mosaic.nc"' >> fort.41
 echo ' fix_dir_target_grid="_FIXsar_"' >> fort.41
@@ -77,9 +85,9 @@ echo ' vcoord_file_target_grid="_FIXam_/global_hyblev.l_LEVS_.txt"' >> fort.41
 echo ' mosaic_file_input_grid="NULL"' >> fort.41
 echo ' orog_dir_input_grid="NULL"' >> fort.41
 echo ' orog_files_input_grid="NULL"' >> fort.41
-echo ' data_dir_input_grid="_INIDIR_"' >> fort.41
-echo ' atm_files_input_grid="gfs.t_cyc_z.atmf_hour_name_.nemsio"' >> fort.41
-echo ' sfc_files_input_grid="gfs.t_cyc_z.sfcanl.nemsio"' >> fort.41
+echo ' data_dir_input_grid="_ATMDIR_"' >> fort.41
+echo ' atm_files_input_grid="_ATMFILE_"' >> fort.41
+echo ' sfc_files_input_grid="_SFCFILE_"' >> fort.41
 echo " cycle_mon=$month" >> fort.41
 echo " cycle_day=$day" >> fort.41
 echo " cycle_hour=$cyc" >> fort.41
@@ -93,18 +101,17 @@ echo " regional=${REGIONAL}" >> fort.41
 echo " halo_bndy=${HALO}" >> fort.41
 echo "/" >>  fort.41
 
-
 cat fort.41 | sed s:_FIXsar_:${FIXsar}:g \
             | sed s:_CASE_:${CASE}:g \
             | sed s:_FIXam_:${FIXam}:g  \
             | sed s:_LEVS_:${LEVS}:g \
-            | sed s:_INIDIR_:${INIDIR}:g \
-            | sed s:_cyc_:${cyc}:g \
-            | sed s:_hour_name_:${hour_name}:g > fort.41.new
+            | sed s:_ATMDIR_:${ATMDIR}:g \
+            | sed s:_ATMFILE_:${ATMFILE}:g \
+            | sed s:_SFCFILE_:${SFCFILE}:g \
+            | sed s:_INIDIR_:${INIDIR}:g > fort.41.new
 
 mv fort.41 fort.41.old
 mv fort.41.new fort.41
-            
 
 cd ../
 
