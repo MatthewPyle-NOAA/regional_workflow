@@ -250,7 +250,7 @@ C Getting start time
  15   format(i4,1x,i2,1x,i2,1x,i2)
       print*,'start yr mo day hr =',iyear,imn,iday,ihrst
 
-      ifhr=ITAG
+      IFHR=ITAG
 
           call check( nf90_inq_dimid(ncid_dyn,'grid_xt',varid))
           call check( nf90_inquire_dimension(ncid_dyn,varid,len=im))
@@ -920,10 +920,11 @@ c
           write(0,*) 'PMID(N,L+1),DPRES(N,L): ', PMID(N,L+1),DPRES(N,L)
 	endif
 
-	if (N .eq. 1) then
-	 write(0,*) 'L, DPRES(N,L), PMID(N,L): ', L, DPRES(N,L), 
-     &                                          PMID(N,L)
-        endif
+!	if (N .eq. 1) then
+!	 write(0,*) 'L, DPRES(N,L), PMID(N,L): ', L, DPRES(N,L), 
+!     &                                          PMID(N,L)
+!        endif
+
         enddo
         ENDDO
 
@@ -1229,15 +1230,19 @@ CC
 CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
 CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
-        write(6,*) 'getting tprcp'
-      VarName='tprcp'
+        write(6,*) 'getting prate_ave'
+      VarName='prate_ave'
        call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
-        ACPREC(N)=( DUMMY(IHINDX(N),JHINDX(N)))*0.001
+        I=IHINDX(N)
+        J=JHINDX(N)
+        ACPREC(N)=DUMMY(I,J)*3600.*float(ITAG)*0.001
         CUPREC(N)=0.
+	write(0,*) 'N, ACPREC(N): ', N, ACPREC(N)
       ENDDO
+!	write(0,*) 'maxval(ACPREC): ', maxval(ACPREC)
 
 
 
@@ -1509,6 +1514,8 @@ C***  GENERATE THE NAME OF THE PRECEDING RESTRT FILE
 C***
         ITAG0=ITAG-INCR
 
+	IFHR=ITAG0
+	write(6,*) 'older hour IFHR: ', IFHR
 
 
 !! this needs to change significantly
@@ -1612,13 +1619,18 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
         write(6,*) 'getting tprcp'
       VarName='tprcp'
+      VarName='prate_ave'
        call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
       DO N=1,NUMSTA
+        I=IHINDX(N)
+        J=JHINDX(N)
+        ACPREC0(N)=DUMMY(I,J)*3600.*float(ITAG0)*0.001
         CUPREC0(N)=0.
-        ACPREC0(N)=( DUMMY(IHINDX(N),JHINDX(N)))*0.001
+	write(0,*) 'N, ACPREC0(N): ', N, ACPREC0(N)
       ENDDO
+!	write(0,*) 'maxval(ACPREC0): ', maxval(ACPREC0)
 
 
 	write(6,*) 'done reading old file'
@@ -1884,10 +1896,10 @@ c      ELSE
 !	write(6,*) 'set STATPR'
         DO N=1,NUMSTA
           STATPR(N)=ACPREC0(N)*1.E3
-	if (ACPREC0(N) .gt. 0) then
+!	if (ACPREC0(N) .gt. 0) then
 !	write(6,*) 'N,ACPREC0(N),STATPR(N): ', N,
 !     &			ACPREC0(N),STATPR(N)
-	endif
+!	endif
           STACPR(N)=CUPREC0(N)*1.E3
           STASNM(N)=ACSNOM0(N)*1.E3
           STASNO(N)=ACSNOW0(N)*1.E3
@@ -2173,9 +2185,9 @@ C
       DO LV=1,LMHK
         LVL=LMHK-LV+1
         PRODAT(LVL)      = PMID(N,LV)
-	if (N .eq. 1) then
-	write(6,*) 'PRODAT definition, PMID: ', N,LV,PMID(N,LV)
-	endif
+!	if (N .eq. 1) then
+!	write(6,*) 'PRODAT definition, PMID: ', N,LV,PMID(N,LV)
+!	endif
 	
 
         PRODAT(LMHK+LVL) = T(N,LV)
