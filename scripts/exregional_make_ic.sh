@@ -22,12 +22,25 @@ if [ $tmmark = tm00 ] ; then
   # input data is FV3GFS (ictype is 'pfv3gfs')
 #tst  export ANLDIR=$INIDIR
 
+   looplim=10
+   loop=1
+   ANLDIR=no
+   SFCDIR=yes
+   while [ $ANLDIR != $SFCDIR -a $loop -lt $looplim ]
+   do
    python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.atm --exact=yes --gfs_nemsio=yes --filetype=atm
-
    ANLDIR=`head -n1 tmp.atm`
    ATMFILE=`tail -n1 tmp.atm`
+
    python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.sfc --exact=yes --gfs_nemsio=yes --filetype=sfc
+   SFCDIR=`head -n1 tmp.sfc`
    SFCFILE=`tail -n1 tmp.sfc`
+
+   echo ANLDIR is $ANLDIR
+   echo SFCDIR is $SFCDIR
+   sleep 60
+   let loop=loop+1
+   done
 fi
 if [ $tmmark = tm12 ] ; then
   # input data is FV3GFS (ictype is 'pfv3gfs')
