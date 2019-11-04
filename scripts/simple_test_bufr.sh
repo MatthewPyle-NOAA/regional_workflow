@@ -1,8 +1,15 @@
 #! /bin/ksh
 
-dom=ak
-RUNDIR=/gpfs/hps3/ptmp/Matthew.Pyle/tst_bufr
-RUNDIR=/gpfs/hps2/stmp/Matthew.Pyle/oconus_new/tmpnwprd/regional_forecast_tm00_${dom}_2019103006
+dom=conus
+
+YR=2019
+MO=11
+DY=01
+CYC=00
+
+CDATE=$YR$MO$DY$CYC
+
+RUNDIR=/gpfs/hps2/stmp/Matthew.Pyle/oconus_new/tmpnwprd/regional_forecast_tm00_${dom}_${CDATE}
 
 cd $RUNDIR
 cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_new/exec/hiresw_wrfbufr .
@@ -28,7 +35,7 @@ echo dynf0${hr}.nc > itag
 echo phyf0${hr}.nc >> itag
 echo FV3S >> itag
 echo netcdf >> itag
-echo 2019-10-30:06:00 >> itag
+echo ${YR}-${MO}-${DY}:${CYC}:00 >> itag
 echo 1 >> itag
 echo 1 >> itag
 echo $hr >> itag

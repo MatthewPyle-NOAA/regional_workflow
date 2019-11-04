@@ -21,6 +21,8 @@
 
 set -x
 
+NEST=${dom}
+MODEL=fv3sar
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
@@ -29,7 +31,9 @@ RUNLOC=${NEST}${MODEL}
 
 export tmmark=tm00
 
-# . $COMIN/hiresw.t${cyc}z.${RUNLOC}.envir.sh
+echo FIXsar is $FIXsar
+echo profdat file name is regional_${RUNLOC}_profdat
+
 
 cp $FIXsar/regional_${RUNLOC}_profdat regional_profdat
 
@@ -98,15 +102,15 @@ let fhrold="$fhr - 1"
 if [ $model == "FV3S" ]
 then
 
-OUTFILDYN=$INPUT_DATA/dyn_f0${fhr}.nc
-OUTFILPHYS=$INPUT_DATA/phy_f0${fhr}.nc
+OUTFILDYN=$INPUT_DATA/dynf0${fhr}.nc
+OUTFILPHYS=$INPUT_DATA/phyf0${fhr}.nc
 
 icnt=1
 
 # wait for model restart file
 while [ $icnt -lt 1000 ]
 do
-   if [ -s $INPUT_DATA/logf0${hr} ]
+   if [ -s $INPUT_DATA/logf0${fhr} ]
    then
       break
    else
@@ -152,9 +156,7 @@ export FORT11="itag"
 
 startmsg
 
-# using mpirun.lsf needed after WCOSS SP4.2 upgrade
-
-aprun -n $NTASK -N $PTILE $EXECregional/regional_bufr.x  > pgmout.log_${fhr} 2>&1 
+${APRUNC} $EXECfv3/regional_bufr.x  > pgmout.log_${fhr} 2>&1
 export err=$?;err_chk
 
 mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
@@ -185,8 +187,8 @@ export pgm=hiresw_sndp_${RUNLOC}
 
 . prep_step
 
-cp $PARMregional/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
-cp $PARMregional/regional_bufr.tbl $DATA/regional_bufr.tbl
+cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
+cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
 
 export FORT11="$DATA/regional_sndp.parm.mono"
 export FORT32="$DATA/regional_bufr.tbl"
@@ -197,23 +199,25 @@ startmsg
 
 echo here RUNLOC  $RUNLOC
 echo here MODEL $MODEL
+echo here model $model
 
 nlev=60
 
-echo "${MODEL} $nlev" > itag
-aprun $EXEChiresw/hiresw_sndp < itag >> $pgmout 2>$pgmout
+echo "${model} $nlev" > itag
+${APRUNC} $EXECfv3/regional_sndp.x  < itag >> $pgmout 2>$pgmout
 export err=$?;err_chk
 
 ############### Convert BUFR output into format directly readable by GEMPAK namsnd on WCOSS
 
+echo USHobsproc_shared_bufr_cword is ${USHobsproc_shared_bufr_cword}
 ${USHobsproc_shared_bufr_cword}/bufr_cword.sh unblk class1.bufr class1.bufr.unb
 ${USHobsproc_shared_bufr_cword}/bufr_cword.sh block class1.bufr.unb class1.bufr.wcoss
 
 if [ $SENDCOM == "YES" ]
 then
-cp $DATA/class1.bufr $COMOUT/hiresw.t${cyc}z.${RUNLOC}.class1.bufr
-cp $DATA/class1.bufr.wcoss $COMOUT/hiresw.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
-cp $DATA/profilm.c1.${tmmark} ${COMOUT}/hiresw.t${cyc}z.${RUNLOC}.profilm.c1
+cp $DATA/class1.bufr $COMOUT/fv3sar.t${cyc}z.${RUNLOC}.class1.bufr
+cp $DATA/class1.bufr.wcoss $COMOUT/fv3sar.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
+cp $DATA/profilm.c1.${tmmark} ${COMOUT}/fv3sar.t${cyc}z.${RUNLOC}.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
@@ -236,15 +240,14 @@ EOF
 
   mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 
-  export pgm=hiresw_stnmlist
+  export pgm=regional_stnmlist
   . prep_step
 
   export FORT20=$DATA/class1.bufr
   export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
   startmsg
-#  $EXEChiresw/hiresw_stnmlist < stnmlist_input >> $pgmout 2>errfile
-aprun  $EXEChiresw/hiresw_stnmlist < stnmlist_input >> $pgmout 2>errfile
+${APRUNC}  $EXECfv3/regional_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
   export err=$?;err_chk
 
   echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc

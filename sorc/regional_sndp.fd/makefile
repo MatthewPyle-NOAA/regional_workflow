@@ -21,7 +21,7 @@ OBJS=	BFRHDR.o BFRIZE.o CALHEL.o CALWXT.o SMIX.o SNDPST.o \
 #FC =		${COMP} -convert big_endian
 FC =		${COMPILER} -convert big_endian
 LDFLAGS = 
-CMD = ../../exec/hiresw_sndp
+CMD = regional_sndp.x
 LIBS = ${BUFR_LIB4}
 
 FFLAGS = -O   

@@ -28,6 +28,23 @@ fi
  ${CP} regional_post.fd/exec/ncep_post                 ../exec/regional_post.x
 
 #------------------------------------
+# install bufrpost
+#------------------------------------
+ ${CP} regional_bufr.fd/regional_bufr.x                 ../exec/regional_bufr.x
+
+#------------------------------------
+# install sndp
+#------------------------------------
+ ${CP} regional_sndp.fd/regional_sndp.x                 ../exec/regional_sndp.x
+
+#------------------------------------
+# install stnmlist
+#------------------------------------
+ ${CP} regional_stnmlist.fd/regional_stnmlist.x                 ../exec/regional_stnmlist.x
+
+#------------------------------------
+#------------------------------------
+#------------------------------------
 # install chgres
 #------------------------------------
  ${CP} regional_utils.fd/exec/global_chgres            ../exec/regional_chgres.x
