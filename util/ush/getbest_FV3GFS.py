@@ -222,7 +222,9 @@ def main():
         tm=tm+indate.hour%6
 # orig will only consider to 6 h old.  What do we want for reproducibility (system could run late and use on time GFS)
 #        tmlist=range(tm,0-indate.hour%6,-6)
-        tmlist=range(tm,-6,-6)
+# this version considers to on time run
+#        tmlist=range(tm,-6,-6)
+        tmlist=range(tm,0,-6)
         tmlist=[x for x in tmlist if x >= 0] #make sure we only keep the positive elements
         print 'tmlist is: ', tmlist
         dateobjs=[indate+timedelta(hours=-tm) for tm in tmlist]

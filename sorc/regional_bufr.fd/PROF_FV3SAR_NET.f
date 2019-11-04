@@ -154,8 +154,8 @@ C------------------------------------------------------------------------
 
 C	new stuff
       character(len=31) :: VarName,varin
-	character(len=90) :: fileName,filedyn,filephys
-	character(len=90) :: fileNamehold
+	character(len=180) :: fileName,filedyn,filephys
+	character(len=180) :: fileNamehold
       integer ::  DataHandle
       character(len=19):: startdate,datestr,datestrold
       character(len=2):: fhroldchar
@@ -245,7 +245,7 @@ C Getting start time
         iyear=IDATE(1)
         imn=IDATE(2)
         iday=IDATE(3)
-        ihrst=IDATE(5)
+        ihrst=IDATE(4)
 
  15   format(i4,1x,i2,1x,i2,1x,i2)
       print*,'start yr mo day hr =',iyear,imn,iday,ihrst
@@ -1564,7 +1564,7 @@ C Getting start time
         iyear=IDATE(1)
         imn=IDATE(2)
         iday=IDATE(3)
-        ihrst=IDATE(5)
+        ihrst=IDATE(4)
 
 
        call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
@@ -2047,6 +2047,7 @@ c      IHR  =NTSD/NTSPH+0.5
          IDATE(2)=imn
          IDATE(3)=iday
          IDATE(1)=iyear
+         IDATE(4)=ihrst
          IDATE(5)=ihrst
 
 	IDAT(3)=IDATE(1)

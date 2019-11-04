@@ -64,6 +64,13 @@ then
 template=regional_workflow.xml.in_akconus
 echo defined template as $template
 pwd
+
+elif [ $DOMAIN = "pr" ]
+then
+template=regional_workflow.xml.in_pr
+echo defined template as $template
+pwd
+
 fi
 
 sed -e "s|@\[EXPT.*\]|${EXPT}|g" \

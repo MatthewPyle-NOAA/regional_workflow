@@ -22,3 +22,8 @@ make
 cd ../regional_sndp.fd
 
 make
+
+
+cd ../regional_stnmlist.fd
+
+make
