@@ -291,6 +291,35 @@
     </task>
   </metatask>
 
+<!--  *******************************************************************  -->
+<!--  ********************** Run the BUFR post processor *********************  -->
+
+    <task name="bufrpost" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JREGIONAL_BUFR</command>
+      <jobname>regional_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/regional_bufrpost_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &BUFRPOST_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>regional_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA</name><value>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast_tm00" state="RUNNING"/>
+           <taskdep task="forecast_tm00"/>
+          </or>
+          <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+        </and>
+      </dependency>
+    </task>
+
 <!-- *********************************************************************** -->
 <!-- ***************************** Archive job ***************************** -->
 

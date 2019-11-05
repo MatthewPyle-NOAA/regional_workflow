@@ -104,31 +104,16 @@ cat ${domain}${RUN}.f${fhr}.${tmmark}.nn ${domain}${RUN}.f${fhr}.${tmmark}.budge
 
 export err=$?; err_chk
 
-
-# Generate files for FFaIR
-
-#${WGRIB2} BGDAWP${fhr}.${tmmark} | grep -F -f ${PARMfv3}/nam_nests.hiresf_ffair.txt | ${WGRIB2} -i -grib inputs.grib${domain}_ffair BGDAWP${fhr}.${tmmark}
-#${WGRIB2} inputs.grib${domain}_ffair -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv_ffair
-#${WGRIB2} inputs.grib${domain}.uv_ffair -set_bitmap 1 -set_grib_type ${compress_type} \
-#  -new_grid_winds grid -new_grid_interpolation neighbor -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
-#  -new_grid ${gridspecs} ${domain}${RUN}.f${fhr}.${tmmark}.uv_ffair
-#${WGRIB2} ${domain}${RUN}.f${fhr}.${tmmark}.uv_ffair -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
-#  -submsg_uv ${domain}${RUN}.f${fhr}.${tmmark}.ffair
-#cat ${domain}${RUN}.f${fhr}.${tmmark}.ffair ${domain}${RUN}.f${fhr}.${tmmark}.budget > ${domain}${RUN}.f${fhr}.${tmmark}.ffair
-
-#export err=$?; err_chk
-
 if [ $SENDCOM = YES ]
 then
   if [ $tmmark = tm00 ] ; then
     mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
-#    mv ${domain}${RUN}.f${fhr}.${tmmark}.ffair ${COMOUT}/${RUN}.t${cyc}z.${domain}.ffair.f${fhr}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.grib2
+#    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
+#    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.grib2
   else
     mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
-    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.${tmmark}.grib2
+#    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
+#    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.${tmmark}.grib2
   fi
 fi
 
