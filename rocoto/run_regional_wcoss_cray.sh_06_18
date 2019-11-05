@@ -12,7 +12,7 @@ module load rocoto/1.2.4
 
 
 # if want a non-CONUS domain, export DOMAIN here
-doms="pr"
+doms="pr ak"
 
 
 for DOMAIN in $doms
@@ -62,12 +62,6 @@ template=regional_workflow.xml.in
 if [ $DOMAIN = "ak" ]
 then
 template=regional_workflow.xml.in_akconus
-echo defined template as $template
-pwd
-
-elif [ $DOMAIN = "pr" ]
-then
-template=regional_workflow.xml.in_pr
 echo defined template as $template
 pwd
 

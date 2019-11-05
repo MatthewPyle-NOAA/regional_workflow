@@ -896,7 +896,7 @@ c
 	 Q(N,L)=DUM3D2(I,J,L)  ! need to convert in any way?
          T_hold( N , L ) = dum3d ( i, j, l ) 
          DPRES(N,L) = DUM3D3(I,J,L)
-         DZ(N,L) = DUM3D4(I,J,L)
+         DZ(N,L) = abs(DUM3D4(I,J,L))
 	ENDDO
 	ENDDO
        write(0,*) 'past big def block'
@@ -912,20 +912,23 @@ c
 	DO N=1,NUMSTA
          I=IHINDX(N)
          J=JHINDX(N)
-         PMID(N,LM)=PSFC(N)-0.5*DPRES(N,LM)
-	do L=LM-1,1,-1
-         PMID(N,L)=PMID(N,L+1)-(DPRES(N,L))
-	if (PMID(N,L) .eq. -9999.) then
-	  write(0,*) 'bad at N, L: ', N, L
-          write(0,*) 'PMID(N,L+1),DPRES(N,L): ', PMID(N,L+1),DPRES(N,L)
-	endif
+
+! test going to post style PMID calc.  
+!was         PMID(N,LM)=PSFC(N)-0.5*DPRES(N,LM)
+!	do L=LM-1,1,-1
+!         PMID(N,L)=PMID(N,L+1)-(DPRES(N,L))
+!	if (PMID(N,L) .eq. -9999.) then
+!	  write(0,*) 'bad at N, L: ', N, L
+!          write(0,*) 'PMID(N,L+1),DPRES(N,L): ', PMID(N,L+1),DPRES(N,L)
+!was	endif
 
 !	if (N .eq. 1) then
 !	 write(0,*) 'L, DPRES(N,L), PMID(N,L): ', L, DPRES(N,L), 
 !     &                                          PMID(N,L)
 !        endif
 
-        enddo
+!was        enddo
+
         ENDDO
 
 	write(6,*) 'T: ', DUM3D(20,20,20)
@@ -941,14 +944,14 @@ c
 
       do L=1,LM
 	DO N=1,NUMSTA
-!tst           if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. 
-!     &     Q(N,L)/=spval .and. DZ(N,L)/=spval)then
-!            PMID(N,L)=con_rd*DPRES(N,L)* 
-!     &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
-!           else
-!            PMID(N,L)=spval
-!
-!tst           end if
+           if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. 
+     &     Q(N,L)/=spval .and. DZ(N,L)/=spval)then
+           PMID(N,L)=con_rd*DPRES(N,L)* 
+     &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
+           else
+            PMID(N,L)=spval
+
+           end if
 !! dong add missing value
            if (w(N,L) < spval) then
             omga(N,L)=(-1.)*w(N,L)*DPRES(N,L)/DZ(N,L)
