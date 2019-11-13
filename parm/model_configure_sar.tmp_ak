@@ -10,7 +10,7 @@ start_second:            0
 nhours_fcst:             NHRS
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                90
+dt_atmos:                36
 cpl:                     .false.
 calendar:                'julian'
 memuse_verbose:          .false.
@@ -22,8 +22,8 @@ restart_interval:        12
 output_1st_tstep_rst:    .false.
 
 quilting:                .true.
-write_groups:            2
-write_tasks_per_group:   24
+write_groups:            _WG_ 
+write_tasks_per_group:  _WTPG_ 
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf'

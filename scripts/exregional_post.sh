@@ -108,7 +108,7 @@ if [ $SENDCOM = YES ]
 then
   if [ $tmmark = tm00 ] ; then
     mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
-#    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
+    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
 #    mv BGRD3D${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natlev.f${fhr}.grib2
   else
     mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2

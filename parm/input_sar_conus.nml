@@ -64,7 +64,7 @@
        a_imp = 1.
        p_fac = 0.1
        k_split  = 2
-       n_split  = 6
+       n_split  = 4
        nwat = 6
        na_init = 1
        d_ext = 0.0
@@ -147,8 +147,8 @@
        ncld           = 5
        imp_physics    = 11
        pdfcld         = .false.
-       fhswr          = 3600.
-       fhlwr          = 3600.
+       fhswr          = 1200.
+       fhlwr          = 1200.
        ialb           = 1
        iems           = 1
        IAER           = 111
