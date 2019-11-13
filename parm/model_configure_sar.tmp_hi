@@ -10,7 +10,7 @@ start_second:            0
 nhours_fcst:             NHRS
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                90
+dt_atmos:                36
 cpl:                     .false.
 calendar:                'julian'
 memuse_verbose:          .false.
@@ -40,17 +40,6 @@ lat2:                    4.3   # latitude of upper-right ...
 dlon:                    0.025
 dlat:                    0.025
 
-#output_grid:		 'lambert_conformal'
-#cen_lon:		 -97.5	 # central longitude
-#cen_lat:		 38.5	 # central latitude
-#stdlat1:		 38.5
-#stdlat2:		 38.5
-#nx:			 1799	 # number of points along x-axis.
-#ny:			 1059	 # number of points along y-axis.
-#lon1:			 -122.719528	# longitude of lower-left point (in degrees)
-#lat1:			 21.138123	# latitude of lower-left point (in degrees)
-#dx:			 3000.0	 # x-direction grid length
-#dy:			 3000.0  # y-direction grid length
 
 nfhout:                  1
 nfhmax_hf:               60
