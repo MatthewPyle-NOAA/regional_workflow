@@ -79,14 +79,14 @@ cpfs $INPUT_DATA/DATE .
 outreg=$rg
 case $RUNTYP in
   conusmem2arw) rg=conus; outres="2p5km"; outreg=conusmem2;wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  conusarw|conusnmmb) rg=conus; outres="2p5km"; outreg=conus;wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  hiarw|hinmmb) rg=hi; outres="2p5km"; outreg=hi;wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
+  conusarw|conusnmmb|conusfv3) rg=conus; outres="2p5km"; outreg=conus;wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
+  hiarw|hinmmb|hifv3) rg=hi; outres="2p5km"; outreg=hi;wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
   himem2arw) rg=hi; outres="2p5km"; outreg=himem2;wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
-  prarw|prnmmb) rg=pr; outres="2p5km"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
+  prarw|prnmmb|prfv3) rg=pr; outres="2p5km"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   prmem2arw) rg=pr; outres="2p5km"; outreg=prmem2; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
-  akarw|aknmmb) rg=ak; outres="3km"; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
+  akarw|aknmmb|akfv3) rg=ak; outres="3km"; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
   akmem2arw) rg=ak; outres="3km"; outreg=akmem2; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  guamarw|guamnmmb) rg=guam; outres="2p5km"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
+  guamarw|guamnmmb|guamfv3) rg=guam; outres="2p5km"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
 esac
 
 compress=complex2
@@ -98,8 +98,8 @@ cycon=0
 
 # FOR NESTS,parent script, exnam, sets forecast range (60 or 54h)
 case $cyc in
-  00|12) set -A A6HR 12 24 36 48 999;;
-  * )    set -A A6HR 18 30 42 999;;
+  00|12) set -A A6HR 12 24 36 48 60 999;;
+  * )    set -A A6HR 18 30 42 54 999;;
 esac
 
 # srefcyc and gefscyc set in parent job (JNAM_SMINIT)
@@ -167,25 +167,25 @@ grdextmerc=" 0 64 2500 2500"
    topopre=hiresw_smarttopo${rg}
    ext=grb
    case $RUNTYP in
-     guamnmmb|guamarw)          sgrb=999;ogrd=199
+     guamnmmb|guamarw|guamfv3)          sgrb=999;ogrd=199
       grid="255 1 193 193 12350 143687 128 16794 148280 20000  $grdextmerc";;
      hiarw)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
      himem2arw)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
-     hinmmb)            sgrb=243;ogrd=196
+     hinmmb|hifv3)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
      prarw)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
      prmem2arw)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
-     prnmmb)            sgrb=212;ogrd=195
+     prnmmb|prfv3)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
      akarw)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
      akmem2arw)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
-     aknmmb)  sgrb=216;ogrd=91
+     aknmmb|akfv3)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
      conusarw)  sgrb=212;ogrd=184 
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
@@ -195,7 +195,7 @@ grdextmerc=" 0 64 2500 2500"
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
       topopre=ruc2_ndfd_elevtiles.ndfd2.5
       maskpre=ruc2_ndfd_vegtiles.ndfd2.5;;
-     conusnmmb)  sgrb=212;ogrd=184 
+     conusnmmb|conusfv3)  sgrb=212;ogrd=184 
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
       topopre=ruc2_ndfd_elevtiles.ndfd2.5
       maskpre=ruc2_ndfd_vegtiles.ndfd2.5;;
@@ -291,8 +291,8 @@ typeset -Z2 fhr1 fhr2 fhr3 fhr6 fhr9 fhr12 fhr ffhr
 #=================================================================
 
 # CHANGE : for non-conus look in FIXnam for topo,land files
-  cpfs $FIXhiresw/${topofl} TOPONDFD
-  cpfs $FIXhiresw/${maskfl} LANDNDFD
+  cpfs $FIXfv3/${topofl} TOPONDFD
+  cpfs $FIXfv3/${maskfl} LANDNDFD
   lnsf TOPONDFD     fort.46
   lnsf LANDNDFD     fort.48
   if [ $ext = grb ];then
@@ -451,9 +451,9 @@ export err=$?; err_chk
 #	err_exit "missing $COMOUT/${mdl}.t${cyc}z.smart${outreg}f${fhr3}.grib2"
 #	fi
 
-    cpfs $COMOUT/hiresw.t${cyc}z.${MODEL}_${outres}.f${fhr3}.${outreg}.grib2 MAXMIN3
-    cpfs $COMOUT/hiresw.t${cyc}z.${MODEL}_${outres}.f${fhr6}.${outreg}.grib2 MAXMIN4
-    cpfs $COMOUT/hiresw.t${cyc}z.${MODEL}_${outres}.f${fhr9}.${outreg}.grib2 MAXMIN5
+    cpfs $COMOUT/${RUN}.t${cyc}z.${MODEL}_${outres}.f${fhr3}.${outreg}.grib2 MAXMIN3
+    cpfs $COMOUT/${RUN}.t${cyc}z.${MODEL}_${outres}.f${fhr6}.${outreg}.grib2 MAXMIN4
+    cpfs $COMOUT/${RUN}.t${cyc}z.${MODEL}_${outres}.f${fhr9}.${outreg}.grib2 MAXMIN5
 
     $GRB2INDEX MAXMIN3 MAXMIN3i
     export err=$?; err_chk
@@ -569,7 +569,7 @@ fi
                  *) RGIN=`echo $rg |tr '[a-z]'  '[A-Z]' `;;
   esac
 
-  export pgm=hiresw_smartinit;. prep_step
+  export pgm=regional_smartinit;. prep_step
 
 	ls -l fort.*
 
@@ -591,7 +591,7 @@ fi
 
 echo execute with $NLEV levels
 
-$EXEChiresw/hiresw_smartinitg2 $cyc $fhr $ogrd $RGIN $inest $MODEL $NLEV > smartinit.out${fhr} 2>&1
+$EXECfv3/regional_smartinit.x $cyc $fhr $ogrd $RGIN $inest $MODEL $NLEV > smartinit.out${fhr} 2>&1
 export err=$?; err_chk
 
 
@@ -607,11 +607,11 @@ export err=$?; err_chk
    export ogrd 
    export mksmart
 
-echo run hiresw_ncoprocg2.sh
+echo run regional_ncoprocg2.sh
 
-   ${USHhiresw}/hiresw_ncoprocg2.sh
+   ${USHfv3}/regional_ncoprocg2.sh
 
-echo past run hiresw_ncoprocg2.sh
+echo past run regional_ncoprocg2.sh
 
 
 done  #fhr loop

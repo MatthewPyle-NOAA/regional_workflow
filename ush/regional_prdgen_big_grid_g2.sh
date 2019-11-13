@@ -298,7 +298,6 @@ fi  # 3 hour time
 
 export err=$?; err_chk
 
-# cp $INPUT_DATA/BGDAWP${fhr}.tm00 $COMOUT/hiresw.t${CYC}z.$DOMOUT.wrfprs${fhr}
 
 ###############################################################
 ###############################################################
@@ -312,11 +311,11 @@ echo fhr is 00 what is DOMIN_SMALL $DOMIN_SMALL
 
 if [ $DOMIN_SMALL = "conus"  ] 
 then
-	echo COPYING f00 file to hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
-       cp ${filenamthree}${fhr}.tm00 ${DATA}/hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
+	echo COPYING f00 file to ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
+       cp ${filenamthree}${fhr}.tm00 ${DATA}/${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
 else
-        echo COPYING f00 to ${DATA}/hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
-       cp ${filenamthree}${fhr}.tm00 ${DATA}/hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
+        echo COPYING f00 to ${DATA}/${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
+       cp ${filenamthree}${fhr}.tm00 ${DATA}/${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
 fi
 
 
@@ -358,17 +357,11 @@ else
   echo "$DATA/prdgen_full" > input.card
 fi
 
-     cat ${filenamthree}${fhr}.tm00  > hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
-#
-#     else # not $fhr%3=0
-#
-#     cat ${filenamthree}${fhr}.tm00   > hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
-#
-#     fi
+     cat ${filenamthree}${fhr}.tm00  > ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
 
 else
 
-mv ${filenamthree}${fhr}.tm00 hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
+mv ${filenamthree}${fhr}.tm00 ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
 
 fi # subpiece=1 or non-conus
 
@@ -382,12 +375,12 @@ echo DOWN HERE
 	if [ $subpiece -gt 0 ]
         then
          echo copying a grib2 to DATA $DATA
-         cp hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 \
-	 ${DATA}/hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
+         cp ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 \
+	 ${DATA}/${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
         else
-	if [ -e hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 ] 
+	if [ -e ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 ] 
         then
-         cp  hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 ${DATA}/
+         cp  ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2 ${DATA}/
 	fi
         fi
 ## temp copy to $DATA

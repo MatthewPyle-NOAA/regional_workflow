@@ -162,17 +162,13 @@ if [ $fhr -eq 00 ]
 then
 echo "inside f00 test"
 
-      cp ${filenamthree}${fhr}.tm00 $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
+      cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
 
 else
 
-      cp ${filenamthree}${fhr}.tm00 $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
+      cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
 
 fi # fhour
 
 ###### DONE PRECIP BUCKET
 
-#    cp  hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2 \
-#              $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${subpiece}
-
-# fi

@@ -2,6 +2,12 @@
    <name>dom</name><value>&DOMAIN;</value>
  </envar>
  <envar>
+   <name>NEST</name><value>&DOMAIN;</value>
+ </envar>
+ <envar>
+   <name>MODEL</name><value>fv3</value>
+ </envar>
+ <envar>
    <name>HOMEfv3</name><value>&HOMEfv3;</value>
  </envar>
  <envar>
@@ -18,6 +24,9 @@
  </envar>
  <envar>
    <name>STMP</name><value>&STMP;</value>
+ </envar>
+ <envar>
+   <name>DATAROOT</name><value>&DATAROOT;</value>
  </envar>
  <envar>
    <name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value>

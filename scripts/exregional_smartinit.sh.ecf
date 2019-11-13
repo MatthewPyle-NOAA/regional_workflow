@@ -34,13 +34,13 @@ cd $DATA
 RUNLOC=${NEST}${MODEL}
 
 # 00/12 UTC CYCLE smartinit CONFIGURE
-  export ENDHR=48
+  export ENDHR=60
   export RUNTYP=${RUNLOC}
 
 
 hr=00
 
-hrlim=48
+hrlim=60
 
 if [ -e $DATA/smartinitprdgendone00 ]
 then
@@ -61,7 +61,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA/prdgendone${hr} ]
+ if [ -s $INPUT_DATA/postdone${hr}.tm00 ]
  then
    break
  else
@@ -70,7 +70,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/prdgendone${fhr}"
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/postdone${fhr}.tm00"
    err_exit $msg
  fi
 done
