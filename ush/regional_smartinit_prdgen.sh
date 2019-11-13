@@ -74,14 +74,14 @@ export mdl=$RUNTYP
 outreg=$rg
 case $RUNTYP in
   conusmem2arw) rg=conus; outreg=conusmem2; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  conusarw|conusnmmb) rg=conus; outreg=conus; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  hiarw|hinmmb) rg=hi; compress="jpeg";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
+  conusarw|conusnmmb|conusfv3) rg=conus; outreg=conus; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
+  hiarw|hinmmb|hifv3) rg=hi; compress="jpeg";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
   himem2arw) rg=hi; compress="jpeg"; outreg=himem2; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
-  prarw|prnmmb) rg=pr; compress="jpeg"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
+  prarw|prnmmb|prfv3) rg=pr; compress="jpeg"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   prmem2arw) rg=pr;  compress="jpeg"; outreg=prmem2; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   akmem2arw) rg=ak; outreg=akmem2; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  akarw|aknmmb) rg=ak; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  guamarw|guamnmmb) rg=guam; compress="jpeg"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
+  akarw|aknmmb|akfv3) rg=ak; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
+  guamarw|guamnmmb|guamfv3) rg=guam; compress="jpeg"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
 esac
 
 cycon=0
@@ -90,8 +90,8 @@ cycon=0
 
 # FOR NESTS,parent script, exnam, sets forecast range (60 or 54h)
 case $cyc in
-  00|12) set -A A6HR 12 24 36 48 999;;
-  * )    set -A A6HR 18 30 42 999;;
+  00|12) set -A A6HR 12 24 36 48 60 999;;
+  * )    set -A A6HR 18 30 42 54 999;;
 esac
 
 # srefcyc and gefscyc set in parent job (JNAM_SMINIT)
@@ -137,6 +137,9 @@ prdgfl=wrf.${rgprdgen}04
 elif [ $MODEL = "arw" ]
 then
 prdgfl=wrf.EM${rgprdgen}04
+elif [ $MODEL = "fv3" ]
+then
+prdgfl=fv3.${rgprdgen}04
 fi
 
   natgrd="natprs"       # native model type grid extension (eg: bgrd3d, bsmart)
@@ -160,29 +163,29 @@ grdextmerc=" 0 64 2500 2500"
    topopre=hiresw_smarttopo${rg}
    ext=grb
    case $RUNTYP in
-     guamnmmb|guamarw)          sgrb=999;ogrd=199
+     guamnmmb|guamarw|guamfv3)          sgrb=999;ogrd=199
       grid="255 1 193 193 12350 143687 128 16794 148280 20000  $grdextmerc";;
      hiarw)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
      himem2arw)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
-     hinmmb)            sgrb=243;ogrd=196
+     hinmmb|hifv3)            sgrb=243;ogrd=196
       grid="255 1 321 225 18067 -161626 128 23082 -153969 20000 $grdextmerc";;
      prarw)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
      prmem2arw)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
-     prnmmb)            sgrb=212;ogrd=195
+     prnmmb|prfv3)            sgrb=212;ogrd=195
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
      akarw|akmem2arw)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
-     aknmmb)  sgrb=216;ogrd=91
+     aknmmb|prfv3)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
      conusarw|conusmem2arw)  sgrb=212;ogrd=184 
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
       topopre=ruc2_ndfd_elevtiles.ndfd2.5
       maskpre=ruc2_ndfd_vegtiles.ndfd2.5;;
-     conusnmmb)  sgrb=212;ogrd=184 
+     conusnmmb|conusfv3)  sgrb=212;ogrd=184 
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
       topopre=ruc2_ndfd_elevtiles.ndfd2.5
       maskpre=ruc2_ndfd_vegtiles.ndfd2.5;;
@@ -391,7 +394,10 @@ export err=$?; err_chk
 $WGRIB2 $INF | grep -F -f list_nn.txt | $WGRIB2 -i -grib inputs.grb2_nn $INF
 export err=$?; err_chk
 
-rm wgrib2.poe
+if [ -e ./wgrib2.poe ]
+then
+rm ./wgrib2.poe
+fi
 
 if [ -e model.ndfd_1 ]
 then
@@ -399,98 +405,70 @@ rm  model.ndfd_1  model.ndfd_2  model.ndfd_3  model.ndfd_4  model.ndfd_5 model.n
 rm  model.ndfd_7 model.ndfd_8 model.ndfd_9 model.ndfd_10 model.ndfd_11 model.ndfd_12
 fi
 
-echo "#! /bin/ksh" > a.poe
-echo "$WGRIB2  inputs.grb2_1  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m1; $FSYNC m1; mv m1 model.ndfd_1" >> a.poe
-echo "#! /bin/ksh" > b.poe
-echo "$WGRIB2  inputs.grb2_2  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m2; $FSYNC m2; mv m2 model.ndfd_2" >> b.poe
-echo "#! /bin/ksh" > c.poe
-echo "$WGRIB2  inputs.grb2_3  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m3; $FSYNC m3; mv m3 model.ndfd_3" >> c.poe
-echo "#! /bin/ksh" > d.poe
-echo "$WGRIB2  inputs.grb2_4  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m4; $FSYNC m4; mv m4 model.ndfd_4" >> d.poe
-echo "#! /bin/ksh" > e.poe
-echo "$WGRIB2  inputs.grb2_5  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m5; $FSYNC m5; mv m5 model.ndfd_5" >> e.poe
-echo "#! /bin/ksh" > f.poe
-echo "$WGRIB2  inputs.grb2_6  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m6; $FSYNC m6; mv m6 model.ndfd_6" >> f.poe
-echo "#! /bin/ksh" > g.poe
-echo "$WGRIB2  inputs.grb2_7  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m7; $FSYNC m7; mv m7 model.ndfd_7" >> g.poe
-echo "#! /bin/ksh" > h.poe
-echo "$WGRIB2  inputs.grb2_8  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m8; $FSYNC m8; mv m8 model.ndfd_8" >> h.poe
-echo "#! /bin/ksh" > i.poe
-echo "$WGRIB2  inputs.grb2_9  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m9; $FSYNC m9; mv m9 model.ndfd_9" >> i.poe
-echo "#! /bin/ksh" > j.poe
-echo "$WGRIB2  inputs.grb2_10  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m10; $FSYNC m10; mv m10 model.ndfd_10" >> j.poe
-echo "#! /bin/ksh" > k.poe
-echo "$WGRIB2  inputs.grb2_11  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m11; $FSYNC m11; mv m11 model.ndfd_11" >> k.poe
-echo "#! /bin/ksh" > l.poe
-echo "$WGRIB2  inputs.grb2_12  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m12; $FSYNC m12; mv m12 model.ndfd_12" >> l.poe
-echo "#! /bin/ksh" > m.poe
-echo "$WGRIB2 inputs.grb2_nn  -set_grib_type ${compress} -new_grid_interpolation neighbor -new_grid_winds grid -new_grid ${wgrib2def} m_nn; $FSYNC m_nn; mv m_nn model.ndfd_nn" >> m.poe
+echo "#! /bin/ksh" > ./a.poe
+echo "$WGRIB2  inputs.grb2_1  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m1; $FSYNC m1; mv m1 model.ndfd_1" >> ./a.poe
+echo "#! /bin/ksh" > ./b.poe
+echo "$WGRIB2  inputs.grb2_2  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m2; $FSYNC m2; mv m2 model.ndfd_2" >> ./b.poe
+echo "#! /bin/ksh" > ./c.poe
+echo "$WGRIB2  inputs.grb2_3  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m3; $FSYNC m3; mv m3 model.ndfd_3" >> ./c.poe
+echo "#! /bin/ksh" > ./d.poe
+echo "$WGRIB2  inputs.grb2_4  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m4; $FSYNC m4; mv m4 model.ndfd_4" >> ./d.poe
+echo "#! /bin/ksh" > ./e.poe
+echo "$WGRIB2  inputs.grb2_5  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m5; $FSYNC m5; mv m5 model.ndfd_5" >> ./e.poe
+echo "#! /bin/ksh" > ./f.poe
+echo "$WGRIB2  inputs.grb2_6  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m6; $FSYNC m6; mv m6 model.ndfd_6" >> ./f.poe
+echo "#! /bin/ksh" > ./g.poe
+echo "$WGRIB2  inputs.grb2_7  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m7; $FSYNC m7; mv m7 model.ndfd_7" >> ./g.poe
+echo "#! /bin/ksh" > ./h.poe
+echo "$WGRIB2  inputs.grb2_8  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m8; $FSYNC m8; mv m8 model.ndfd_8" >> ./h.poe
+echo "#! /bin/ksh" > ./i.poe
+echo "$WGRIB2  inputs.grb2_9  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m9; $FSYNC m9; mv m9 model.ndfd_9" >> ./i.poe
+echo "#! /bin/ksh" > ./j.poe
+echo "$WGRIB2  inputs.grb2_10  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m10; $FSYNC m10; mv m10 model.ndfd_10" >> ./j.poe
+echo "#! /bin/ksh" > ./k.poe
+echo "$WGRIB2  inputs.grb2_11  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m11; $FSYNC m11; mv m11 model.ndfd_11" >> ./k.poe
+echo "#! /bin/ksh" > ./l.poe
+echo "$WGRIB2  inputs.grb2_12  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m12; $FSYNC m12; mv m12 model.ndfd_12" >> ./l.poe
+echo "#! /bin/ksh" > ./m.poe
+echo "$WGRIB2 inputs.grb2_nn  -set_grib_type ${compress} -new_grid_interpolation neighbor -new_grid_winds grid -new_grid ${wgrib2def} m_nn; $FSYNC m_nn; mv m_nn model.ndfd_nn" >> ./m.poe
 
 
-chmod 775 a.poe
-chmod 775 b.poe
-chmod 775 c.poe
-chmod 775 d.poe
-chmod 775 e.poe
-chmod 775 f.poe
-chmod 775 g.poe
-chmod 775 h.poe
-chmod 775 i.poe
-chmod 775 j.poe
-chmod 775 k.poe
-chmod 775 l.poe
-chmod 775 m.poe
+chmod 775 ./a.poe
+chmod 775 ./b.poe
+chmod 775 ./c.poe
+chmod 775 ./d.poe
+chmod 775 ./e.poe
+chmod 775 ./f.poe
+chmod 775 ./g.poe
+chmod 775 ./h.poe
+chmod 775 ./i.poe
+chmod 775 ./j.poe
+chmod 775 ./k.poe
+chmod 775 ./l.poe
+chmod 775 ./m.poe
 
-if [ $outreg != "conusmem2" -a $outreg != "himem2" -a  $outreg != "prmem2" -a $outreg != "akmem2" ]
-then
+echo "#!/bin/ksh" > ./wgrib2.poe
+echo "./a.poe &" >> ./wgrib2.poe
+echo "./b.poe &" >> ./wgrib2.poe
+echo "./c.poe &" >> ./wgrib2.poe
+echo "./d.poe &" >> ./wgrib2.poe
+echo "./e.poe &" >> ./wgrib2.poe
+echo "./f.poe &" >> ./wgrib2.poe
+echo "./g.poe &" >> ./wgrib2.poe
+echo "./h.poe &" >> ./wgrib2.poe
+echo "./i.poe &" >> ./wgrib2.poe
+echo "./j.poe &" >> ./wgrib2.poe
+echo "./k.poe &" >> ./wgrib2.poe
+echo "./l.poe &" >> ./wgrib2.poe
+echo "./m.poe &" >> ./wgrib2.poe
+echo "wait" >> ./wgrib2.poe
 
-echo "#!/bin/ksh" > wgrib2.poe
-echo "a.poe &" >> wgrib2.poe
-echo "b.poe &" >> wgrib2.poe
-echo "c.poe &" >> wgrib2.poe
-echo "d.poe &" >> wgrib2.poe
-echo "e.poe &" >> wgrib2.poe
-echo "f.poe &" >> wgrib2.poe
-echo "g.poe &" >> wgrib2.poe
-echo "h.poe &" >> wgrib2.poe
-echo "i.poe &" >> wgrib2.poe
-echo "j.poe &" >> wgrib2.poe
-echo "k.poe &" >> wgrib2.poe
-echo "l.poe &" >> wgrib2.poe
-echo "m.poe &" >> wgrib2.poe
-echo "wait" >> wgrib2.poe
-
-chmod 775 wgrib2.poe
+chmod 775 ./wgrib2.poe
 export MP_PGMMODEL=mpmd
 export MP_CMDFILE=wgrib2.poe
 #time mpirun.lsf
-time aprun -n 1 -N 1 -d $NTASK wgrib2.poe
+time aprun -n 1 -N 1 -d $NTASK ./wgrib2.poe
 export err=$?;  err_chk
-
-else
-
-echo "#!/bin/ksh" > wgrib2.poe
-echo "a.poe &" >> wgrib2.poe
-echo "b.poe &" >> wgrib2.poe
-echo "c.poe &" >> wgrib2.poe
-echo "d.poe &" >> wgrib2.poe
-echo "e.poe &" >> wgrib2.poe
-echo "f.poe &" >> wgrib2.poe
-echo "g.poe &" >> wgrib2.poe
-echo "h.poe &" >> wgrib2.poe
-echo "i.poe &" >> wgrib2.poe
-echo "l.poe &" >> wgrib2.poe
-echo "m.poe &" >> wgrib2.poe
-echo "wait" >> wgrib2.poe
-
-chmod 775 wgrib2.poe
-export MP_PGMMODEL=mpmd
-export MP_CMDFILE=wgrib2.poe
-#time mpirun.lsf
-time aprun -n 1 -N 1 -d 11 wgrib2.poe
-export err=$?;  err_chk
-
-fi
 
 # sleep 60
 sleep 1
@@ -626,7 +604,7 @@ fi
       esac
 
 
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -635,7 +613,7 @@ fi
    
 
 	echo here with FHRFRQ $FHRFRQ
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${FHRFRQ}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${FHRFRQ}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${FHRFRQ}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -667,7 +645,7 @@ fi
 
       if [ $MKPCP -eq $mk12p ];then
 
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr9}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr9}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr9}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -684,7 +662,7 @@ fi
 	    cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
 	   else
 
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr3}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -705,7 +683,7 @@ fi
            then
 	     cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
            else
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr6}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -734,7 +712,7 @@ fi
            then
             cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
 	   else
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr3}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -755,7 +733,7 @@ fi
            then
             cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
            else
-        INF=$COMIN/hiresw.t${cyc}z.${mdl}.${natgrd}${fhr6}
+        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -792,11 +770,13 @@ fi
 	IARW=1
 	fi
 
-	echo about to execute hiresw_smartprecipg2
+	echo about to execute regional_smartprecip
 	ls -l fort.*
 	sleep 2
 
-     $EXEChiresw/hiresw_smartprecipg2 <<EOF > ${ppgm}precip${freq}${fhr}.out 2>errfile_${freq}${fhr}
+      ls -l $EXECfv3/regional_smartprecip.x
+
+     $EXECfv3/regional_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>errfile_${freq}${fhr}
 $pfhr1 $pfhr2 $pfhr3 $pfhr4 $IARW
 EOF
 export err=$?; err_chk
@@ -858,7 +838,7 @@ cp ${freq}snow ${freq}snow.${fhr}_interp
   mv WRFPRS${fhr}i.tm00.temp WRFPRS${fhr}i.tm00
 	fi
 
-  cpfs ${COMROOT}/date/t${cyc}z DATE
+  cpfs ${COMROOThps}/date/t${cyc}z DATE
 
   if [ -s $prdgfl ];then  
     mv ${prdgfl} meso${rg}.NDFDf${fhr}  
@@ -872,7 +852,7 @@ cp ${freq}snow ${freq}snow.${fhr}_interp
   fi
 
   if [ $rg = "guam" ];then
-    cat  $FIXhiresw/hiresw_smartsfcr${rg}_${MODEL}.grib2 >> meso${rg}.NDFDf${fhr} 
+    cat  $FIXsar/regional_smartsfcr${rg}_${MODEL}.grib2 >> meso${rg}.NDFDf${fhr} 
   fi
   $GRB2INDEX meso${rg}.NDFDf${fhr} meso${rg}.NDFDif${fhr}
   export err=$?; err_chk

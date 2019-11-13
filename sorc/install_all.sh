@@ -43,6 +43,17 @@ fi
  ${CP} regional_stnmlist.fd/regional_stnmlist.x                 ../exec/regional_stnmlist.x
 
 #------------------------------------
+# install smartinit
+#------------------------------------
+ ${CP} regional_smartinit.fd/regional_smartinit                 ../exec/regional_smartinit.x
+
+#------------------------------------
+# install smartprecip
+#------------------------------------
+ ${CP} regional_smartprecip.fd/regional_smartprecip                 ../exec/regional_smartprecip.x
+
+
+#------------------------------------
 #------------------------------------
 #------------------------------------
 # install chgres

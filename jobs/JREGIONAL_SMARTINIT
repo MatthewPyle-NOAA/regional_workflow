@@ -1,4 +1,5 @@
 #!/bin/sh
+. $HOMEfv3/jobs/JREGIONAL_ENVIR
 
 ########################################
 # Runs HIRESW WRFBUFR and SNDP programs
@@ -17,8 +18,8 @@ export RUN=${RUN:-hiresw}
 # obtain unique process id (pid) and make temp directories
 #
 export pid=$$
-export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+export DATA=${DATA:-${DATAROOT:?}/regional_smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/regional_post_${NEST}_${MODEL}_${cyc}_${envir}}
 mkdir -p $DATA
 cd $DATA
 
@@ -30,18 +31,18 @@ export pgmout="OUTPUT.${pid}"
 
 export cycle=${cycle:-t${cyc}z}
 
-export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec}
-export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix}
-export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm}
-export USHhiresw=${USHhiresw:-$HOMEhiresw/ush}
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm}
+export USHfv3=${USHfv3:-$HOMEfv3/ush}
 
 ###################################
 # Set up the UTILITIES
 ###################################
 #module load grib_util
 
-hrs="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48"
+hrs="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
 for hr in $hrs
 do
 
@@ -50,11 +51,12 @@ do
 
   # Run setpdy and initialize PDY variables
   setpdy.sh
-  . PDY
+  . ./PDY
 done
 
-export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
-export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
+export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}/${cyc}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}/${cyc}}
+
 export COMsref=${COMsref:-$(compath.py /sref/prod)}
 
 mkdir -p $COMOUT

@@ -167,7 +167,7 @@ echo "inside f00 test"
 #  if test $SENDCOM = 'YES'
 #  then
 #      cp ${filenamthree}${fhr}.tm00 $COMOUT/$DOMOUT.t${CYC}z.awp5kmf${fhr}.grib2_${subpiece}
-      cp ${filenamthree}${fhr}.tm00 $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.conus.grib2_${subpiece}
+      cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${model}_5km.f${fhr}.conus.grib2_${subpiece}
 #  fi
 else
 
@@ -175,7 +175,7 @@ if [ $subpiece = "1" ]
 then
 echo  NOT COMPUTING PRECIP BUCKETS
 
-cp ${filenamthree}${fhr}.tm00 hiresw.t${CYC}z.${model}_5km.f${fhr}.conus.grib2
+cp ${filenamthree}${fhr}.tm00 ${RUN}.t${CYC}z.${model}_5km.f${fhr}.conus.grib2
 
 fi # subpiece=1
 
@@ -184,7 +184,7 @@ fi # subpiece=1
 #  if test $SENDCOM = 'YES'
 #  then
 #     cp $DOMOUT.t${CYC}z.awp5kmf${fhr} $COMOUT/$DOMOUT.t${CYC}z.awp5kmf${fhr}.grib2_${subpiece}
-     cp hiresw.t${CYC}z.${model}_5km.f${fhr}.conus.grib2 $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.conus.grib2_${subpiece}
+     cp ${RUN}.t${CYC}z.${model}_5km.f${fhr}.conus.grib2 $DATA/${RUN}.t${CYC}z.${model}_5km.f${fhr}.conus.grib2_${subpiece}
 #  fi
 
 fi # if f00 test

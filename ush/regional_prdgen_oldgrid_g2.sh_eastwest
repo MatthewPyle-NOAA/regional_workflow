@@ -165,11 +165,7 @@ fi
 ###############################################################
 ###############################################################
 
-  cp ${filenamthree}${fhr}.tm00 $DATA/hiresw.t${CYC}z.${MODEL}_5km.f${fhr}.conus${region}.grib2_${subpiece}
+  cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.conus${region}.grib2_${subpiece}
 
-
-#   cp ${filenamthree}${fhr}.tm00 hiresw.t${CYC}z.${MODEL}_5km.f${fhr}.conus${region}.grib2
-
-#   cp hiresw.t${CYC}z.${MODEL}_5km.f${fhr}.conus${region}.grib2 $DATA/hiresw.t${CYC}z.${MODEL}_5km.f${fhr}.conus${region}.grib2_${subpiece}
 
 fi
