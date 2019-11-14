@@ -30,22 +30,23 @@
       LOGICAL*1 LSUB
 
 !C grib2
-      INTEGER :: LUGB,LUGI,J,JDISC,JPDTN,JGDTN
+      INTEGER :: LUGB,LUGI,J,JDISC,JPDTN,JGDTN,interv
       INTEGER,DIMENSION(:) :: JIDS(200),JPDT(200),JGDT(200)
       INTEGER,DIMENSION(:) :: PDS_SNOW_HOLD(200),PDS_RAIN_HOLD(200)
       INTEGER,DIMENSION(:) :: PDS_SNOW_HOLD_EARLY(200), &
                               PDS_RAIN_HOLD_EARLY(200)
       LOGICAL :: UNPACK
       INTEGER :: K,IRET,SUBINTVL,SUBSTART
+      REAL :: rinc(5)
+      INTEGER :: idat(8),jdat(8)
       TYPE(GRIBFIELD) :: GFLD
 !C grib2
 
 
       REAL,     ALLOCATABLE :: GRID(:)
       REAL,     ALLOCATABLE :: APCP1(:),APCP2(:),APCP3(:),APCP4(:)
-      REAL,     ALLOCATABLE :: CAPCP1(:),CAPCP2(:),CAPCP3(:),CAPCP4(:)
       REAL,     ALLOCATABLE :: SNOW1(:),SNOW2(:),SNOW3(:),SNOW4(:)
-      REAL,     ALLOCATABLE :: APCPOUT(:),CAPCPOUT(:),SNOWOUT(:)
+      REAL,     ALLOCATABLE :: APCPOUT(:),SNOWOUT(:)
       LOGICAL,  ALLOCATABLE :: MASK(:)
 !--------------------------------------------------------------------------
 
@@ -145,13 +146,11 @@
         UNPACK=.true.
         
       ALLOCATE (MASK(NUMVAL),GRID(NUMVAL),STAT=kret)
-      ALLOCATE (APCP1(NUMVAL),CAPCP1(NUMVAL),SNOW1(NUMVAL),STAT=kret)
+      ALLOCATE (APCP1(NUMVAL),SNOW1(NUMVAL),STAT=kret)
       IF(kret.ne.0)THEN
        WRITE(*,*)'ERROR allocation source location: ',numval
        STOP
       END IF
-
-!   PRECIP 
 
         write(0,*) 'have NUMVAL : ', NUMVAL
 
@@ -159,10 +158,56 @@
         allocate(gfld%fld(NUMVAL))
         allocate(gfld%bmap(NUMVAL))
 
+!
+!  SNOWFALL 
+      J = 0;JPDS = -1;JPDS(3) = IGDNUM
+      JPDS(5) = 065;JPDS(6) = 001
+
+        if (IARW .eq. 0) then
+
+      JPDS(14) = FHR3
+      JPDS(15) = FHR1
+        write(0,*) 'FHR0: ', FHR0
+      if (fhr4.gt.0) JPDS(14)=FHR0
+        write(0,*) 'JPDS(14) for snow now: ', JPDS(14)
+
+        endif
+
+        JIDS=-9999
+        JPDTN=0
+        JPDT=-9999
+        JPDT(2)=13
+        JGDTN=-1
+        JGDT=-9999
+
+        call getgb2(LUGB,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
+                    UNPACK,K,GFLD,IRET)
+
+        if (IRET .ne. 0) THEN
+        
+        write(0,*) 'set SNOW1 to zero'
+        SNOW1=0.
+
+        else
+
+        SNOW1=gfld%fld
+
+!        do K=1,gfld%ipdtlen
+!        PDS_SNOW_HOLD_EARLY(K)=gfld%ipdtmpl(K)
+!        enddo
+        
+        endif
+
+! 
+
+!   PRECIP 
+
         JIDS=-9999
         JPDTN=8
         JPDT=-9999
         JPDT(2)=8
+! try forcing to get something starting at f00?
+        JPDT(9)=0
         JGDTN=-1
         JGDT=-9999
         UNPACK=.true.
@@ -181,8 +226,11 @@
         
         write(0,*) 'size(APCP1): ', size(APCP1)
         write(0,*) 'size(gfld%fld): ', size(gfld%fld)
+       
 
         APCP1=gfld%fld
+
+	write(0,*) 'min/max APCP1: ', minval(APCP1),maxval(APCP1)
 
 
         do K=1,gfld%ipdtlen
@@ -191,83 +239,16 @@
 
         endif
 
-!  CONVECTIVE PRECIP
-!      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-!      JPDS(5) = 063;JPDS(6) = 001
-!      JPDS(13) = 1
-!
-!  SNOWFALL 
-      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-      JPDS(5) = 065;JPDS(6) = 001
-
-        if (IARW .eq. 0) then
-
-      JPDS(14) = FHR3
-      JPDS(15) = FHR1
-        write(0,*) 'FHR0: ', FHR0
-      if (fhr4.gt.0) JPDS(14)=FHR0
-        write(0,*) 'JPDS(14) for snow now: ', JPDS(14)
-
-        endif
-
-        JIDS=-9999
-        JPDTN=1
-        JPDTN=8
-        JPDT=-9999
-        JPDT(2)=13
-        JGDTN=-1
-        JGDT=-9999
-
-        call getgb2(LUGB,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
-                    UNPACK,K,GFLD,IRET)
-
-        if (IRET .ne. 0) THEN
-        
-        write(0,*) 'set SNOW1 to zero'
-        SNOW1=0.
-
-        else
-
-        SNOW1=gfld%fld
-
-        do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD_EARLY(K)=gfld%ipdtmpl(K)
-        enddo
-        
-        endif
-
-
 !=======================================================
 !  READ 2nd file
 !=======================================================
 
-      ALLOCATE (APCP2(NUMVAL),CAPCP2(NUMVAL),SNOW2(NUMVAL),STAT=kret)
+      ALLOCATE (APCP2(NUMVAL),SNOW2(NUMVAL),STAT=kret)
       IF(kret.ne.0)THEN
        WRITE(*,*)'ERROR allocation source location: ',numval
        STOP
       END IF
 
-!     ACCUMULATED PRECIP 
-
-        JIDS=-9999
-        JPDTN=8
-        JPDT=-9999
-        JPDT(2)=8
-        JGDTN=-1
-        JGDT=-9999
-
-        call getgb2(LUGB2,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
-                    UNPACK,K,GFLD,IRET)
-        APCP2=gfld%fld
-
-        do K=1,gfld%ipdtlen
-        PDS_RAIN_HOLD(K)=gfld%ipdtmpl(K)
-        enddo
-
-!     ACCUMULATED CONVECTIVE PRECIP
-!      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-!      JPDS(5) = 063;JPDS(6) = 001
-!      JPDS(13) = 1
 !
 !     SNOWFALL
       J = 0;JPDS = -1;JPDS(3) = IGDNUM
@@ -279,7 +260,7 @@
         endif
 
         JIDS=-9999
-        JPDTN=8
+        JPDTN=0
         JPDT=-9999
         JPDT(2)=13
         JGDTN=-1
@@ -290,9 +271,32 @@
 
         SNOW2=gfld%fld
 
+!        do K=1,gfld%ipdtlen
+!        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
+!        enddo
+
+! -------
+
+!     ACCUMULATED PRECIP 
+
+        JIDS=-9999
+        JPDTN=8
+        JPDT=-9999
+        JPDT(2)=8
+! try forcing to get something starting at f00?
+        JPDT(9)=0
+        JGDTN=-1
+        JGDT=-9999
+
+        call getgb2(LUGB2,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
+                    UNPACK,K,GFLD,IRET)
+        APCP2=gfld%fld
+
+	write(0,*) 'min/max APCP2: ', minval(APCP2),maxval(APCP2)
         do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
+        PDS_RAIN_HOLD(K)=gfld%ipdtmpl(K)
         enddo
+
 
 
       IF (FHR4.GT.0 ) THEN
@@ -306,11 +310,37 @@
         WRITE(FNAME(6:7),FMT='(I2)')LUGB3
         CALL BAOPENR(LUGB3,FNAME,IRETGB)
 
-      ALLOCATE (APCP3(NUMVAL),CAPCP3(NUMVAL),SNOW3(NUMVAL),STAT=kret)
+      ALLOCATE (APCP3(NUMVAL),SNOW3(NUMVAL),STAT=kret)
       IF(kret.ne.0)THEN
        WRITE(*,*)'ERROR allocation source location: ',numval
        STOP
       END IF
+
+
+!     SNOWFALL
+      J = 0 ;JPDS = -1;JPDS(3) = IGDNUM
+      JPDS(5) = 065;JPDS(6) = 001
+        if (IARW .eq. 0) then
+        JPDS(14) = FHR2
+        JPDS(15) = FHR3
+        endif
+
+        JIDS=-9999
+        JPDTN=0
+        JPDT=-9999
+        JPDT(2)=13
+        JGDTN=-1
+        JGDT=-9999
+
+        call getgb2(LUGB3,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
+                    UNPACK,K,GFLD,IRET)
+        SNOW3=gfld%fld
+
+!        do K=1,gfld%ipdtlen
+!        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
+!        enddo
+
+! ---------
 
 !     ACCUMULATED PRECIP 
 
@@ -318,6 +348,8 @@
         JPDTN=8
         JPDT=-9999
         JPDT(2)=8
+! try forcing to get something starting at f00?
+        JPDT(9)=0
         JGDTN=-1
         JGDT=-9999
 
@@ -329,11 +361,18 @@
         PDS_RAIN_HOLD(K)=gfld%ipdtmpl(K)
         enddo
 
+!=======================================================
+!  READ 4th file
+!=======================================================
 
-!     ACCUMULATED CONVECTIVE PRECIP
-!      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-!      JPDS(5) = 063;JPDS(6) = 001
-!      JPDS(13) = 1
+        WRITE(FNAME(6:7),FMT='(I2)')LUGB4
+        CALL BAOPENR(LUGB4,FNAME,IRETGB)
+
+      ALLOCATE (APCP4(NUMVAL),SNOW4(NUMVAL),STAT=kret)
+      IF(kret.ne.0)THEN
+       WRITE(*,*)'ERROR allocation source location: ',numval
+       STOP
+      END IF
 
 !     SNOWFALL
       J = 0 ;JPDS = -1;JPDS(3) = IGDNUM
@@ -343,33 +382,31 @@
         JPDS(15) = FHR3
         endif
 
+
+!     SNOWFALL
+      J = 0 ;JPDS = -1;JPDS(3) = IGDNUM
+      JPDS(5) = 065;JPDS(6) = 001
+        if (IARW .eq. 0) then
+        JPDS(14) = FHR3
+        JPDS(15) = FHR4
+        endif
+
+
         JIDS=-9999
-        JPDTN=8
+        JPDTN=0
         JPDT=-9999
         JPDT(2)=13
         JGDTN=-1
         JGDT=-9999
 
-        call getgb2(LUGB3,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
+        call getgb2(LUGB4,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
                     UNPACK,K,GFLD,IRET)
-        SNOW3=gfld%fld
+        SNOW4=gfld%fld
 
-        do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
-        enddo
+!        do K=1,gfld%ipdtlen
+!        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
+!        enddo
 
-!=======================================================
-!  READ 4th file
-!=======================================================
-
-        WRITE(FNAME(6:7),FMT='(I2)')LUGB4
-        CALL BAOPENR(LUGB4,FNAME,IRETGB)
-
-      ALLOCATE (APCP4(NUMVAL),CAPCP4(NUMVAL),SNOW4(NUMVAL),STAT=kret)
-      IF(kret.ne.0)THEN
-       WRITE(*,*)'ERROR allocation source location: ',numval
-       STOP
-      END IF
 !     ACCUMULATED PRECIP 
       J = 0;JPDS = -1;JPDS(3) = IGDNUM
       JPDS(5) = 061;JPDS(6) = 001
@@ -379,6 +416,8 @@
         JPDTN=8
         JPDT=-9999
         JPDT(2)=8
+! try forcing to get something starting at f00?
+        JPDT(9)=0
         JGDTN=-1
         JGDT=-9999
 
@@ -391,56 +430,12 @@
         enddo
 
 
-!     ACCUMULATED CONVECTIVE PRECIP
-!      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-!      JPDS(5) = 063;JPDS(6) = 001
-!      JPDS(13) = 1
-
-!     SNOWFALL
-      J = 0 ;JPDS = -1;JPDS(3) = IGDNUM
-      JPDS(5) = 065;JPDS(6) = 001
-        if (IARW .eq. 0) then
-        JPDS(14) = FHR2
-        JPDS(15) = FHR3
-        endif
-
-
-!     ACCUMULATED CONVECTIVE PRECIP
-!      J = 0;JPDS = -1;JPDS(3) = IGDNUM
-!      JPDS(5) = 063;JPDS(6) = 001
-!      JPDS(13) = 1
-!
-!     SNOWFALL
-      J = 0 ;JPDS = -1;JPDS(3) = IGDNUM
-      JPDS(5) = 065;JPDS(6) = 001
-        if (IARW .eq. 0) then
-        JPDS(14) = FHR3
-        JPDS(15) = FHR4
-        endif
-
-
-        JIDS=-9999
-        JPDTN=8
-        JPDT=-9999
-        JPDT(2)=13
-        JGDTN=-1
-        JGDT=-9999
-
-        call getgb2(LUGB4,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT, &
-                    UNPACK,K,GFLD,IRET)
-        SNOW4=gfld%fld
-
-        do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
-        enddo
-
-
       ENDIF 
 
 !=======================================================
 !      OUTPUT 3, 6 or 12 hr PRECIP BUCKETS
 !=======================================================
-      ALLOCATE (APCPOUT(NUMVAL),CAPCPOUT(NUMVAL),SNOWOUT(NUMVAL),STAT=kret)
+      ALLOCATE (APCPOUT(NUMVAL),SNOWOUT(NUMVAL),STAT=kret)
       IF(kret.ne.0)THEN
        WRITE(*,*)'ERROR allocation source location: ',numval
        STOP
@@ -453,17 +448,21 @@
 
       IF (LSUB) THEN
        APCPOUT=APCP2-APCP1
-!       CAPCPOUT=CAPCP2-CAPCP1
+	write(0,*) 'here in LSUB... min/max APCPOUT: ', &
+                  minval(APCPOUT),maxval(APCPOUT)
        SNOWOUT=SNOW2-SNOW1
+          interv=3
       ELSE
        APCPOUT=APCP2+APCP1
-!       CAPCPOUT=CAPCP2+CAPCP1
+	write(0,*) 'NOT LSUB... min/max APCPOUT: ', &
+                  minval(APCPOUT),maxval(APCPOUT)
        SNOWOUT=SNOW2+SNOW1
+          interv=6
  
        IF (FHR4 .GT.0 )THEN
           APCPOUT=APCPOUT+APCP3+APCP4
-!          CAPCPOUT=CAPCPOUT+CAPCP3+CAPCP4
           SNOWOUT=SNOWOUT+SNOW3+SNOW4
+          interv=12
        ENDIF
       ENDIF
 
@@ -499,14 +498,6 @@
 
 !! use of (27) here looks wrong!
 
-!        write(0,*) 'gfld%ipdtmpl(27) bef: ', &
-!                    gfld%ipdtmpl(27)
-!        write(0,*) 'gfld%ipdtmpl(9) bef: ', &
-!                    gfld%ipdtmpl(9)
-
-!        gfld%ipdtmpl(27)=3
-!        gfld%ipdtmpl(9)=FHR1
-
        write(0,*) 'gfld%ipdtmpl(27) aft: ', &
                    gfld%ipdtmpl(27)
        write(0,*) 'gfld%ipdtmpl(9) aft: ', &
@@ -533,9 +524,9 @@
       ENDIF
 
       KPDS(5)=61
-      print *, 'writing precip', KPDS(5),KPDS(14),KPDS(15),LUGB5,MAXVAL(APCPOUT)
-      print *, 'maxval(gfld%fld): ', maxval(gfld%fld)
+      print *, 'min/maxval(gfld%fld): ', minval(gfld%fld),maxval(gfld%fld)
       WRITE(FNAME(6:7),FMT='(I2)')LUGB5
+
       CALL BAOPEN(LUGB5,FNAME,IRETGB)
 	write(6,*) 'writing to lugb5 and fname: ', lugb5, trim(fname)
 
@@ -544,21 +535,83 @@
       print *,'putgb2 return code:',iret
       CALL BACLOSE(LUGB5,IRET)
 
-!      KPDS(5)=63
-!      print *, 'writing CAPCP', KPDS(5),KPDS(14),KPDS(15),LUGB6 , MAXVAL(CAPCPOUT)
-!      WRITE(FNAME(6:7),FMT='(I2)')LUGB6
-!      CALL BAOPEN(LUGB6,FNAME,IRET)
-!      CALL PUTGB(LUGB6,NUMVAL,KPDS,KGDS,MASK,CAPCPOUT,IRET)
-!      CALL BACLOSE(LUGB6,IRET)
-
       gfld%ipdtmpl(2)=13
       gfld%fld=SNOWOUT
+
+! from fv3bucket code
+       write(0,*) 'gfld%ipdtmpl(27) entering block: ', gfld%ipdtmpl(27)
+
+        gfld%ipdtmpl(22)=1
+!        gfld%ipdtmpl(27)=interv
+
+!        write(0,*) 'interval specified in 27: ', interv
+         interv=gfld%ipdtmpl(27)
+        write(0,*) 'interval defined from 27: ', interv
+
+! -------------------------------------------
+
+
+       gfld%ipdtmpl(1)=1
+       gfld%ipdtmpl(2)=13
+       gfld%ipdtmpl(3)=2
+       gfld%ipdtmpl(4)=0
+       gfld%ipdtmpl(5)=84
+       gfld%ipdtmpl(6)=0 ! hours cutoff
+       gfld%ipdtmpl(7)=0 ! minutes cutoff
+       gfld%ipdtmpl(8)=1 ! units of hours
+       gfld%ipdtmpl(9)=ihrs1 ! earlier forecast time of period?
+       gfld%ipdtmpl(10)=1 ! sfc
+       gfld%ipdtmpl(11)=1 ! sfc
+       gfld%ipdtmpl(12)=1 ! sfc
+       gfld%ipdtmpl(13)=255 ! sfc
+       gfld%ipdtmpl(14)=0 ! sfc
+       gfld%ipdtmpl(15)=0 ! sfc
+
+!!! need to figure out how to do this end of period date stuff right
+
+       rinc=0.
+       rinc(2)=float(ihrs1+interv)
+
+       write(0,*) 'rinc: ', rinc
+       idat=0
+       idat(1)=gfld%idsect(6)
+       idat(2)=gfld%idsect(7)
+       idat(3)=gfld%idsect(8)
+       idat(5)=gfld%idsect(9)
+        write(0,*) 'idat(1:3),idat(5): ', &
+       idat(1:3),idat(5)
+
+       call w3movdat(rinc,idat,jdat)
+
+        write(0,*) 'jdat(1:3),jdat(5): ', &
+       jdat(1:3),jdat(5)
+       gfld%ipdtmpl(16)=jdat(1)
+       gfld%ipdtmpl(17)=jdat(2)
+       gfld%ipdtmpl(18)=jdat(3)
+       gfld%ipdtmpl(19)=jdat(5)
+       gfld%ipdtmpl(20)=0
+       gfld%ipdtmpl(21)=0
+
+        gfld%ipdtnum=8
+        gfld%ipdtmpl(22)=1
+        gfld%ipdtmpl(23)=0
+        gfld%ipdtmpl(24)=1 ! accum?
+        gfld%ipdtmpl(25)=2 ! fcst hour increments
+        gfld%ipdtmpl(26)=1 ! hours?
+        gfld%ipdtmpl(27)=interv
+        gfld%ipdtmpl(28)=255
+        gfld%ipdtmpl(29)=0
+
+        do J=1,29
+        write(0,*) 'J,gfld%ipdtmpl(J): ', J,gfld%ipdtmpl(J)
+        enddo
+
+
 
       KPDS(5)=65
       print *, 'writing SNOW', KPDS(5),KPDS(14),KPDS(15),LUGB7, MAXVAL(SNOWOUT)
       WRITE(FNAME(6:7),FMT='(I2)')LUGB7
       CALL BAOPEN(LUGB7,FNAME,IRET)
-!      CALL PUTGB(LUGB7,NUMVAL,KPDS,KGDS,MASK,SNOWOUT,IRET)
       call putgb2(LUGB7,GFLD,IRET)
       print *,'putgb2 return code:',iret
       CALL BACLOSE(LUGB7,IRET)

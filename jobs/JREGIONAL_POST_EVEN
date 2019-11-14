@@ -8,6 +8,7 @@ set -x
 # SENDCOM - Copy files to /com directory
 ####################################
 export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
 
 ####################################
 # Specify Execution Areas

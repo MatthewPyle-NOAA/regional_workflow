@@ -13,6 +13,7 @@ date
 ###############################
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
+export SENDCOM=${SENDCOM:-YES}
 
 # 
 # obtain unique process id (pid) and make temp directories

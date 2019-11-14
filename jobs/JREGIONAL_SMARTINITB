@@ -13,6 +13,7 @@ date
 ###############################
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
+export SENDCOM=${SENDCOM:-YES}
 
 export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
 
@@ -55,8 +56,8 @@ export USHfv3=${USHfv3:-$HOMEfv3/ush}
 setpdy.sh
 . ./PDY
 
-export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
-export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}/${cyc}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}/${cyc}}
 export COMsref=${COMsref:-$(compath.py sref/prod)}
 
 mkdir -p $COMOUT
