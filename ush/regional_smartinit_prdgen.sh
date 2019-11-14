@@ -508,7 +508,7 @@ fi
 #           eg: fhr=12,24,36
 #     Create 12 hour precip at 00/12 UTC valid times
 #-------------------------------------------------------------
-    if [ $check -eq 0 -a $MODEL = "arw" ]
+    if [ $check -eq 0 -a $MODEL != "nmmb" ]
     then
       mk3p=3
       ppgm=make
@@ -523,6 +523,7 @@ fi
 	echo mk6p and ppgm are $mk6p $ppgm
         else
       ppgm=make
+        echo for 6h doing ppgm $ppgm
         fi
     fi
 
@@ -776,7 +777,7 @@ fi
 
       ls -l $EXECfv3/regional_smartprecip.x
 
-     $EXECfv3/regional_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>errfile_${freq}${fhr}
+     $EXECfv3/regional_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>&1 
 $pfhr1 $pfhr2 $pfhr3 $pfhr4 $IARW
 EOF
 export err=$?; err_chk

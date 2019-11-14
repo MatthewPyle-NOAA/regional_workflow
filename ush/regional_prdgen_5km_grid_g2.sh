@@ -67,23 +67,30 @@ export tmmark=tm00
 
 if [ $DOMIN_SMALL = "conus" ]
 then
-cp $PARMhiresw/hiresw_conus_awp5km.txt_${subpiece} regional_grid_extract.txt
+cp $PARMfv3/hiresw_conus_awp5km.txt_${subpiece} regional_grid_extract.txt
 else
-cp $PARMhiresw/hiresw_conus_awp5km.txt regional_grid_extract.txt
+cp $PARMfv3/hiresw_conus_awp5km.txt regional_grid_extract.txt
 fi
 
 if [ $DOMIN_SMALL = "conus" ]
 then
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
+
+INPUT_DATA_FORE=${INPUT_DATA}
+
+# $DATA should be post working directory
+
+INPUT_DATA=${DATA}
+
 
 fi
 
@@ -95,7 +102,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA/postdone${fhr}.tm00 ]
+ if [ -s $INPUT_DATA_FORE/postdone${fhr}.tm00 ]
  then
    break
  else
@@ -104,13 +111,15 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA/postdone${fhr}.tm00"
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA_FORE/postdone${fhr}.tm00"
    err_exit $msg
  fi
 done
 
 
 ### extract just needed items
+
+echo INPUT_DATA is $INPUT_DATA
 
 $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 | grep -F -f regional_grid_extract.txt | $WGRIB2 -i -grib inputs.grb $INPUT_DATA/BGDAWP${fhr}.tm00
 export err=$?; err_chk

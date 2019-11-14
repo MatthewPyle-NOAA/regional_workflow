@@ -116,12 +116,12 @@ if [ $tmmark = tm00 ] ; then
       cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
     else
       cp ${PARMfv3}/input_sar_${dom}.nml input.nml
-      if [ $dom = conus ] ; then
+      if [ ! -e input.nml ] ; then
+         echo "FATAL ERROR: no input_sar_${dom}.nml in PARMfv3 directory.  Create one!"
+      else
         mv input.nml input.nml.tmp
         cat input.nml.tmp | \
             sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
-      elif [ ! -e input.nml ] ; then
-         echo "FATAL ERROR: no input_sar_${dom}.nml in PARMfv3 directory.  Create one!"
       fi
     fi
   fi
