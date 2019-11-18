@@ -1,29 +1,21 @@
 #! /bin/sh
 
 
-module purge
+module purge >& /dev/null
 
 module load ncep
 module load craype-sandybridge
 module use -a /opt/cray/modulefiles
 
-module load -a ./hiresw_module
+module load -a ../modulefiles/wcoss_cray/hiresw_fv3_module
 
 module list
 
 cd ./regional_bufr.fd
 
-# make clean
-
-rm PROF_FV3SAR_NET.o
-make
-
-
-cd ../regional_sndp.fd
+make clean
 
 make
 
+cd ../
 
-cd ../regional_stnmlist.fd
-
-make

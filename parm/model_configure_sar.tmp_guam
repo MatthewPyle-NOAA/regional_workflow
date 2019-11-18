@@ -29,6 +29,9 @@ filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
+ideflate:                1
+nbits:                   18
+
 
 output_grid:             'rotated_latlon'
 cen_lon:                 146.0  # central longitude

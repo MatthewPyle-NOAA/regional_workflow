@@ -57,6 +57,26 @@ echo STARTING POST with fhr $fhr
 while [ $fhr -le $fhrend ]
 do
 
+looplim=45
+loop=1
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $INPUT_DATA/logf0${fhr} ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/logf0${fhr}"
+   err_exit $msg
+ fi
+done
+
+
 if [ $tmmark = tm00 ] ; then
   export NEWDATE=`${NDATE} +${fhr} $CDATE`
 else
@@ -121,6 +141,7 @@ echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 east &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 east &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 west &" >> $DATA/poescript_${fhr}
@@ -128,7 +149,7 @@ echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 wes
 echo "$USHfv3/regional_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 14 $DATA/poescript_${fhr} "
+command="aprun -n 1 -N 1 -d 15 $DATA/poescript_${fhr} "
 
 time $command
 export err=$?; err_chk
@@ -151,7 +172,7 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${
 
 ### change to use a PARM .txt file, and do for CONUS and AK
 
-# cp $PARMhiresw/hiresw_subset.txt .
+# cp $PARMfv3/hiresw_subset.txt .
 
 # $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 |  grep -F -f hiresw_subset.txt | \
 # $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
@@ -249,7 +270,7 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/$
     fi
 
 
-cp $PARMhiresw/hiresw_subset.txt .
+cp $PARMfv3/hiresw_subset.txt .
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f hiresw_subset.txt | \
 $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
@@ -300,10 +321,10 @@ if [ $SENDCOM = YES ]
 then
 
   if [ $tmmark = tm00 ] ; then
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
+#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
     mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
   else
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
+#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
     mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
   fi
 
