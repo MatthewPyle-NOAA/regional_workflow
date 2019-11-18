@@ -67,6 +67,24 @@ echo " .... Building post .... "
 }
 
 #------------------------------------
+# build bufr
+#------------------------------------
+$Build_bufr && {
+echo " .... Building bufr .... "
+./build_bufr.sh > $logs_dir/build_bufr.log 2>&1
+}
+
+#------------------------------------
+# build sndp
+#------------------------------------
+$Build_sndp && {
+echo " .... Building sndp .... "
+./build_sndp.sh > $logs_dir/build_sndp.log 2>&1
+}
+
+
+
+#------------------------------------
 # build utils
 #------------------------------------
 $Build_utils && {
@@ -74,13 +92,6 @@ echo " .... Building utils .... "
 ./build_utils.sh > $logs_dir/build_utils.log 2>&1
 }
 
-#------------------------------------
-# build gsi
-#------------------------------------
-$Build_gsi && {
-echo " .... Building gsi .... "
-./build_gsi.sh > $logs_dir/build_gsi.log 2>&1
-}
 
 echo;echo " .... Build system finished .... "
 

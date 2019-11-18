@@ -64,6 +64,8 @@ then
 template=regional_workflow.xml.in_akconus
 echo defined template as $template
 pwd
+else
+template=regional_workflow.xml.in_small
 
 fi
 

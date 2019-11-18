@@ -536,6 +536,16 @@
       CALL BACLOSE(LUGB5,IRET)
 
       gfld%ipdtmpl(2)=13
+
+! make SNOWOUT positive definite?  FV3 differences will show melting
+
+	write(0,*) 'min/max SNOWOUT pre cap: ', minval(SNOWOUT),maxval(SNOWOUT)
+      do I=1,NUMVAL
+       SNOWOUT(I)=max(SNOWOUT(I),0.)
+      ENDDO
+
+	write(0,*) 'min/max SNOWOUT post cap: ', minval(SNOWOUT),maxval(SNOWOUT)
+
       gfld%fld=SNOWOUT
 
 ! from fv3bucket code

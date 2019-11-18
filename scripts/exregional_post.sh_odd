@@ -53,9 +53,27 @@ fhr=${fhrsave}
 
 echo STARTING POST with fhr $fhr
 
-
 while [ $fhr -le $fhrend ]
 do
+
+looplim=45
+loop=1
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $INPUT_DATA/logf0${fhr} ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/logf0${fhr}"
+   err_exit $msg
+ fi
+done
 
 if [ $tmmark = tm00 ] ; then
   export NEWDATE=`${NDATE} +${fhr} $CDATE`
@@ -147,7 +165,7 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${
 
 ### change to use a PARM .txt file, and do for CONUS and AK
 
-# cp $PARMhiresw/hiresw_subset.txt .
+# cp $PARMfv3/hiresw_subset.txt .
 
 # $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 |  grep -F -f hiresw_subset.txt | \
 # $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
@@ -246,7 +264,7 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/$
     fi
 
 
-cp $PARMhiresw/hiresw_subset.txt .
+cp $PARMfv3/hiresw_subset.txt .
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f hiresw_subset.txt | \
 $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
@@ -296,10 +314,10 @@ export err=$?; err_chk
 if [ $SENDCOM = YES ]
 then
   if [ $tmmark = tm00 ] ; then
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
+#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
+    mv BGDAWP${fhr}.${tmmark}            ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
   else
-    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
+#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
     mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
   fi
 fi
