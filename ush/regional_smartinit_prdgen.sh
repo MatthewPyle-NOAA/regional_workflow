@@ -179,7 +179,7 @@ grdextmerc=" 0 64 2500 2500"
       grid="255 1 177 129 16829  -68196 128 19747  -63972 20000 $grdextmerc";;
      akarw|akmem2arw)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
-     aknmmb|prfv3)  sgrb=216;ogrd=91
+     aknmmb|akfv3)  sgrb=216;ogrd=91
       grid="255 5 1649 1105 40530 181429 8 210000 2976 2976 0 64 0 25000 25000";;
      conusarw|conusmem2arw)  sgrb=212;ogrd=184 
       grid="255 3 2145 1377 20192 238446 8 265000 2540 2540 $grdext"
@@ -224,6 +224,32 @@ if [ $ffhr -gt 0 -a $sgrb -ne 999 ]; then
 
 # get the sref precip fields that we need
 echo srefcyc_3= $srefcyc
+
+# here
+
+loop=1
+looplim=90
+
+filecheck=$COMINsref/sref.t${srefcyc}z.pgrb${sgrb}.prob_3hrly.grib2
+
+while [ $loop -le $looplim ]
+do
+ if [ -s $filecheck ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $filecheck"
+   err_exit $msg
+ fi
+done
+
+# end here
+
   cpfs $COMINsref/sref.t${srefcyc}z.pgrb${sgrb}.prob_3hrly.grib2 SREFPROB
 
   if [ ! -s SREFPROB ]; then
@@ -334,6 +360,28 @@ fi
 
 INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
 
+loop=1
+looplim=90
+
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $INF ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INF"
+   err_exit $msg
+ fi
+done
+
+
+
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_1 list_1.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_2 list_2.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_3 list_3.txt
@@ -346,6 +394,8 @@ cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_9 list_9.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_10 list_10.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_11 list_11.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_12 list_12.txt
+cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_13 list_13.txt
+cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_14 list_14.txt
 cp ${PARMfv3}/hiresw_smartinit.parmlist.g2_nn list_nn.txt
 
 
@@ -355,7 +405,7 @@ rm inputs.grb2_1 inputs.grb2_2 inputs.grb2_3 inputs.grb2_4 inputs.grb2_5 inputs.
 
 if [ $outreg != "conusmem2" -a $outreg != "himem2" -a  $outreg != "prmem2" -a $outreg != "akmem2" ]
 then
-rm inputs.grb2_9 inputs.grb2_10 inputs.grb2_11 inputs.grb2_12  inputs.grb2_nn 
+rm inputs.grb2_9 inputs.grb2_10 inputs.grb2_11 inputs.grb2_12 inputs.grb2_13 inputs.grb2_14  inputs.grb2_nn 
 else
 rm inputs.grb2_9 inputs.grb2_12  inputs.grb2_nn 
 fi
@@ -390,6 +440,10 @@ export err=$?; err_chk
 fi
 
 $WGRIB2 $INF | grep -F -f list_12.txt | $WGRIB2 -i -grib inputs.grb2_12 $INF
+export err=$?; err_chk
+$WGRIB2 $INF | grep -F -f list_13.txt | $WGRIB2 -i -grib inputs.grb2_13 $INF
+export err=$?; err_chk
+$WGRIB2 $INF | grep -F -f list_14.txt | $WGRIB2 -i -grib inputs.grb2_14 $INF
 export err=$?; err_chk
 $WGRIB2 $INF | grep -F -f list_nn.txt | $WGRIB2 -i -grib inputs.grb2_nn $INF
 export err=$?; err_chk
@@ -432,6 +486,10 @@ echo "$WGRIB2  inputs.grb2_12  -set_grib_type ${compress} -new_grid_winds grid -
 echo "#! /bin/ksh" > ./m.poe
 echo "$WGRIB2 inputs.grb2_nn  -set_grib_type ${compress} -new_grid_interpolation neighbor -new_grid_winds grid -new_grid ${wgrib2def} m_nn; $FSYNC m_nn; mv m_nn model.ndfd_nn" >> ./m.poe
 
+echo "#! /bin/ksh" > ./n.poe
+echo "$WGRIB2  inputs.grb2_13  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m13; $FSYNC m13; mv m13 model.ndfd_13" >> ./n.poe
+echo "#! /bin/ksh" > ./o.poe
+echo "$WGRIB2  inputs.grb2_14  -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} m14; $FSYNC m14; mv m14 model.ndfd_14" >> ./o.poe
 
 chmod 775 ./a.poe
 chmod 775 ./b.poe
@@ -446,6 +504,8 @@ chmod 775 ./j.poe
 chmod 775 ./k.poe
 chmod 775 ./l.poe
 chmod 775 ./m.poe
+chmod 775 ./n.poe
+chmod 775 ./o.poe
 
 echo "#!/bin/ksh" > ./wgrib2.poe
 echo "./a.poe &" >> ./wgrib2.poe
@@ -461,6 +521,8 @@ echo "./j.poe &" >> ./wgrib2.poe
 echo "./k.poe &" >> ./wgrib2.poe
 echo "./l.poe &" >> ./wgrib2.poe
 echo "./m.poe &" >> ./wgrib2.poe
+echo "./n.poe &" >> ./wgrib2.poe
+echo "./o.poe &" >> ./wgrib2.poe
 echo "wait" >> ./wgrib2.poe
 
 chmod 775 ./wgrib2.poe
@@ -479,7 +541,7 @@ if [ $outreg != "conusmem2" -a $outreg != "himem2" -a  $outreg != "prmem2" -a $o
 then
 
 while (! cat model.ndfd_1 model.ndfd_2 model.ndfd_3 model.ndfd_4 model.ndfd_5 model.ndfd_6 \
-    model.ndfd_7 model.ndfd_8 model.ndfd_9 model.ndfd_10 model.ndfd_11 model.ndfd_12 model.ndfd_nn > NDFD${fhr}.tm00 ) ; do sleep 1; done
+    model.ndfd_7 model.ndfd_8 model.ndfd_9 model.ndfd_10 model.ndfd_11 model.ndfd_12 model.ndfd_13 model.ndfd_14 model.ndfd_nn > NDFD${fhr}.tm00 ) ; do sleep 1; done
 
 else
 

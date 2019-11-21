@@ -60,6 +60,10 @@ elif [ $DOMIN_SMALL = "guam" ]
 then
   filenamthree="fv3.GU05"
   wgrib2def="latlon 141.0:223:.045 11.7:170:.045"
+elif [ $DOMIN_SMALL = "conus" ]
+then
+  filenamthree="fv3.CO05"
+  wgrib2def="lambert:265:25:25 226.541:1473:5079 12.190:1025:5079"
 fi
 
 filedir=$DATA
@@ -83,24 +87,24 @@ cp $PARMfv3/hiresw_awpreg.txt regional_grid_extract.txt
 fi
 
 
-INPUT_DATA_FORE=${INPUT_DATA}
+# INPUT_DATA_FORE=${INPUT_DATA}
 
 # $DATA should be post working directory
 
-INPUT_DATA=${DATA}
+# INPUT_DATA=${DATA}
 
 # if [ $DOMIN_SMALL = "conus" ]
 # then
 
-# if [ $fhr -eq 00 ]
-# then
-# INPUT_DATA=$INPUT_DATA_EVEN
-# elif [ $fhr%2 -eq 0 ]
-# then
-# INPUT_DATA=$INPUT_DATA_EVEN
-# else
-# INPUT_DATA=$INPUT_DATA_ODD
-# fi
+if [ $fhr -eq 00 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+elif [ $fhr%2 -eq 0 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+else
+INPUT_DATA=$INPUT_DATA_ODD
+fi
 
 # fi
 
@@ -110,7 +114,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA_FORE/postdone${fhr}.tm00 ]
+ if [ -s $INPUT_DATA/postdone${fhr} ]
  then
    break
  else
@@ -119,7 +123,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA_FORE/postdone${fhr}.tm00"
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA/postdone${fhr}"
    err_exit $msg
  fi
 done

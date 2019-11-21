@@ -291,8 +291,8 @@ typeset -Z2 fhr1 fhr2 fhr3 fhr6 fhr9 fhr12 fhr ffhr
 #=================================================================
 
 # CHANGE : for non-conus look in FIXnam for topo,land files
-  cpfs $FIXfv3/${topofl} TOPONDFD
-  cpfs $FIXfv3/${maskfl} LANDNDFD
+  cpfs $FIXsar/${topofl} TOPONDFD
+  cpfs $FIXsar/${maskfl} LANDNDFD
   lnsf TOPONDFD     fort.46
   lnsf LANDNDFD     fort.48
   if [ $ext = grb ];then
@@ -582,16 +582,19 @@ sleep 2 # safety sleep
 
 echo RUNTYP is $RUNTYP
 
-if [ $RUNTYP != "conusmem2arw" -a $RUNTYP != "akmem2arw" -a $RUNTYP != "himem2arw" -a $RUNTYP != "prmem2arw" ]
+if [ $RUNTYP = "akfv3" -o $RUNTYP = "prfv3"  -o $RUNTYP = "hifv3"  -o $RUNTYP = "conusfv3" ]
 then
-NLEV=50
-else
+NLEV=60
+elif [ $RUNTYP = "conusmem2arw" -o $RUNTYP = "akmem2arw" -o $RUNTYP = "himem2arw" -o $RUNTYP = "prmem2arw" ]
+then
 NLEV=40
+else
+NLEV=50
 fi
 
 echo execute with $NLEV levels
 
-$EXECfv3/regional_smartinit.x $cyc $fhr $ogrd $RGIN $inest $MODEL $NLEV > smartinit.out${fhr} 2>&1
+aprun -n 1 -N 1 -d 1 $EXECfv3/regional_smartinit.x $cyc $fhr $ogrd $RGIN $inest $MODEL $NLEV > smartinit.out${fhr} 2>&1
 export err=$?; err_chk
 
 

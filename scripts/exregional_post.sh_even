@@ -29,7 +29,7 @@ do
 
 incr=2
 
-if [ -e postdone${fhr}.${tmmark} ]
+if [ -e postdone${fhr} ]
 then
 let fhr=fhr+incr
 
@@ -120,217 +120,8 @@ export err=$?; err_chk
 # Run wgrib2
 domain=${dom}
 
-echo done > ${INPUT_DATA}/postdone${fhr}.${tmmark}
+echo done > postdone${fhr}
 
-
-################################################
-if [ $dom = "conus" ]
-then
-################################################
-
-
-# put USH calls in here
-
-echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 west &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 west &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "wait" >> $DATA/poescript_${fhr}
-chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 15 $DATA/poescript_${fhr} "
-
-time $command
-export err=$?; err_chk
-
-# reassemble the large 5 km output grid
-
-  if test $SENDCOM = 'YES'
-  then
-
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_4 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_5 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_6 > \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
-
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
-
-## subset the full CONUS grid to approximate the CAM common grid list
-## now likely will interpolate subset products to 3 km grid instead for CONUS
-
-### change to use a PARM .txt file, and do for CONUS and AK
-
-# cp $PARMfv3/hiresw_subset.txt .
-
-# $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 |  grep -F -f hiresw_subset.txt | \
-# $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
-
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_1  > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx
-
-
-    if [ $SENDDBN = YES ]; then
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
-    fi
-
-  fi # SENDCOM
-
-
-rm  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_4 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_5 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_6
-
-# reassemble the ndfd output grid
-
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_1  $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_3 > $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2
-
-
-
-s this overwritten by smartinit output?
-#  if test $SENDCOM = 'YES'
-#  then
-# cp $DATA/prdgen_full/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2
-#   fi
-
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2_1
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2_2
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2_3
-
-# reassemble the legacy 5 km output grid
-
-  if test $SENDCOM = 'YES'
-  then
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
-
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
-
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2.idx
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2.idx
-  fi
-
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2
-
-################################################
-elif [ $dom = "ak" ]
-then
-################################################
-
-echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
-echo "wait" >> $DATA/poescript_${fhr}
-chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 5 $DATA/poescript_${fhr} "
-
-time $command
-export err=$?; err_chk
-
-
-  if test $SENDCOM = 'YES'
-  then
-
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4 > \
-  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
-   $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
-
-    if [ $SENDDBN = YES ]; then
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
-    fi
-
-
-cp $PARMfv3/hiresw_subset.txt .
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f hiresw_subset.txt | \
-$WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
-
-  fi
-
-################################################
-else
-################################################
- 
-echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "wait" >> $DATA/poescript_${fhr}
-chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 2 $DATA/poescript_${fhr} "
-
-time $command
-export err=$?; err_chk
-
-
-  if test $SENDCOM = 'YES'
-  then
-
-echo here with DATA $DATA
-
-ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
-
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
-
-    if [ $SENDDBN = YES ]; then
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
-    fi
-
-  fi
-
-fi
-
-export err=$?; err_chk
-
-if [ $SENDCOM = YES ]
-then
-
-  if [ $tmmark = tm00 ] ; then
-#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.grib2
-  else
-#    mv ${domain}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.f${fhr}.${tmmark}.grib2
-    mv BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${domain}.natprs.f${fhr}.${tmmark}.grib2
-  fi
-
-fi
-
-echo done > ${INPUT_DATA}/prdgendone${fhr}.${tmmark}
 
 fhr=`expr $fhr + $INCR`
 
@@ -338,6 +129,7 @@ if [ $fhr -lt 10 ]
 then
 fhr=0$fhr
 fi
+
 
 
 done

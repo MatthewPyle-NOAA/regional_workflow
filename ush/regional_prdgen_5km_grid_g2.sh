@@ -72,28 +72,27 @@ else
 cp $PARMfv3/hiresw_conus_awp5km.txt regional_grid_extract.txt
 fi
 
-if [ $DOMIN_SMALL = "conus" ]
+# if [ $DOMIN_SMALL = "conus" ]
+# then
+
+if [ $fhr -eq 00 ]
 then
+INPUT_DATA=$INPUT_DATA_EVEN
+elif [ $fhr%2 -eq 0 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+else
+INPUT_DATA=$INPUT_DATA_ODD
+fi
 
-# if [ $fhr -eq 00 ]
-# then
-# INPUT_DATA=$INPUT_DATA_EVEN
-# elif [ $fhr%2 -eq 0 ]
-# then
-# INPUT_DATA=$INPUT_DATA_EVEN
-# else
-# INPUT_DATA=$INPUT_DATA_ODD
-# fi
-
-INPUT_DATA_FORE=${INPUT_DATA}
+# INPUT_DATA_FORE=${INPUT_DATA}
 
 # $DATA should be post working directory
 
-INPUT_DATA=${DATA}
+# INPUT_DATA=${DATA}
 
 
-fi
-
+# fi
 
 
 looplim=90
@@ -102,7 +101,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA_FORE/postdone${fhr}.tm00 ]
+ if [ -s $INPUT_DATA/postdone${fhr} ]
  then
    break
  else
@@ -111,7 +110,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA_FORE/postdone${fhr}.tm00"
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA/postdone${fhr}"
    err_exit $msg
  fi
 done
@@ -180,13 +179,13 @@ echo "inside f00 test"
 #  fi
 else
 
-if [ $subpiece = "1" ]
-then
-echo  NOT COMPUTING PRECIP BUCKETS
+# if [ $subpiece = "1" ]
+# then
+# echo  NOT COMPUTING PRECIP BUCKETS
 
 cp ${filenamthree}${fhr}.tm00 ${RUN}.t${CYC}z.${model}_5km.f${fhr}.conus.grib2
 
-fi # subpiece=1
+# fi # subpiece=1
 
 ###### DONE PRECIP BUCKET
 

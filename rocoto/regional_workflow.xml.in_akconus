@@ -190,6 +190,7 @@
         <and>
           <datadep age="10:00" minsize="15779010324"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf006.nemsio</cyclestr></datadep>
           <datadep age="10:00" minsize="1170221688"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.sfcf006.nemsio</cyclestr></datadep>
+          <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </and>
     </dependency>
@@ -230,6 +231,7 @@
         <and>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf063.nemsio</cyclestr></datadep>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf066.nemsio</cyclestr></datadep> 
+          <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </and>
     </dependency>
@@ -298,7 +300,45 @@
       </dependency>
    </task>
 
+  <task name="prdgenodd" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JREGIONAL_PRDGEN_ODD</command>
+      <jobname>regional_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &PRDGEN_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>regional_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <dependency>
+          <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
+           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+      </dependency>
+   </task>
 
+  <task name="prdgeneven" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JREGIONAL_PRDGEN_EVEN</command>
+      <jobname>regional_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &PRDGEN_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>regional_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <dependency>
+          <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
+           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+      </dependency>
+   </task>
 
 
 <!--  *******************************************************************  -->
@@ -343,12 +383,14 @@
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>regional_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>POST_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
-          <!-- Start the post if the forecast is running or if it has already completed.  -->
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/postdone01.tm00</cyclestr></datadep>
+         <and>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+           <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+         </and>
       </dependency>
    </task>
 
@@ -360,15 +402,19 @@
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
       &RESERVATION;
-      &ALTPOST_RESOURCES_@[DOMAIN:-conus];
+      &BUFRPOST_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>regional_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <envar><name>POST_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>PRDGEN_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>PRDGEN_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
-          <!-- Start the post if the forecast is running or if it has already completed.  -->
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/postdone01.tm00</cyclestr></datadep>
+         <and>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+           <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+         </and>
       </dependency>
    </task>
 
@@ -378,7 +424,7 @@
 
   <task name="archive" maxtries="&MAX_TRIES_TRANSFER;">
     <command>&PRE; &JOBS;/JREGIONAL_ARCHIVE</command>
-    <jobname>regional_archive_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <jobname>regional_archive_&DOMAIN;</jobname>
     <join><cyclestr>&LOGDIR;/regional_archive_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_SERVICE;</queue>
@@ -386,12 +432,14 @@
     &RESERVATION;
     &ARCHIVE_RESOURCES;
     &ENV_VARS;
-    <envar><name>job</name><value>regional_archive_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>job</name><value>regional_archive_&DOMAIN;</value></envar>
 
     <dependency>
       <and>
-        <taskdep task="postodd"/>
-        <taskdep task="posteven"/>
+        <taskdep task="prdgenodd"/>
+        <taskdep task="smartinit_b"/>
+        <taskdep task="prdgeneven"/>
+        <taskdep task="bufrpost"/>
       </and>
     </dependency>
   </task>

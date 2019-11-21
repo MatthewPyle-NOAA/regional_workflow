@@ -108,11 +108,22 @@ export tmmark=tm00
 # make GRIB file with pressure data every 25 mb for EMC's FVS
 # verification
 
-INPUT_DATA_FORE=${INPUT_DATA}
+if [ $fhr -eq 00 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+elif [ $fhr%2 -eq 0 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+else
+INPUT_DATA=$INPUT_DATA_ODD
+fi
+
+
+# INPUT_DATA_FORE=${INPUT_DATA}
 
 # DATA should be post working directory
 
-INPUT_DATA=${DATA}
+# INPUT_DATA=${DATA}
 
 use_1h=0
 use_3h=0
@@ -170,7 +181,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA_FORE/postdone${fhr}.tm00 ]
+ if [ -s $INPUT_DATA/postdone${fhr} ]
  then
    break
  else
@@ -179,7 +190,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA_FORE/postdone${fhr}.tm00"
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA/postdone${fhr}"
    err_exit $msg
  fi
 done
