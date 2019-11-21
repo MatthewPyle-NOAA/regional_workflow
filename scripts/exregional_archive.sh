@@ -18,6 +18,8 @@ cd $DATA
 #
 #####################################################################
 
+
+
 ########################################
 set -x
 msg="JOB $job HAS BEGUN"
@@ -27,12 +29,32 @@ postmsg "$jlogfile" "$msg"
 # Run setpdy and initialize PDY variables
 errsum=0
 
+echo RUN is $RUN
+echo model is $model
+
+echo COMOUT is $COMOUT
+echo cyc is $cyc
+
+echo PDY is $PDY
+
    case $job in
 
    jrun_history00_${RUN})
-
+      
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}00
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 00
+      ;;
+
+   regional_archive_pr)
+      
+      $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
+      export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}
+      ;;
+
+   regional_archive_conus)
+      
+      $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
+      export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}
       ;;
 
 #   jrun_history12_fv3sar)

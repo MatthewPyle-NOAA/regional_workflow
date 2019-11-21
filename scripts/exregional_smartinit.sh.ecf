@@ -56,12 +56,23 @@ echo start smartinit with hr $hr
 while [ $hr -le $hrlim ]
 do
 
+if [ $hr -eq 00 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+elif [ $hr%2 -eq 0 ]
+then
+INPUT_DATA=$INPUT_DATA_EVEN
+else
+INPUT_DATA=$INPUT_DATA_ODD
+fi
+
+
 looplim=45
 loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA/postdone${hr}.tm00 ]
+ if [ -s $INPUT_DATA/postdone${hr} ]
  then
    break
  else
@@ -70,7 +81,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/postdone${fhr}.tm00"
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/postdone${fhr}"
    err_exit $msg
  fi
 done

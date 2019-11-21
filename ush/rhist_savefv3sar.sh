@@ -53,6 +53,8 @@ yrmoday=`echo $2 | cut -c 1-8`
 rhcyc=`echo $2 | cut -c 9-10`
 rhcycle=t${rhcyc}z
 
+echo USER is $USER
+
 hpssdir0=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 hpssdir1=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 hpssdir2=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
@@ -65,14 +67,24 @@ hpssdir2=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 # 
 
 cd $DATA
+
+if [ ${dom} = "conus" ]
+then
 ls -1 $dir | grep ${rhcycle} | awk '
-            /conus.f/ { print "./"$0 > "conus" ; next }
+            /${dom}.grib2/ { print "./"$0 > "conus" ; next }
             { print "./"$0 > "therest" ; next } '
+elif [ ${dom} = "pr" ]
+then
+ls -1 $dir | grep ${rhcycle} | awk '
+            /${dom}.grib2/ { print "./"$0 > "pr" ; next }
+            { print "./"$0 > "therest" ; next } '
+fi
+
 cd $dir
 
 #  Now create a tar file for each group of files
 
-for file in conus
+for file in ${dom}
 do
 
    # 
@@ -80,8 +92,6 @@ do
    #
    case $file in
       conus)  hpssdir=$hpssdir0
-              rhistdir=$rhistdir0;;
-      *)      hpssdir=$hpssdir0
               rhistdir=$rhistdir0;;
    esac
 

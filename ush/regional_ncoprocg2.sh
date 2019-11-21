@@ -30,20 +30,26 @@ fi
 
 ### 
 
-# believe POST_DATA could be even/odd post directories
+# believe PRDGEN_DATA could be even/odd post directories
+
+
+if [ $outreg = "ak" -o $outreg = "conus" ]
+then
 
 if [ $fhr -eq 0 ]
 then
- POST_DATA=$POST_DATA_EVEN
+ PRDGEN_DATA=$PRDGEN_DATA_EVEN
 
 else
 
  if [ ${fhr}%2 -eq 0 ]
  then
-  POST_DATA=$POST_DATA_EVEN
+  PRDGEN_DATA=$PRDGEN_DATA_EVEN
  else
-  POST_DATA=$POST_DATA_ODD
+  PRDGEN_DATA=$PRDGEN_DATA_ODD
  fi
+
+fi
 
 fi
 
@@ -52,9 +58,9 @@ fi
 
 if [ $mksmart -eq 1 ]
 then
-cat $POST_DATA/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2  smartg2.${fhr}  >   ${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2
+cat $PRDGEN_DATA/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2  smartg2.${fhr}  >   ${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2
 else
-cp  $POST_DATA/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2                      ${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2
+cp  $PRDGEN_DATA/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2                      ${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2
 fi
 
 # rm $PRDGEN_DATA/${mdl}.t${cyc}z.ndfd${res}f${fhr}

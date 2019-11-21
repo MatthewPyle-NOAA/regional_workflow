@@ -29,7 +29,7 @@ filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
-ideflate:                1
+ideflate:                0
 nbits:                   18
 
 

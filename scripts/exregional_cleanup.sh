@@ -19,7 +19,5 @@ fi
 rm -rf regional_make_bc_${dom}_${CDATE}
 rm -rf regional_make_ic_${dom}_${CDATE}
 rm -rf regional_forecast_tm00_${dom}_${CDATE}
-rm -rf regional_post_${dom}_f*_${CDATE}
-rm -rf regional_post_goes_${dom}_f*_${CDATE}
 
 exit
