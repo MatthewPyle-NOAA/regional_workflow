@@ -106,7 +106,13 @@ rm -f fort.*
 
 # copy flat files
 cp ${PARMfv3}/nam_micro_lookup.dat      ./eta_micro_lookup.dat
-cp ${PARMfv3}/postxconfig-NT-fv3sar.txt ./postxconfig-NT.txt
+
+if [ $fhr -eq 00 ] ; then
+cp ${PARMfv3}/postxconfig-NT-fv3sar_f00.txt ./postxconfig-NT.txt
+else
+cp ${PARMfv3}/postxconfig-NT-fv3sar.txt     ./postxconfig-NT.txt
+fi
+
 cp ${PARMfv3}/params_grib2_tbl_new      ./params_grib2_tbl_new
 
 # Run the post processor
@@ -117,8 +123,118 @@ startmsg
 ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2> err
 export err=$?; err_chk
 
-# Run wgrib2
 domain=${dom}
+
+## compute snow by differencing WEASD on native grid
+
+if [ $domain = "conus" ]
+then
+dim1=2001
+dim2=1201
+
+elif [ $domain = "ak" ]
+then
+dim1=1441
+dim2=1185
+
+elif [ $domain = "hi" ]
+then
+dim1=433
+dim2=345
+
+elif [ $domain = "pr" ]
+then
+dim1=625
+dim2=416
+
+elif [ $domain = "guam" ]
+then
+dim1=449
+dim2=385
+
+fi
+
+if [ $fhr -gt 0 ]
+then
+
+fhrold=`expr $fhr - 1`
+fhrold2=`expr $fhr - 2`
+
+if [ $fhrold -lt 10 ]
+then
+fhrold=0$fhrold
+fi
+
+if [ $fhrold2 -ge 0 -a $fhrold2 -lt 10 ]
+then
+fhrold2=0$fhrold2
+fi
+
+curpath=`pwd`
+
+altpath=`echo $curpath | sed s:even:odd:g`
+
+echo working fhr $fhr
+
+echo $curpath > input
+echo "temp.t${cyc}z.f" >> input
+echo $fhrold >> input
+echo $fhr >> input
+echo 0 >> input
+echo "$dim1 $dim2" >> input
+
+ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+
+ln -sf $altpath/BGDAWP${fhrold}.tm00  temp.t${cyc}z.f${fhrold}.grib2
+
+filecheck=BGDAWP${fhr}.tm00
+
+if [ -e $filecheck ]
+then
+$EXECfv3/regional_fv3snowbucket.x < input
+# cat PCP1HR${hr}.tm00 >> $filecheck
+fi
+
+# do the "odd" hour since have the needed temp.* files in place in cwd
+
+if [ $fhr -gt 0 ]
+then
+
+echo fhrold2 $fhrold2
+echo fhrold $fhrold
+
+ls -l temp.t${cyc}z.f${fhrold2}*
+ls -l temp.t${cyc}z.f${fhrold}*
+
+echo $curpath > input
+echo "temp.t${cyc}z.f" >> input
+echo $fhrold2 >> input
+echo $fhrold >> input
+echo 0 >> input
+echo "$dim1 $dim2" >> input
+
+$EXECfv3/regional_fv3snowbucket.x < input
+
+else
+
+# special case for f01
+
+echo $curpath > input
+echo "temp.t${cyc}z.f" >> input
+echo 00 >> input
+echo 01 >> input
+echo 0 >> input
+echo "$dim1 $dim2" >> input
+
+$EXECfv3/regional_fv3snowbucket.x < input
+
+fi
+
+else
+
+ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+
+fi
 
 echo done > postdone${fhr}
 

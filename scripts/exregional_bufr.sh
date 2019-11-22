@@ -22,7 +22,7 @@
 set -x
 
 NEST=${dom}
-MODEL=fv3sar
+MODEL=fv3
 
 mkdir -p $DATA/bufrpost
 cd $DATA/bufrpost
@@ -215,9 +215,12 @@ ${USHobsproc_shared_bufr_cword}/bufr_cword.sh block class1.bufr.unb class1.bufr.
 
 if [ $SENDCOM == "YES" ]
 then
-cp $DATA/class1.bufr $COMOUT/fv3sar.t${cyc}z.${RUNLOC}.class1.bufr
-cp $DATA/class1.bufr.wcoss $COMOUT/fv3sar.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
-cp $DATA/profilm.c1.${tmmark} ${COMOUT}/fv3sar.t${cyc}z.${RUNLOC}.profilm.c1
+cp $DATA/class1.bufr $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr
+cp $DATA/class1.bufr.wcoss $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
+cp $DATA/profilm.c1.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${RUNLOC}.profilm.c1
+cp $DATA/class1.bufr $COMOUTalt/${RUNalt}.t${cyc}z.${RUNLOC}.class1.bufr
+cp $DATA/class1.bufr.wcoss $COMOUTalt/${RUNalt}.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
+cp $DATA/profilm.c1.${tmmark} ${COMOUTalt}/${RUNalt}.t${cyc}z.${RUNLOC}.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists
