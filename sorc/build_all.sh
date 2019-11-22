@@ -82,6 +82,15 @@ echo " .... Building sndp .... "
 ./build_sndp.sh > $logs_dir/build_sndp.log 2>&1
 }
 
+#------------------------------------
+# build fv3snowbucket
+#------------------------------------
+$Build_fv3snowbucket && {
+echo " .... Building fv3snowbucket .... "
+./build_fv3snowbucket.sh > $logs_dir/build_fv3snowbucket.log 2>&1
+}
+
+
 
 
 #------------------------------------

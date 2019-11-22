@@ -161,9 +161,12 @@ $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match "REFD:4000 m above ground:" -grib 4
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match "REFD:263 K level:" -grib 263krefd.grb
 export err=$?; err_chk
-cat nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb > inputs_nn.grb
+$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":MDIV:30-0 mb above ground:" -grib mconv.grb
+export err=$?; err_chk
 
-rm nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb
+cat nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb mconv.grb  > inputs_nn.grb
+
+rm nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb mconv.grb
 
 $WGRIB2 inputs_nn.grb -set_grib_type ${compress_type} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
 export err=$?; err_chk

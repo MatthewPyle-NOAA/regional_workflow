@@ -358,7 +358,7 @@ fi
 
 # do in 13 pieces (conus only??)
 
-INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
+INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
 
 loop=1
 looplim=90
@@ -667,7 +667,7 @@ fi
       esac
 
 
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -676,7 +676,7 @@ fi
    
 
 	echo here with FHRFRQ $FHRFRQ
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${FHRFRQ}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${FHRFRQ}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${FHRFRQ}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -708,7 +708,7 @@ fi
 
       if [ $MKPCP -eq $mk12p ];then
 
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr9}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr9}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr9}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -725,7 +725,7 @@ fi
 	    cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
 	   else
 
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -746,7 +746,7 @@ fi
            then
 	     cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
            else
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -775,7 +775,7 @@ fi
            then
             cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
 	   else
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -796,7 +796,7 @@ fi
            then
             cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
            else
-        INF=${COMIN}/fv3sar.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 

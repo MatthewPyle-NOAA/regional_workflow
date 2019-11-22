@@ -52,6 +52,11 @@ fi
 #------------------------------------
  ${CP} regional_smartprecip.fd/regional_smartprecip                 ../exec/regional_smartprecip.x
 
+#------------------------------------
+# install fv3snowbucket
+#------------------------------------
+ ${CP} regional_fv3snowbucket.fd/regional_fv3bucket                 ../exec/regional_fv3snowbucket.x
+
 
 #------------------------------------
 #------------------------------------

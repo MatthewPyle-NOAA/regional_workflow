@@ -138,9 +138,21 @@ $WGRIB2 inputs.grb -set_grib_type ${compress} -new_grid_vectors UGRD:VGRD -new_g
 if [ $subpiece =  "0"  -o $subpiece =  "1" ]
 then
 $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":(APCP|WEASD):" -grib inputs_budget.grb
-$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":(HINDEX|TSOIL|SOILW|CSNOW|CICEP|CFRZR|CRAIN|RETOP|REFD|LTNG|MAXREF):" -grib nn.grb
+export err=$?; err_chk
+$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":(HINDEX|CSNOW|CICEP|CFRZR|CRAIN|RETOP|REFD|LTNG|MAXREF):" -grib nn.grb
+export err=$?; err_chk
+$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":TSOIL:0-0.1 m below ground:" -grib nn.grb_2
+export err=$?; err_chk
+$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":SOILW:0-0.1 m below ground:" -grib nn.grb_3
+export err=$?; err_chk
+$WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match ":MDIV:30-0 mb above ground:" -grib mconv.grb
+export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 -match "HGT:cloud ceiling:" -grib ceiling.grb
-cat nn.grb ceiling.grb > inputs_nn.grb
+export err=$?; err_chk
+
+cat nn.grb nn.grb_2 nn.grb_3 mconv.grb   ceiling.grb > inputs_nn.grb
+
+rm nn.grb nn.grb_2 nn.grb_3 mconv.grb ceiling.grb
 
 $WGRIB2 inputs_nn.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
 $WGRIB2 inputs_budget.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation budget -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_budget
