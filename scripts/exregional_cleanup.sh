@@ -10,14 +10,31 @@ set -x
 
 # Remove temporary working directories
 cd ${STMP}
-if [ $RUN = fv3sar ]; then
+if [ $RUN = fv3sar -o $RUN = hiresw ]; then
   cd tmpnwprd
 elif [ $RUN = fv3nest ]; then
   cd tmpnwprd_nest
 fi
 
-rm -rf regional_make_bc_${dom}_${CDATE}
-rm -rf regional_make_ic_${dom}_${CDATE}
-rm -rf regional_forecast_tm00_${dom}_${CDATE}
+
+jobtypes="bufrpost forecast_tm00 make_bc make_ic posteven postodd smartinit smartinitb"
+
+for job in $jobtypes
+do
+rm -rf regional_${job}_${dom}_${CDATE}
+done
+
+if [ $dom = ak -o $dom = conus ]
+then
+ jobtypesb="prdgeneven prdgenodd"
+else
+ jobtypesb="prdgen"
+fi
+
+for job in $jobtypesb
+do
+rm -rf regional_${job}_${dom}_${CDATE}
+done
+
 
 exit

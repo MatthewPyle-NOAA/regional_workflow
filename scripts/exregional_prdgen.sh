@@ -164,6 +164,7 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_1  > $COMOUT/${RUN}.t
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx
 
 
+
     if [ $SENDDBN = YES ]; then
        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
@@ -260,6 +261,7 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f 
 $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
 
+
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
 
   fi
@@ -287,6 +289,7 @@ echo here with DATA $DATA
 ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+
 
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 
