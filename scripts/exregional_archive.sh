@@ -45,7 +45,7 @@ echo PDY is $PDY
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 00
       ;;
 
-   regional_archive_pr)
+   regional_archive_pr|regional_archive_ak|regional_archive_hi|regional_archive_guam)
       
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}

@@ -123,8 +123,8 @@ echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_3km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_3km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 east &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 east &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 west &" >> $DATA/poescript_${fhr}
@@ -149,7 +149,9 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_1 $DATA/${RUN}.t${cyc
     $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
+
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
+
 
 ## subset the full CONUS grid to approximate the CAM common grid list
 ## now likely will interpolate subset products to 3 km grid instead for CONUS
@@ -163,6 +165,8 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${
 
 cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_1  > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx
+
+
 
 
     if [ $SENDDBN = YES ]; then
@@ -203,17 +207,24 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t$
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
 
+
 cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2 \
  > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
 
-
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2.idx
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2.idx
 
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_conus_2 > $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_sbn
+
+# cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_conus_2 > $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_sbn
+cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_2 > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
+
+$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx
+
   fi
+
 
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2
@@ -246,10 +257,12 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cy
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
+
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+
 
     if [ $SENDDBN = YES ]; then
        $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
@@ -264,6 +277,7 @@ $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.gri
 
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
+
 
   fi
 

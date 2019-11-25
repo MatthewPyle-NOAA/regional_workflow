@@ -59,6 +59,8 @@ hpssdir0=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 hpssdir1=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 hpssdir2=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 
+hsi "mkdir -p $hpssdir0"
+
 #
 #   Get a listing of all files in the directory to be tarred
 #   and break the file list up into groups of files.
@@ -68,17 +70,41 @@ hpssdir2=/NCEPDEV/emc-meso/2year/${USER}/fv3sar/rh${year}/${yearmo}/$yrmoday
 
 cd $DATA
 
+hrs_save="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
+
+
+for hr in $hrs_save
+do
+
+
 if [ ${dom} = "conus" ]
 then
-ls -1 $dir | grep ${rhcycle} | awk '
-            /${dom}.grib2/ { print "./"$0 > "conus" ; next }
+ls -1 $dir | grep ${rhcycle} | grep f${hr} | awk '
+            /conus.grib2/ { print "./"$0 > "conus" ; next }
             { print "./"$0 > "therest" ; next } '
 elif [ ${dom} = "pr" ]
 then
-ls -1 $dir | grep ${rhcycle} | awk '
-            /${dom}.grib2/ { print "./"$0 > "pr" ; next }
+ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
+            /pr.grib2/ { print "./"$0 > "pr" ; next }
+            { print "./"$0 > "therest" ; next } '
+elif [ ${dom} = "ak" ]
+then
+ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
+            /ak.grib2/ { print "./"$0 > "ak" ; next }
+            { print "./"$0 > "therest" ; next } '
+elif [ ${dom} = "hi" ]
+then
+ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
+            /hi.grib2/ { print "./"$0 > "hi" ; next }
+            { print "./"$0 > "therest" ; next } '
+elif [ ${dom} = "guam" ]
+then
+ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
+            /guam.grib2/ { print "./"$0 > "guam" ; next }
             { print "./"$0 > "therest" ; next } '
 fi
+
+done
 
 cd $dir
 
@@ -91,7 +117,7 @@ do
    #   Pick 1year, 2year, or permanent archive.
    #
    case $file in
-      conus)  hpssdir=$hpssdir0
+      conus|ak|hi|pr|guam)  hpssdir=$hpssdir0
               rhistdir=$rhistdir0;;
    esac
 

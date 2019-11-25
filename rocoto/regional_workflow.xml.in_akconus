@@ -424,7 +424,7 @@
 
   <task name="archive" maxtries="&MAX_TRIES_TRANSFER;">
     <command>&PRE; &JOBS;/JREGIONAL_ARCHIVE</command>
-    <jobname>regional_archive_&DOMAIN;</jobname>
+    <jobname><cyclestr>regional_archive_&DOMAIN;_@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/regional_archive_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_SERVICE;</queue>
