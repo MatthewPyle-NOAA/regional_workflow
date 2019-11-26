@@ -57,6 +57,12 @@ fi
 #------------------------------------
  ${CP} regional_fv3snowbucket.fd/regional_fv3bucket                 ../exec/regional_fv3snowbucket.x
 
+#------------------------------------
+# install bucket
+#------------------------------------
+ ${CP} regional_bucket.fd/regional_bucket                 ../exec/regional_bucket.x
+
+
 
 #------------------------------------
 #------------------------------------
