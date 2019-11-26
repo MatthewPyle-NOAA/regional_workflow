@@ -3,8 +3,8 @@ set -x
 export RUN_ENVIR=dev
 export envir=para
 
-export NET=fv3cam
-export RUN=fv3sar
+export NET=hiresw
+export RUN=hiresw
 export model=fv3sar	# fv3sar (cold start) or fv3sar_da (with DA)
 export CCPP=false
 export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional

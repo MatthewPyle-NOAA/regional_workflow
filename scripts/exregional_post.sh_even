@@ -159,6 +159,16 @@ then
 
 fhrold=`expr $fhr - 1`
 fhrold2=`expr $fhr - 2`
+fhrold3=`expr $fhr - 3`
+fhrold4=`expr $fhr - 4`
+
+if [ $fhr%3 -eq 0 ]
+then
+  do_3=1
+else
+  do_3=0
+fi
+
 
 if [ $fhrold -lt 10 ]
 then
@@ -168,6 +178,16 @@ fi
 if [ $fhrold2 -ge 0 -a $fhrold2 -lt 10 ]
 then
 fhrold2=0$fhrold2
+fi
+
+if [ $fhrold3 -ge 0 -a $fhrold3 -lt 10 ]
+then
+fhrold3=0$fhrold3
+fi
+
+if [ $fhrold4 -ge 0 -a $fhrold4 -lt 10 ]
+then
+fhrold4=0$fhrold4
 fi
 
 curpath=`pwd`
@@ -185,15 +205,76 @@ echo "$dim1 $dim2" >> input
 
 ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
 
+looplim=45
+loop=1
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $altpath/BGDAWP${fhrold}.tm00 ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/logf0${fhr}"
+   err_exit $msg
+ fi
+done
+
 ln -sf $altpath/BGDAWP${fhrold}.tm00  temp.t${cyc}z.f${fhrold}.grib2
 
 filecheck=BGDAWP${fhr}.tm00
 
+# 1 h added to even time file
 if [ -e $filecheck ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
-# cat PCP1HR${hr}.tm00 >> $filecheck
+cat ./PCP1HR${fhr}.tm00 >> $filecheck
 fi
+
+# attempt to make a 3 h WEASD field
+
+if [ $fhr%3 -eq 0 ]
+then
+
+echo $curpath > input
+echo "temp.t${cyc}z.f" >> input
+echo $fhrold3 >> input
+echo $fhr >> input
+echo 0 >> input
+echo "$dim1 $dim2" >> input
+
+# 3 h added to even time file
+if [ -e $filecheck ]
+then
+$EXECfv3/regional_fv3snowbucket.x < input
+cat ./PCP3HR${fhr}.tm00 >> $filecheck
+fi
+
+
+## do 3 h QPF from regional_bucket?
+
+  echo "${curpath}" > input.card
+  echo "temp.t${cyc}z.f" >> input.card
+  echo $fhrold3 >> input.card
+  echo $fhr >> input.card
+  echo 0 >> input.card
+  echo "$dim1 $dim2" >> input.card
+
+if [ -e $filecheck ]
+then
+ mv PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_snow
+ $EXECfv3/regional_bucket.x < input.card
+ cat ./PCP3HR${fhr}.tm00 >> $filecheck
+ cp PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_qpf
+fi
+
+
+fi
+
 
 # do the "odd" hour since have the needed temp.* files in place in cwd
 
@@ -215,6 +296,64 @@ echo "$dim1 $dim2" >> input
 
 $EXECfv3/regional_fv3snowbucket.x < input
 
+# 1 h added to odd time file
+if [ -e $altpath/BGDAWP${fhrold}.tm00 ]
+then
+$EXECfv3/regional_fv3snowbucket.x < input
+cat ./PCP1HR${fhrold}.tm00 >> $altpath/BGDAWP${fhrold}.tm00
+fi
+
+if [ $fhrold%3 -eq 0 ]
+then
+# attempt to make a 3 h WEASD field
+
+echo $curpath > input
+echo "temp.t${cyc}z.f" >> input
+echo $fhrold4 >> input
+echo $fhrold >> input
+echo 0 >> input
+echo "$dim1 $dim2" >> input
+
+# 3 h added to odd time file
+if [ -e $altpath/BGDAWP${fhrold}.tm00  ]
+then
+$EXECfv3/regional_fv3snowbucket.x < input
+cat ./PCP3HR${fhrold}.tm00 >>  $altpath/BGDAWP${fhrold}.tm00
+fi
+
+## do 3 h QPF from regional_bucket?
+
+
+  echo "${curpath}" > input.card
+  echo "temp.t${cyc}z.f" >> input.card
+  echo $fhrold4 >> input.card
+  echo $fhrold >> input.card
+
+if [ $fhrold = '03' ]
+then
+# just take later period if f03
+  echo 1 >> input.card
+else
+  echo 0 >> input.card
+fi
+  echo "$dim1 $dim2" >> input.card
+
+if [ -e $altpath/BGDAWP${fhrold}.tm00  ]
+then
+ mv PCP3HR${fhrold}.tm00 PCP3HR${fhrold}.tm00_snow
+
+ $EXECfv3/regional_bucket.x < input.card
+if [ $fhrold = '03' ]
+then
+ echo " will not duplicate the 3 h total at f03 "
+else
+ cat ./PCP3HR${fhrold}.tm00 >> $altpath/BGDAWP${fhrold}.tm00
+fi
+ cp PCP3HR${fhrold}.tm00 PCP3HR${fhrold}.tm00_qpf
+fi
+
+fi
+
 else
 
 # special case for f01
@@ -228,6 +367,14 @@ echo "$dim1 $dim2" >> input
 
 $EXECfv3/regional_fv3snowbucket.x < input
 
+# 1 h added to f01
+if [ -e $altpath/BGDAWP01.tm00 ]
+then
+$EXECfv3/regional_fv3snowbucket.x < input
+cat ./PCP1HR01.tm00 >> $altpath/BGDAWP01.tm00
+echo done > $altpath/postdone01
+fi
+
 fi
 
 else
@@ -237,6 +384,8 @@ ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
 fi
 
 echo done > postdone${fhr}
+
+echo done > $altpath/postdone${fhrold}
 
 
 fhr=`expr $fhr + $INCR`

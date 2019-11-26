@@ -72,6 +72,11 @@ cd $DATA
 
 hrs_save="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
 
+if [ -e ${dom} ]
+then
+rm ./${dom}
+rm ./therest
+fi
 
 for hr in $hrs_save
 do
@@ -80,28 +85,28 @@ do
 if [ ${dom} = "conus" ]
 then
 ls -1 $dir | grep ${rhcycle} | grep f${hr} | awk '
-            /conus.grib2/ { print "./"$0 > "conus" ; next }
-            { print "./"$0 > "therest" ; next } '
+            /conus.grib2/ { print "./"$0 >> "conus" ; next }
+            { print "./"$0 >> "therest" ; next } '
 elif [ ${dom} = "pr" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
-            /pr.grib2/ { print "./"$0 > "pr" ; next }
-            { print "./"$0 > "therest" ; next } '
+            /pr.grib2/ { print "./"$0 >> "pr" ; next }
+            { print "./"$0 >> "therest" ; next } '
 elif [ ${dom} = "ak" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
-            /ak.grib2/ { print "./"$0 > "ak" ; next }
-            { print "./"$0 > "therest" ; next } '
+            /ak.grib2/ { print "./"$0 >> "ak" ; next }
+            { print "./"$0 >> "therest" ; next } '
 elif [ ${dom} = "hi" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
-            /hi.grib2/ { print "./"$0 > "hi" ; next }
-            { print "./"$0 > "therest" ; next } '
+            /hi.grib2/ { print "./"$0 >> "hi" ; next }
+            { print "./"$0 >> "therest" ; next } '
 elif [ ${dom} = "guam" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
-            /guam.grib2/ { print "./"$0 > "guam" ; next }
-            { print "./"$0 > "therest" ; next } '
+            /guam.grib2/ { print "./"$0 >> "guam" ; next }
+            { print "./"$0 >> "therest" ; next } '
 fi
 
 done

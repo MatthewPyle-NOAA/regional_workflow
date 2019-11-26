@@ -118,7 +118,7 @@ export err=$?; err_chk
 # Run wgrib2
 domain=${dom}
 
-echo done > postdone${fhr}
+# echo done > postdone${fhr}
 
 fhr=`expr $fhr + $INCR`
 
