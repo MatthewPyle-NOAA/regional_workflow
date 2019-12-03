@@ -47,7 +47,7 @@
        fv_debug = .F.
        range_warn = .F.
        reset_eta = .F.
-       n_sponge = 20
+       n_sponge = 9 
        nudge_qv = .F.
        tau = 5.
        rf_cutoff = 20.e2
