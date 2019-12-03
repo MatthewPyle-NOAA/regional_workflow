@@ -10,6 +10,7 @@
   <!ENTITY MAX_TRIES_TRANSFER "3"> <!-- pulling data over network -->
   <!ENTITY MAX_TRIES_BIG_JOBS "2"> <!-- forecast or other huge jobs -->
   <!ENTITY MAX_TRIES "3"> <!-- everything else -->
+  <!ENTITY MAX_TRIES_SMARTINIT "5"> <!-- everything else -->
 
   <!-- Enabling or disabling parts of the workflow: -->
   <!ENTITY MAKE_GRID_OROG "@[MAKE_GRID_OROG:-YES]">
@@ -394,7 +395,7 @@
       </dependency>
    </task>
 
-   <task name="smartinit_b" maxtries="&MAX_TRIES;">
+   <task name="smartinit_b" maxtries="&MAX_TRIES_SMARTINIT;">
       <command>&PRE; &JOBS;/JREGIONAL_SMARTINITB</command>
       <jobname>regional_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/regional_smartinitb_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
