@@ -191,4 +191,4 @@ fi
   cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.conus.grib2_${region}_${subpiece}
 
 
-fi
+# fi
