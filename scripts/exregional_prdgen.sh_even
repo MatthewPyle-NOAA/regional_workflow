@@ -37,6 +37,10 @@ export tmmark=tm00
 export fhr=00
 export fhrend=60
 
+#tmp
+export COMOUTB=${COMOUT}/../
+#tmp
+
 ## see if any prdgendone?? files exist, and if so, which is the last hour completed
 
 while [ $fhr -le $fhrend ]
@@ -148,6 +152,10 @@ $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -ncep_uv $COMOUT/
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
 
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 $COMOUTB
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx $COMOUTB
+
+
 
 ## subset the full CONUS grid to approximate the CAM common grid list
 ## now likely will interpolate subset products to 3 km grid instead for CONUS
@@ -161,6 +169,9 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${
 
 cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_1  > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx
+
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 $COMOUTB
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx $COMOUTB
 
 
 
@@ -206,6 +217,9 @@ $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -ncep_uv $COM
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx
 
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn $COMOUTB
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx $COMOUTB
+
   fi
 
 
@@ -237,12 +251,15 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cy
   $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 ${COMOUTB}
 
 
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx ${COMOUTB}
+
 
 
     if [ $SENDDBN = YES ]; then
@@ -256,10 +273,13 @@ cp $PARMfv3/hiresw_subset.txt .
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f hiresw_subset.txt | \
 $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 $COMOUTB
+
 
 
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
 
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx $COMOUTB
 
   fi
 
@@ -287,6 +307,9 @@ ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
 
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 $COMOUTB
+ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx $COMOUTB
+
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 
     if [ $SENDDBN = YES ]; then
@@ -306,6 +329,7 @@ then
   if [ $tmmark = tm00 ] ; then
 #    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.grib2
     cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.grib2
+    ln -sf ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.grib2 ${COMOUTB}
   else
 #    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.${tmmark}.grib2
     cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.${tmmark}.grib2

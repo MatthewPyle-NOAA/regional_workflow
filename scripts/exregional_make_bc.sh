@@ -126,12 +126,9 @@ echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name
 chmod u+x poe.${hour_name}
 ./poe.${hour_name} &
 
-hour=`expr $hour + $hour_inc`
+## err checking?
 
-#
-# move output files to save directory
-#
-#   mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc
+hour=`expr $hour + $hour_inc`
 
 done
 

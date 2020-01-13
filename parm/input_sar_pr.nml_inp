@@ -74,7 +74,7 @@
        nord =  2
        dddmp = 0.1
        d4_bg = 0.15
-       vtdm4 = 0.075
+       vtdm4 = 0.03
        delt_max = 0.008
        ke_bg = 0.
        do_vort_damp = .true.

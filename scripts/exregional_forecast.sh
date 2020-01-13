@@ -12,14 +12,101 @@
 #			Various settings moved to JFV3_FORECAST J-job
 #   4) 2018-06-19       Ben Blake
 #                       Adapted for stand-alone regional configuration
+#   5) 2019-12-05       Matthew Pyle
+#                       Modified to allow for midstream restarts in case of failure
 ############################################################################
-set -eux
+set -x
 
 ulimit -s unlimited
 ulimit -a
 
+resterr=1
+
+if [ -e RESTART ]
+then
+files=`ls RESTART/*00.sfc_data.nc`
+resterr=$?
+echo resterr is $resterr
+
+else
+
 mkdir -p INPUT RESTART
+
+fi
+
+
+if [ $resterr -eq 0 ]
+then
+echo "have restart"
+RESTART=1
+mv RESTART/* INPUT/
+
+# from GFS
+
+# determine if restart IC exists to continue from a previous forecast
+# RERUN="NO"
+# filecount=$(find $RSTDIR_TMP -type f | wc -l)
+# if [ $CDUMP = "gfs" -a $restart_interval -gt 0 -a $FHMAX -gt $restart_interval -a $filecount -gt 10 ]; then
+#     SDATE=$($NDATE +$FHMAX $CDATE)
+#     EDATE=$($NDATE +$restart_interval $CDATE)
+#     while [ $SDATE -gt $EDATE ]; do
+#         PDYS=$(echo $SDATE | cut -c1-8)
+#         cycs=$(echo $SDATE | cut -c9-10)
+#         flag1=$RSTDIR_TMP/${PDYS}.${cycs}0000.coupler.res
+#         flag2=$RSTDIR_TMP/coupler.res
+#         if [ -s $flag1 ]; then
+#              mv $flag1 ${flag1}.old
+#           if [ -s $flag2 ]; then mv $flag2 ${flag2}.old ;fi
+#            RERUN="YES"
+#            CDATE_RST=$($NDATE -$restart_interval $SDATE)
+#            break
+#        fi
+#        SDATE=$($NDATE -$restart_interval $SDATE)
+#    done
+#fi
+
+
+  # Link all (except sfc_data) restart files from $gmemdir
+#  for file in $gmemdir/RESTART/${PDY}.${cyc}0000.*.nc; do
+#    file2=$(echo $(basename $file))
+#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
+#    fsuf=$(echo $file2 | cut -d. -f1)
+#    if [ $fsuf != "sfc_data" ]; then
+#       $NLN $file $DATA/INPUT/$file2
+#    fi
+#  done
+
+  # Link sfcanl_data restart files from $memdir
+#  for file in $memdir/RESTART/${PDY}.${cyc}0000.*.nc; do
+#    file2=$(echo $(basename $file))
+#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
+#    fsufanl=$(echo $file2 | cut -d. -f1)
+#    if [ $fsufanl = "sfcanl_data" ]; then
+#      file2=$(echo $file2 | sed -e "s/sfcanl_data/sfc_data/g")
+#      $NLN $file $DATA/INPUT/$file2
+#    fi
+#  done
+
+  # Handle coupler.res file for DA cycling
+#  if [ ${USE_COUPLER_RES:-"NO"} = "YES" ]; then
+#    # In DA, this is not really a "true restart",
+#    # and the model start time is the analysis time
+#    # The alternative is to replace
+#    # model start time with current model time in coupler.res
+#    file=$gmemdir/RESTART/${PDY}.${cyc}0000.coupler.res
+#    file2=$(echo $(basename $file))
+#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
+#    $NLN $file $DATA/INPUT/$file2
+#  fi
+
+
+
+# end from GFS
+else
+echo "not restart"
 cp ${NWGES}/anl.${dom}.${tmmark}/*.nc INPUT
+RESTART=0
+fi
 
 numbndy=`ls -l INPUT/gfs_bndy.tile7*.nc | wc -l`
 let "numbndy_check=$NHRS/3+1"
@@ -115,7 +202,29 @@ if [ $tmmark = tm00 ] ; then
       cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
       cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
     else
-      cp ${PARMfv3}/input_sar_${dom}.nml input.nml
+
+      if [ $RESTART -eq 1 ]
+      then
+
+       cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
+       sed s:_MAKENH_:.F.: | \
+       sed s:_NAINIT_:0: | \
+       sed s:_NGGPSIC_:.F.: | \
+       sed s:_EXTERNALIC_:.F.: | \
+       sed s:_MOUNTAIN_:.T.: | \
+       sed s:_WARMSTART_:.T.:  > input.nml
+      else
+       cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
+       sed s:_MAKENH_:.T.: | \
+       sed s:_NAINIT_:1: | \
+       sed s:_NGGPSIC_:.T.: | \
+       sed s:_EXTERNALIC_:.T.: | \
+       sed s:_MOUNTAIN_:.F.: | \
+       sed s:_WARMSTART_:.F.:  > input.nml
+       fi
+
+#      cp ${PARMfv3}/input_sar_${dom}.nml input.nml
+
       if [ ! -e input.nml ] ; then
          echo "FATAL ERROR: no input_sar_${dom}.nml in PARMfv3 directory.  Create one!"
       else

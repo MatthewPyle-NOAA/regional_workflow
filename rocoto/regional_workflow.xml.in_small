@@ -10,11 +10,9 @@
   <!ENTITY MAX_TRIES_TRANSFER "3"> <!-- pulling data over network -->
   <!ENTITY MAX_TRIES_BIG_JOBS "2"> <!-- forecast or other huge jobs -->
   <!ENTITY MAX_TRIES "3"> <!-- everything else -->
+  <!ENTITY MAX_TRIES_SMARTINIT "4"> <!-- smartinit -->
 
   <!-- Enabling or disabling parts of the workflow: -->
-  <!ENTITY MAKE_GRID_OROG "@[MAKE_GRID_OROG:-YES]">
-  <!ENTITY MAKE_SFC_CLIMO "@[MAKE_SFC_CLIMO:-YES]">
-  <!ENTITY GET_INPUT "@[GET_INPUT:-YES]">
   <!ENTITY GTYPE "@[GTYPE:-regional]">
   <!ENTITY RUN_DA "NO"> <!-- place holder currently -->
 
@@ -71,92 +69,6 @@
   <log><cyclestr>&LOGDIR;/workflow_regional_&DOMAIN;_@Y@m@d@H.log</cyclestr></log>
 
 <!--  *******************************************************************  -->
-<!--  ************************* make_grid_orog  *************************  -->
-
-  <task name="make_grid_orog" maxtries="&MAX_TRIES;">
-    <command>&PRE; &JOBS;/JREGIONAL_MAKE_GRID_OROG</command>
-    <jobname>regional_make_grid_orog_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_make_grid_orog_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
-    <account>&ACCOUNT;</account>
-    <queue>&QUEUE_PE;</queue>
-    &PE_EXTRA;
-    &RESERVATION;
-    &MAKE_GRID_OROG_RESOURCES;
-    &ENV_VARS;
-    <envar><name>job</name><value>regional_make_grid_orog_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-
-    <dependency>
-      <and>
-        <streq><left>&MAKE_GRID_OROG;</left><right>YES</right></streq>
-        <!-- Cycling dependency: do not start until the prior cycle's
-        make_grid_orog job is done, unless there is no prior cycle. -->
-        <or>
-          <taskdep task="make_grid_orog" cycle_offset="-&CYCLE_INTERVAL;"/>
-          <not>
-            <cycleexistdep cycle_offset="-&CYCLE_INTERVAL;"/>
-          </not>
-        </or>
-        <!-- AND... don't start until 3:20 past the synoptic time.  The
-        GFS does not start until then, so there is little point to
-        starting earlier. -->
-        <timedep><cyclestr offset="3:20:00">@Y@m@d@H@M@S</cyclestr></timedep>
-      </and>
-    </dependency>
-  </task> 
-
-<!--  *******************************************************************  -->
-<!--  ************************* make_sfc_climo  *************************  -->
-
-  <task name="make_sfc_climo" maxtries="&MAX_TRIES;">
-    <command>&PRE; &JOBS;/JREGIONAL_MAKE_SFC_CLIMO</command>
-    <jobname>regional_make_sfc_climo_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_make_sfc_climo_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
-    <account>&ACCOUNT;</account>
-    <queue>&QUEUE_PE;</queue>
-    &PE_EXTRA;
-    &RESERVATION;
-    &MAKE_SFC_CLIMO_RESOURCES;
-    &ENV_VARS;
-    <envar><name>job</name><value>regional_make_sfc_climo_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-
-    <dependency>
-      <and>
-        <streq><left>&MAKE_SFC_CLIMO;</left><right>YES</right></streq>
-        <or>
-          <taskdep task="make_grid_orog"/>
-          <strneq><left>&MAKE_GRID_OROG;</left><right>YES</right></strneq>
-        </or>
-      </and>
-    </dependency>
-  </task> 
-
-<!--  *******************************************************************  -->
-<!--  **************************** get_input  ***************************  -->
-
-  <task name="get_input" maxtries="&MAX_TRIES_TRANSFER;">
-    <command>&PRE; &JOBS;/JREGIONAL_GET_INPUT</command>
-    <jobname>regional_get_input_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_get_input_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
-    <account>&ACCOUNT;</account>
-    <queue>&QUEUE_SERVICE;</queue>
-    &SERVICE_EXTRA;
-    &RESERVATION;
-    &GET_INPUT_RESOURCES;
-    &ENV_VARS;
-    <envar><name>job</name><value>regional_get_input_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-
-    <dependency>
-      <and>
-        <streq><left>&GET_INPUT;</left><right>YES</right></streq>
-        <or>
-          <strneq><left>&MAKE_GRID_OROG;</left><right>YES</right></strneq>
-          <taskdep task="make_grid_orog"/>
-        </or>
-      </and>
-    </dependency>
-  </task> 
-
-<!--  *******************************************************************  -->
 <!--  **************************** make_ic  *****************************  -->
 
   <task name="make_ic" maxtries="&MAX_TRIES;">
@@ -173,25 +85,11 @@
     <envar><name>job</name><value>regional_make_ic_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
-      <and>
-        <or>
-          <strneq><left>&MAKE_GRID_OROG;</left><right>YES</right></strneq>
-          <taskdep task="make_grid_orog"/>
-        </or>
-        <or>
-          <strneq><left>&MAKE_SFC_CLIMO;</left><right>YES</right></strneq>
-          <taskdep task="make_sfc_climo"/> 
-        </or>
-        <or>
-          <strneq><left>&GET_INPUT;</left><right>YES</right></strneq>
-          <taskdep task="get_input"/>
-        </or>
         <and>
           <datadep age="10:00" minsize="15779010324"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf006.nemsio</cyclestr></datadep>
           <datadep age="10:00" minsize="1170221688"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.sfcf006.nemsio</cyclestr></datadep>
           <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
-      </and>
     </dependency>
   </task> 
 
@@ -214,25 +112,10 @@
     <dependency>
       <and>
         <!-- Only need to make_bc for regional configuration -->
-        <streq><left>&GTYPE;</left><right>regional</right></streq>
-        <or>
-          <strneq><left>&MAKE_GRID_OROG;</left><right>YES</right></strneq>
-          <taskdep task="make_grid_orog"/>
-        </or>
-        <or>
-          <strneq><left>&MAKE_SFC_CLIMO;</left><right>YES</right></strneq>
-          <taskdep task="make_sfc_climo"/> 
-        </or>
-        <or>
-          <strneq><left>&GET_INPUT;</left><right>YES</right></strneq>
-          <taskdep task="get_input"/>
-        </or>
-        <and>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf063.nemsio</cyclestr></datadep>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf066.nemsio</cyclestr></datadep> 
           <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
-      </and>
     </dependency>
   </task>
 
@@ -353,7 +236,7 @@
 <!-- *********************************************************************** -->
 <!-- ***************************** smartinit   ***************************** -->
 
-   <task name="smartinit_a" maxtries="&MAX_TRIES;">
+   <task name="smartinit_a" maxtries="&MAX_TRIES_SMARTINIT;">
       <command>&PRE; &JOBS;/JREGIONAL_SMARTINIT</command>
       <jobname>regional_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/regional_smartinit_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
@@ -370,13 +253,13 @@
       <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
         <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf030</cyclestr></datadep>
            <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>
    </task>
 
-   <task name="smartinit_b" maxtries="&MAX_TRIES;">
+   <task name="smartinit_b" maxtries="&MAX_TRIES_SMARTINIT;">
       <command>&PRE; &JOBS;/JREGIONAL_SMARTINITB</command>
       <jobname>regional_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/regional_smartinitb_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
@@ -393,7 +276,7 @@
       <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
         <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf030</cyclestr></datadep>
            <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>

@@ -4,7 +4,6 @@
 
         USE GRIB_MOD
 
-!	real pdiff(im,jm)
         real, allocatable :: pdiff(:,:)
 
         integer :: ihrs1, ihrs2, reset_flag
@@ -76,28 +75,31 @@
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	SUBROUTINE CALC_PDIFF(FNAME1,FNAME2,TESTOUT,DPRECIP,
+	SUBROUTINE CALC_PDIFF(FNAME1,FNAME2,TESTOUT,SPRECIP,
      &                           reset_flag,ihrs1,interv,IM,JM)
         USE GRIB_MOD
         USE pdstemplates
 	character(*):: FNAME1,FNAME2,testout
-	integer:: JPDS(200),JGDS(200), reset_flag,lencheck,ihrs1,interv
-	integer:: KPDS1(200),KGDS(200),KPDS2(200),KPDS(200),KGDS2(200)
-	logical:: BITMAP(IM*JM),FIRST
+	integer:: reset_flag,lencheck,ihrs1,interv
+	logical:: FIRST
 
-        real:: rinc(5)
+        real:: rinc(5),sprecip(IM*JM)
         integer:: idat(8),jdat(8)
+
+        INTEGER :: IBM,LEN,ISCALE,NBIT,IBITM
+        INTEGER, allocatable :: ibmap(:)
+        REAL, allocatable :: GROUND(:)
+        REAL :: GMIN, GMAX, SGDS
 
 C grib2
       INTEGER :: LUGB,LUGI,J,JDISC,JPDTN,JGDTN
       INTEGER,DIMENSION(:) :: JIDS(200),JPDT(200),JGDT(200)
-      INTEGER,DIMENSION(:) :: PDS_SNOW_HOLD(200)
-      INTEGER,DIMENSION(:) :: PDS_SNOW_HOLD_EARLY(200)
       LOGICAL :: UNPACK
       INTEGER :: K,IRET
       TYPE(GRIBFIELD) :: GFLD
 C grib2
-	real:: s_later(IM*JM),s_earlier(IM*JM),sprecip(im*jm)
+!	real:: s_later(IM*JM),s_earlier(IM*JM),sprecip(im*jm)
+        real, allocatable :: s_later(:),s_earlier(:)
 	
 
 	call baopenr(11,fname1,ierr1)
@@ -113,6 +115,11 @@ C grib2
 		write(0,*) 'bad baopen!!! ', ierr4
 		STOP
 	endif
+
+        allocate(s_earlier(IM*JM))
+        allocate(s_later(IM*JM))
+        allocate(GROUND(IM*JM))
+        allocate(ibmap(IM*JM))
 	
         s_earlier=0.
 
@@ -131,9 +138,6 @@ C grib2
         allocate(gfld%idrtmpl(200))
         allocate(gfld%bmap(im*jm))
 
-C USAGE:    CALL GETGB2(LUGB,LUGI,J,JDISC,JIDS,JPDTN,JPDT,JGDTN,JGDT,
-C    &                  UNPACK,K,GFLD,IRET)
-
         J=0
         JIDS=-9999
         JPDTN=0
@@ -146,19 +150,12 @@ C    &                  UNPACK,K,GFLD,IRET)
         call getgb2(11,0,J,0,JIDS,JPDTN,JPDT,JGDTN,JGDT,
      &     UNPACK,K,GFLD,IRET)
 
-
-!        write(0,*) 'pulled gfld%igdtnum : ', gfld%igdtnum 
-
 	if (IRET .ne. 0) then
 	write(0,*) 'bad getgb1 earlier ', IRET
 	STOP
 	endif
 
-
         s_earlier=gfld%fld
-        do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD_EARLY(K)=gfld%ipdtmpl(K)
-        enddo
         write(0,*) 'maxval(s_earlier): ', maxval(s_earlier)
 
 
@@ -168,7 +165,6 @@ C    &                  UNPACK,K,GFLD,IRET)
         JPDT(2)=13
         JGDTN=-1
         JGDT=-9999
-
 
         call getgb2(12,0,0,0,JIDS,JPDTN,JPDT,JGDTN,JGDT,
      &     UNPACK,K,GFLD,IRET1)
@@ -189,11 +185,6 @@ C    &                  UNPACK,K,GFLD,IRET)
         s_later=gfld%fld
         write(0,*) 'maxval(s_later): ', maxval(s_later)
 
-        do K=1,gfld%ipdtlen
-        PDS_SNOW_HOLD(K)=gfld%ipdtmpl(K)
-        enddo
-
-
 	if (reset_flag .eq. 1) then
 	write(0,*) 'just later value'
 
@@ -205,14 +196,23 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	write(0,*) 'take normal difference ', IM*JM
 
+
 	do NPT=1,IM*JM
+
+        if (  gfld%bmap(NPT) ) then ! make sure is a valid point
 	sprecip(NPT)=max(s_later(NPT)-s_earlier(NPT),0.0)
+        endif
 	enddo
+
+        write(0,*) 'min,max of sprecip: ', minval(sprecip), 
+     &         maxval(sprecip)
 
 	endif
 
-!        do J=1,gfld%ipdtlen
+	deallocate(s_later)
+	deallocate(s_earlier)
 
+!        do J=1,gfld%ipdtlen
 
         gfld%ipdtmpl(22)=1
         gfld%ipdtmpl(27)=interv
@@ -232,8 +232,8 @@ C    &                  UNPACK,K,GFLD,IRET)
        gfld%ipdtmpl(8)=1 ! units of hours
        gfld%ipdtmpl(9)=ihrs1 ! earlier forecast time of period?
        gfld%ipdtmpl(10)=1 ! sfc
-       gfld%ipdtmpl(11)=1 ! sfc
-       gfld%ipdtmpl(12)=1 ! sfc
+       gfld%ipdtmpl(11)=0 ! sfc
+       gfld%ipdtmpl(12)=0 ! sfc
        gfld%ipdtmpl(13)=255 ! sfc
        gfld%ipdtmpl(14)=0 ! sfc
        gfld%ipdtmpl(15)=0 ! sfc
@@ -249,13 +249,15 @@ C    &                  UNPACK,K,GFLD,IRET)
        idat(2)=gfld%idsect(7)
        idat(3)=gfld%idsect(8) 
        idat(5)=gfld%idsect(9)
-	write(0,*) 'idat(1:3),idat(5): ', 
-     &  idat(1:3),idat(5)
+
+!	write(0,*) 'idat(1:3),idat(5): ', 
+!     &  idat(1:3),idat(5)
 
        call w3movdat(rinc,idat,jdat)
 
-	write(0,*) 'jdat(1:3),jdat(5): ', 
-     &  jdat(1:3),jdat(5)
+!	write(0,*) 'jdat(1:3),jdat(5): ', 
+!     &  jdat(1:3),jdat(5)
+
        gfld%ipdtmpl(16)=jdat(1)
        gfld%ipdtmpl(17)=jdat(2)
        gfld%ipdtmpl(18)=jdat(3)
@@ -273,11 +275,58 @@ C    &                  UNPACK,K,GFLD,IRET)
         gfld%ipdtmpl(28)=255
         gfld%ipdtmpl(29)=0
 
-        do J=1,29
-        write(0,*) 'J,gfld%ipdtmpl(J): ', J,gfld%ipdtmpl(J)
-        enddo
+!        do J=1,29
+!        write(0,*) 'J,gfld%ipdtmpl(J): ', J,gfld%ipdtmpl(J)
+!        enddo
 
         gfld%fld=sprecip
+
+!        gfld%idrtmpl(2)=-4
+!        gfld%idrtmpl(3)=0
+!        gfld%idrtmpl(4)=16
+
+	write(0,*) 'use gfld%idrtmpl(1:10): ', gfld%idrtmpl(1:10)
+
+
+!! use GET_BITS to compute nbits?
+
+      IBM=0
+      IBITM = 0
+      gfld%idrtmpl(2)=-2.0
+      SGDS  = gfld%idrtmpl(2)
+
+      write(0,*) 'here a'
+
+!     set bitmap
+      DO N=1,IM*JM
+        IF( gfld%bmap(N) ) THEN
+             ibmap(N) = 1
+             ibitm = ibitm+1
+        ELSE
+             ibmap(N) = 0
+        ENDIF
+      ENDDO
+      write(0,*) 'here b'
+
+!     set bitmap
+      IF (IBITM.EQ.IM*JM) THEN
+        IBM = 0
+      ELSE
+        IBM = 1
+      ENDIF
+      call GET_BITS(IBM,SGDS,IM*JM,ibmap,gfld%fld,
+     &                ISCALE,GROUND,GMIN,GMAX,NBIT)
+
+      write(0,*) 'returned NBIT as: ', NBIT
+      write(0,*) 'returned ISCALE as: ', ISCALE
+
+      write(0,*) 'GMAX: ', GMAX
+
+
+        gfld%idrtmpl(4)=NBIT
+
+	write(0,*) 'use gfld%idrtmpl(1:10): ', gfld%idrtmpl(1:10)
+
 	call putgb2(13,GFLD,IRET)
         write(0,*) 'IRET from putgb2 for sprecip ', IRET
 
@@ -285,7 +334,5 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	write(0,*) 'extremes of snow: ', 
      +		maxval(sprecip)
-
-  633	format(25(f4.1,1x))
 
 	end subroutine calc_pdiff
