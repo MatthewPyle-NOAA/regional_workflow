@@ -203,7 +203,8 @@ echo $fhr >> input
 echo 0 >> input
 echo "$dim1 $dim2" >> input
 
-ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+# ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+$WGRIB2 BGDAWP${fhr}.tm00 -match ":(APCP|WEASD):"  -grib  temp.t${cyc}z.f${fhr}.grib2
 
 looplim=45
 loop=1
@@ -224,7 +225,8 @@ do
  fi
 done
 
-ln -sf $altpath/BGDAWP${fhrold}.tm00  temp.t${cyc}z.f${fhrold}.grib2
+# ln -sf $altpath/BGDAWP${fhrold}.tm00  temp.t${cyc}z.f${fhrold}.grib2
+$WGRIB2  $altpath/BGDAWP${fhrold}.tm00  -match ":(APCP|WEASD):"  -grib  temp.t${cyc}z.f${fhrold}.grib2
 
 filecheck=BGDAWP${fhr}.tm00
 
@@ -232,6 +234,7 @@ filecheck=BGDAWP${fhr}.tm00
 if [ -e $filecheck ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 cat ./PCP1HR${fhr}.tm00 >> $filecheck
 fi
 
@@ -251,6 +254,7 @@ echo "$dim1 $dim2" >> input
 if [ -e $filecheck ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 cat ./PCP3HR${fhr}.tm00 >> $filecheck
 fi
 
@@ -295,11 +299,13 @@ echo 0 >> input
 echo "$dim1 $dim2" >> input
 
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 
 # 1 h added to odd time file
 if [ -e $altpath/BGDAWP${fhrold}.tm00 ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 cat ./PCP1HR${fhrold}.tm00 >> $altpath/BGDAWP${fhrold}.tm00
 fi
 
@@ -318,6 +324,7 @@ echo "$dim1 $dim2" >> input
 if [ -e $altpath/BGDAWP${fhrold}.tm00  ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 cat ./PCP3HR${fhrold}.tm00 >>  $altpath/BGDAWP${fhrold}.tm00
 fi
 
@@ -366,11 +373,13 @@ echo 0 >> input
 echo "$dim1 $dim2" >> input
 
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 
 # 1 h added to f01
 if [ -e $altpath/BGDAWP01.tm00 ]
 then
 $EXECfv3/regional_fv3snowbucket.x < input
+export err=$?; err_chk
 cat ./PCP1HR01.tm00 >> $altpath/BGDAWP01.tm00
 echo done > $altpath/postdone01
 fi
@@ -379,7 +388,9 @@ fi
 
 else
 
-ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+# one more
+# ln -sf BGDAWP${fhr}.tm00 temp.t${cyc}z.f${fhr}.grib2
+$WGRIB2  BGDAWP${fhr}.tm00  -match ":(APCP|WEASD):"  -grib  temp.t${cyc}z.f${fhr}.grib2
 
 fi
 
