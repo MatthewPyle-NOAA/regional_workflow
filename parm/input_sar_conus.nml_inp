@@ -45,7 +45,7 @@
 !       grid_type = -1
        make_nh = _MAKENH_
        fv_debug = .F.
-       range_warn = .F.
+       range_warn = .T.
        reset_eta = .F.
        n_sponge = 9
        nudge_qv = .F.
