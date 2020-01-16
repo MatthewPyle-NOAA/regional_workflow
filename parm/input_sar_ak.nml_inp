@@ -45,7 +45,7 @@
 !       grid_type = -1
        make_nh = _MAKENH_
        fv_debug = .F.
-       range_warn = .F.
+       range_warn = .T.
        reset_eta = .F.
        n_sponge = 9
        nudge_qv = .F.
@@ -53,10 +53,10 @@
        rf_cutoff = 20.e2
        d2_bg_k1 = 0.20
        d2_bg_k2 = 0.04
-       kord_tm = -11
-       kord_mt =  11
-       kord_wz =  11
-       kord_tr =  11
+       kord_tm = -9
+       kord_mt =  9
+       kord_wz =  9
+       kord_tr =  9
        hydrostatic = .F.
        phys_hydrostatic = .F.
        use_hydro_pressure = .F.
@@ -64,7 +64,7 @@
        a_imp = 1.
        p_fac = 0.1
        k_split  = 2
-       n_split  = 4
+       n_split  = 5
        nwat = 6
        na_init = _NAINIT_
        d_ext = 0.0
