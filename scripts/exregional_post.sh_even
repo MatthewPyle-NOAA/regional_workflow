@@ -57,7 +57,7 @@ echo STARTING POST with fhr $fhr
 while [ $fhr -le $fhrend ]
 do
 
-looplim=45
+looplim=90
 loop=1
 while [ $loop -le $looplim ]
 do
@@ -71,7 +71,8 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/logf0${fhr}"
+# expanding limit due to Cray problems with jobs not running
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $INPUT_DATA/logf0${fhr}"
    err_exit $msg
  fi
 done

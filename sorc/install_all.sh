@@ -31,6 +31,7 @@ fi
 # install bufrpost
 #------------------------------------
  ${CP} regional_bufr.fd/regional_bufr.x                 ../exec/regional_bufr.x
+ ${CP} regional_bufr_pnet.fd/regional_bufr_pnet.x       ../exec/regional_bufr_pnet.x
 
 #------------------------------------
 # install sndp
