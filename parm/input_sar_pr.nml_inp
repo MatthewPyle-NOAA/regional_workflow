@@ -53,10 +53,10 @@
        rf_cutoff = 20.e2
        d2_bg_k1 = 0.20
        d2_bg_k2 = 0.04
-       kord_tm = -11
-       kord_mt =  11
-       kord_wz =  11
-       kord_tr =  11
+       kord_tm = -9
+       kord_mt =  9
+       kord_wz =  9
+       kord_tr =  9
        hydrostatic = .F.
        phys_hydrostatic = .F.
        use_hydro_pressure = .F.

@@ -92,9 +92,6 @@ cd $DATA/bufrpost
 while [ $fhr -le $FHRLIM ]
 do
 
-datestr=`date`
-echo top of loop at $datestr
-
 date=`$NDATE $fhr $CYCLE`
 
 let fhrold="$fhr - 1"
@@ -132,6 +129,7 @@ else
 fi
 
 datestr=`date`
+echo top of loop after found needed log file for $fhr at $datestr
 
 cat > itag <<EOF
 $OUTFILDYN
@@ -158,6 +156,8 @@ startmsg
 
 ${APRUNC} $EXECfv3/regional_bufr.x  > pgmout.log_${fhr} 2>&1
 export err=$?;err_chk
+
+echo DONE $fhr at `date`
 
 mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
 echo done > $DATA/sndpostdone${fhr}.${tmmark}

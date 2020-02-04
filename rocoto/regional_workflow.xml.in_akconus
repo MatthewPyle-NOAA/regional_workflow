@@ -179,8 +179,11 @@
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>regional_posteven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <dependency>
-          <!-- Start the post if the forecast is running or if it has already completed.  -->
+        <and>
+          <!-- Start the even post if the forecast is running and the odd post job has started.  -->
            <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf000</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/BGDAWP01.tm00</cyclestr></datadep>
+        </and>
       </dependency>
    </task>
 

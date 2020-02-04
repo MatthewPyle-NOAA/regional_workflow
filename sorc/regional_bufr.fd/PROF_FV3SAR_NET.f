@@ -814,13 +814,14 @@ c
      & ,varname,l,DUM3D2(1,1,L))
        enddo
 
-	write(6,*) 'U: ', DUM3D(20,20,20)
-	write(6,*) 'V: ', DUM3D2(20,20,20)
-
         DO L = 1, LM
 	DO N=1,NUMSTA
 	  U(N,L)=DUM3D(IHINDX(N),JHINDX(N),L)
 	  V(N,L)=DUM3D2(IHINDX(N),JHINDX(N),L)
+	if (L .eq. 20 .and. N .eq. 20) then
+	write(6,*) 'U(20,20): ', U(20,20)
+	write(6,*) 'V(20,20): ', V(20,20)
+        endif
 	ENDDO
 	ENDDO
 
@@ -1104,13 +1105,11 @@ c
        call read_netcdf_2d(ncid_phys,ifhr,im,jm
      & ,varname,DUMMY(1,1))
 
-      DO L = 1, NSOIL
         DO N=1,NUMSTA
         I=IHINDX(N)
         J=JHINDX(N)
-        CMC(N)   = DUM3D (I,J,1)  ! canopy water 
+        CMC(N)   = DUMMY (I,J)  ! canopy water 
         END DO
-      END DO
 
 
 c
@@ -1194,10 +1193,6 @@ c reading SMSTAV
       ENDDO
 
 !HERENOW
-
-      VarName='tmp2m'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
 
        call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"ak",ak))
 
