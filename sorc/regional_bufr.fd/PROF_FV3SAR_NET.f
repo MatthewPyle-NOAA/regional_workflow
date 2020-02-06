@@ -2587,7 +2587,7 @@ C***
       WRITE(LCLAS1,REC=NREC)IHRST,IDAT,IFCST,ISTAT,CISTAT
      1,                    (FPACK(NL),NL=1,NLEN)
 
-	if (N .le. 50) then
+	if (N .le. 1) then
 	write(0,*) 'IHRST,IDAT,IFCST,ISTAT,CISTAT: ', 
      &          IHRST,IDAT,IFCST,ISTAT,CISTAT
 
