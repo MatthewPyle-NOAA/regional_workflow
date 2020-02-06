@@ -17,8 +17,8 @@ elif [ $RUN = fv3nest ]; then
 fi
 
 
-# jobtypes="bufrpost forecast_tm00 make_bc make_ic posteven postodd smartinit smartinitb"
-jobtypes="bufrpost forecast_tm00 make_bc make_ic postodd posteven smartinit smartinitb"
+jobtypes="bufrpost forecast_tm00 make_bc make_ic posteven postodd smartinit smartinitb"
+# jobtypes="bufrpost make_bc make_ic postodd posteven smartinit smartinitb"
 
 for job in $jobtypes
 do
