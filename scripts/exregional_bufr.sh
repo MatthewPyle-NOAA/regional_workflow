@@ -204,7 +204,7 @@ echo here model $model
 nlev=60
 
 echo "${model} $nlev" > itag
-${APRUNC} $EXECfv3/regional_sndp.x  < itag >> $pgmout 2>$pgmout
+${APRUNS} $EXECfv3/regional_sndp.x  < itag >> $pgmout 2>$pgmout
 export err=$?;err_chk
 
 ############### Convert BUFR output into format directly readable by GEMPAK namsnd on WCOSS
@@ -250,7 +250,7 @@ EOF
   export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
   startmsg
-${APRUNC}  $EXECfv3/regional_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
+${APRUNS}  $EXECfv3/regional_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
   export err=$?;err_chk
 
   echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc
