@@ -261,7 +261,7 @@
       <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
         <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf030</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgen_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
            <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>
@@ -284,7 +284,7 @@
       <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
         <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf030</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgen_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
            <timedep> <cyclestr offset="02:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>
@@ -324,10 +324,10 @@
     <jobname>regional_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
     <join><cyclestr>&LOGDIR;/regional_cleanup_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
-    <queue>&QUEUE_SERVICE;</queue>
-    &SERVICE_EXTRA;
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
     &RESERVATION;
-    &ARCHIVE_RESOURCES;
+    &CLEANUP_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>regional_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 

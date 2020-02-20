@@ -60,11 +60,6 @@
 
   <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
 
-  <!ENTITY POST_GOES_RESOURCES_conus "<nodes>15:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>360</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_ak "<nodes>5:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>120</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_hi "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_pr "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_guam "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
 
   <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>2:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>16</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES_ak "<nodes>1:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>8</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
@@ -75,7 +70,5 @@
 
   <!ENTITY BUFR_EXTRA "<envar><name>OMP_THREADS</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:59:00</walltime>">
 
-  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>5G</memory><walltime>03:00:00</walltime>">
-
-  <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><walltime>00:10:00</walltime>">
-
+  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>03:00:00</walltime>">
+  <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>00:10:00</walltime>">

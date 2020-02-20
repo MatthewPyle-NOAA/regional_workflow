@@ -78,8 +78,9 @@ C
 
       if (core .eq. 'arw' ) then
 	if (nlev .eq. 40 .or. nlev .eq. 50) then
-          write(0,*) 'will call SNDPST_EM with ', nlev
-          call SNDPST_EM(nlev,nlev)
+!          write(0,*) 'will call SNDPST_EM with ', nlev
+!          call SNDPST_EM(nlev,nlev)
+          write(0,*) 'this code not supporting ARW'
         else
           write(0,*) 'bad nlev: ', nlev
 	  STOP 67
@@ -101,7 +102,8 @@ C
                write(0,*) 'nlev should be 50 for NMM, but see : ', nlev
                STOP
           endif
-          call SNDPST_NMM
+          write(0,*) 'this code not supporting NMM'
+!          call SNDPST_NMM
       endif
 
       end program sndpst
