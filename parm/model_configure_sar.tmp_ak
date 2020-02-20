@@ -10,7 +10,7 @@ start_second:            0
 nhours_fcst:             NHRS
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                36
+dt_atmos:                40
 cpl:                     .false.
 calendar:                'julian'
 memuse_verbose:          .false.
@@ -27,9 +27,15 @@ write_tasks_per_group:  _WTPG_
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf'
+ichunk2d:                -1
+jchunk2d:                -1
+ichunk3d:                -1
+jchunk3d:                -1
+kchunk3d:                -1
+
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
-ideflate:                0
+ideflate:                1
 nbits:                   18
 
 

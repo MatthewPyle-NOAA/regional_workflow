@@ -29,9 +29,13 @@ filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
-ideflate:                0
+ideflate:                1
 nbits:                   18
-
+ichunk2d:                -1
+jchunk2d:                -1
+ichunk3d:                -1
+jchunk3d:                -1
+kchunk3d:                -1
 
 output_grid:             'rotated_latlon'
 cen_lon:                 146.0  # central longitude
@@ -42,18 +46,6 @@ lon2:                    5.6   # longitude of upper-right ...
 lat2:                    4.8   # latitude of upper-right ...
 dlon:                    0.025
 dlat:                    0.025
-
-#output_grid:		 'lambert_conformal'
-#cen_lon:		 -97.5	 # central longitude
-#cen_lat:		 38.5	 # central latitude
-#stdlat1:		 38.5
-#stdlat2:		 38.5
-#nx:			 1799	 # number of points along x-axis.
-#ny:			 1059	 # number of points along y-axis.
-#lon1:			 -122.719528	# longitude of lower-left point (in degrees)
-#lat1:			 21.138123	# latitude of lower-left point (in degrees)
-#dx:			 3000.0	 # x-direction grid length
-#dy:			 3000.0  # y-direction grid length
 
 nfhout:                  1
 nfhmax_hf:               60

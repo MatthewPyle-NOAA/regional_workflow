@@ -25,7 +25,7 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/regional_bufr_${tmmark}_${dom}_${PDY}${cyc}}
+export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/regional_forecast_tm00_${tmmark}_${dom}_${PDY}${cyc}}
 export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
 if [ -d $DATA ]; then
   rm -rf $DATA

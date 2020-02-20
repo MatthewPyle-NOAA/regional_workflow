@@ -29,8 +29,14 @@ filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
-ideflate:                0
+ideflate:                1
 nbits:                   18
+ichunk2d:                -1
+jchunk2d:                -1
+ichunk3d:                -1
+jchunk3d:                -1
+kchunk3d:                -1
+
 
 
 output_grid:             'rotated_latlon'
