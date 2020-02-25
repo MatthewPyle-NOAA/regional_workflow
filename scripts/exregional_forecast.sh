@@ -69,7 +69,6 @@ if [  $restart_interval -gt 0 -a  $FHMAX -gt $restart_interval -a $filecount -gt
     done
 fi
 
-
   # Link all (except sfc_data) restart files from $gmemdir
 #  for file in $gmemdir/RESTART/${PDY}.${cyc}0000.*.nc; do
 #    file2=$(echo $(basename $file))
