@@ -184,7 +184,6 @@
            <datadep age="02:00"><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/BGDAWP01.tm00</cyclestr></datadep>
         </and>
       </dependency>
-
    </task>
 
   <task name="prdgen" maxtries="&MAX_TRIES;">

@@ -18,20 +18,14 @@ fi
 
 if [ $target = hera ]; then target=hera.intel ; fi
 
-export CCPP=true
-
 cd regional_forecast.fd/
 FV3=$( pwd -P )/FV3
 CCPP=${CCPP:-"false"}
 cd tests/
-
-echo target is $target
-
 if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
-#orig  ./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y REPRO=Y CCPP=Y STATIC=Y SUITES=FV3_GFS_v15_thompson_mynn,FV3_GFS_v15_gf_thompson,FV3_GSD_v0,FV3_GSD_noah" 1
-#thisoptionworkedbetterin_rt  
-./compile.sh "$FV3" "$target" "CCPP=Y STATIC=Y SUITES=FV3_GFS_v15_thompson_mynn,FV3_GFS_v15_gf_thompson,FV3_GSD_v0,FV3_GSD_noah" 1
+  ./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y CCPP=Y STATIC=Y SUITES=FV3_GFS_2017_gfdlmp_regional" 1
 else
   ./compile.sh "$FV3" "$target" "NCEP64LEV=Y HYDRO=N 32BIT=Y" 1
 fi
+##mv -f fv3_1.exe ../NEMS/exe/fv3_gfs_nh.prod.32bit.x
 mv -f fv3_1.exe ../NEMS/exe/NEMS.x

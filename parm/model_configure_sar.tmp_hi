@@ -38,7 +38,6 @@ jchunk3d:                -1
 kchunk3d:                -1
 
 
-
 output_grid:             'rotated_latlon'
 cen_lon:                 -157.0  # central longitude
 cen_lat:                 20.0   # central latitude

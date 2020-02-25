@@ -690,7 +690,6 @@ C Getting start time
 
       write(0,*) 'mype, NSTART, NEND: ', mype, NSTART, NEND,ICNT(MYPE)
 
-
 !!!!!
        ALLOCATE(RES(NUMSTA),FIS(NUMSTA),THS(NUMSTA),HBOT(NUMSTA))
        ALLOCATE(CFRACL(NUMSTA),CFRACM(NUMSTA),CFRACH(NUMSTA))
@@ -753,7 +752,6 @@ C Getting start time
         ALLOCATE(DHCNVC(LM,NUMSTA))
         ALLOCATE(TCUCN0(LM,NUMSTA))
         ALLOCATE(TRAIN0(LM,NUMSTA))
-
 
 ! former parameter statements
         NWORDM=(LCL1ML+1)*LM+2*LCL1SL
@@ -848,7 +846,6 @@ c
        ENDDO
 
 !       enddo
-
 
 ! W defined over LM, not LM+1??
 
@@ -969,8 +966,6 @@ c
 !was        enddo
 
 !        ENDDO
-
-
 
         if (allocated(PDS)) deallocate(PDS)
         allocate(PDS(NUMSTA))
@@ -1318,6 +1313,7 @@ C
 	enddo
 
 C
+=======
 
 C
 C	GET ROTATION ANGLES FOR WIND
@@ -1505,8 +1501,6 @@ c
         ACSNOW0(N)=DUMSC
         ACSNOM0(N)=-9999.
        ENDDO
-
-
 
 
 CC
@@ -2356,7 +2350,6 @@ C
 	if (N .eq. NSTART .or. N .eq. 36) then
 	write(6,*) 'PRODAT definition, PMID: ', N,LV,LVL,PMID(N,LV)
 	endif
-	
 
         PRODAT(LMHK+LVL) = T(N,LV)
 
@@ -2369,7 +2362,6 @@ C
 
         PRODAT(NWORD2+LVL) = UT
         PRODAT(NWORD3+LVL) = VT
-
 C
         PRODAT(NWORD4+LVL) = Q(N,LV)
 C

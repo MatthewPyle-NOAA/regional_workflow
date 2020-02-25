@@ -24,7 +24,6 @@ fi
 #   ${CP} regional_forecast.fd/tests/fv3_2.exe            ../exec/regional_forecast.x
    ${CP} ufs-weather-model.fd/tests/fv3_2.exe            ../exec/regional_forecast.x
 
-
 #------------------------------------
 # install post
 #------------------------------------

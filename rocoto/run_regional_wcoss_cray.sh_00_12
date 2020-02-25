@@ -14,7 +14,6 @@ module load rocoto/1.2.4
 # if want a non-CONUS domain, export DOMAIN here
 doms="hi conus guam"
 
-
 for DOMAIN in $doms
 do
 
