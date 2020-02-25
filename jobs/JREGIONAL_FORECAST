@@ -20,9 +20,12 @@ export CYCLEanl=`$NDATE -${offset} $CDATE`
 export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
 
 ### do not want this at J-job level if going to check for restart
-#if [ -d $DATA ]; then
-#  rm -rf $DATA
-#fi
+#
+# leave until have restart working
+
+if [ -d $DATA ]; then
+  rm -rf $DATA
+fi
 
 mkdir -p $DATA
 cd $DATA

@@ -21,6 +21,8 @@ ulimit -s unlimited
 ulimit -a
 
 resterr=1
+restart_interval=12
+FHMAX=60
 
 if [ -e RESTART ]
 then
@@ -39,31 +41,33 @@ if [ $resterr -eq 0 ]
 then
 echo "have restart"
 RESTART=1
-mv RESTART/* INPUT/
+#was mv RESTART/* INPUT/
 
 # from GFS
 
 # determine if restart IC exists to continue from a previous forecast
 # RERUN="NO"
 # filecount=$(find $RSTDIR_TMP -type f | wc -l)
+filecount=$(find RESTART -type f | wc -l)
+if [  $restart_interval -gt 0 -a  $FHMAX -gt $restart_interval -a $filecount -gt 5 ]; then
 # if [ $CDUMP = "gfs" -a $restart_interval -gt 0 -a $FHMAX -gt $restart_interval -a $filecount -gt 10 ]; then
-#     SDATE=$($NDATE +$FHMAX $CDATE)
-#     EDATE=$($NDATE +$restart_interval $CDATE)
-#     while [ $SDATE -gt $EDATE ]; do
-#         PDYS=$(echo $SDATE | cut -c1-8)
-#         cycs=$(echo $SDATE | cut -c9-10)
-#         flag1=$RSTDIR_TMP/${PDYS}.${cycs}0000.coupler.res
-#         flag2=$RSTDIR_TMP/coupler.res
-#         if [ -s $flag1 ]; then
-#              mv $flag1 ${flag1}.old
-#           if [ -s $flag2 ]; then mv $flag2 ${flag2}.old ;fi
-#            RERUN="YES"
-#            CDATE_RST=$($NDATE -$restart_interval $SDATE)
-#            break
-#        fi
-#        SDATE=$($NDATE -$restart_interval $SDATE)
-#    done
-#fi
+     SDATE=$($NDATE +$FHMAX $CDATE)
+     EDATE=$($NDATE +$restart_interval $CDATE)
+     while [ $SDATE -gt $EDATE ]; do
+         PDYS=$(echo $SDATE | cut -c1-8)
+         cycs=$(echo $SDATE | cut -c9-10)
+         flag1=RESTART/${PDYS}.${cycs}0000.coupler.res
+         flag2=RESTART/coupler.res
+         if [ -s $flag1 ]; then
+              mv $flag1 ${flag1}.old
+           if [ -s $flag2 ]; then mv $flag2 ${flag2}.old ;fi
+            RERUN="YES"
+            CDATE_RST=$($NDATE -$restart_interval $SDATE)
+            break
+        fi
+        SDATE=$($NDATE -$restart_interval $SDATE)
+    done
+fi
 
 
   # Link all (except sfc_data) restart files from $gmemdir
@@ -155,6 +159,14 @@ ln -sf $FIXsar/C768.vegetation_greenness.tile7.nc C768.vegetation_greenness.tile
 ln -sf $FIXsar/C768.substrate_temperature.tile7.nc C768.substrate_temperature.tile1.nc
 ln -sf $FIXsar/C768.facsf.tile7.nc C768.facsf.tile1.nc
 
+cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/fix_for_ccpp/CCN*BIN .
+cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/fix_for_ccpp/f*.dat .
+cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/fix_for_ccpp/q*.dat .
+
+# try skip copying aerosol.dat file
+# cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/fix_for_ccpp/aerosol.dat .
+cp /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/fix_for_ccpp/thompson_tables_precomp.sl .
+
 
 for file in `ls $FIXco2/global_co2historicaldata* ` ; do
   cp $file $(echo $(basename $file) |sed -e "s/global_//g")
@@ -189,7 +201,7 @@ cd ..
 #   input.nml, input_nest02.nml, model_configure, and nems.configure
 #-------------------------------------------------------------------
 CCPP=${CCPP:-"false"}
-CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
+CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_v15_thompson_mynn"}
 
 if [ $tmmark = tm00 ] ; then
 # Free forecast with DA (warm start)
@@ -198,8 +210,33 @@ if [ $tmmark = tm00 ] ; then
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
     if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
-      cp ${PARMfv3}/input_sar_${dom}_ccpp.nml input.nml.tmp
-      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
+      echo in here attempting to grab CCPP namelist
+      echo have CCPP_SUITE as $CCPP_SUITE
+#      cp ${PARMfv3}/input_sar_${dom}_ccpp.nml_inp input.nml.tmp
+
+      if [ $RESTART -eq 1 ]
+      then
+
+       cat ${PARMfv3}/input_sar_${dom}_ccpp.nml_inp | \
+       sed s:_MAKENH_:.F.: | \
+       sed s:_NAINIT_:0: | \
+       sed s:_NGGPSIC_:.F.: | \
+       sed s:_EXTERNALIC_:.F.: | \
+       sed s:_MOUNTAIN_:.T.: | \
+       sed s:_WARMSTART_:.T.:  > input.nml.tmp
+      else
+       cat ${PARMfv3}/input_sar_${dom}_ccpp.nml_inp | \
+       sed s:_MAKENH_:.T.: | \
+       sed s:_NAINIT_:1: | \
+       sed s:_NGGPSIC_:.T.: | \
+       sed s:_EXTERNALIC_:.T.: | \
+       sed s:_MOUNTAIN_:.F.: | \
+       sed s:_WARMSTART_:.F.:  > input.nml.tmp
+       fi
+
+      cat input.nml.tmp | sed s/_TASK_X_/${TASK_X}/ | \
+                          sed s/_TASK_Y_/${TASK_Y}/ | \
+                          sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
       cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
     else
 

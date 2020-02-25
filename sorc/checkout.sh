@@ -42,11 +42,12 @@ fi
 
 echo EMC_post checkout ...
 if [[ ! -d regional_post.fd ]] ; then
-    git clone -b support/regional https://github.com/hafs-community/EMC_post.git regional_post.fd
+    git clone -b develop https://github.com/NOAA-EMC/EMC_post.git regional_post.fd
+    cd regional_post.fd
+    git checkout dc48bdb4c5af2819c16141d72908de5b1b3f6596
 else
     echo 'Directory regional_post.fd already exists. Pull the latest updates from the corresponding branch.'
     cd regional_post.fd
-    git checkout support/regional
     git pull
     cd ${topdir}
 fi

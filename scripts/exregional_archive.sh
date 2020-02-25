@@ -30,6 +30,10 @@ postmsg "$jlogfile" "$msg"
 errsum=0
 
 echo RUN is $RUN
+
+echo reset model to be fv3ccpp
+
+export model=fv3ccpp
 echo model is $model
 
 echo COMOUT is $COMOUT

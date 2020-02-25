@@ -1,0 +1,3 @@
+This command in here built an executable.
+
+./compile.sh /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_ccpp/sorc/ufs-weather-model.fd/tests wcoss_cray "NCEP64LEV=Y HYDRO=N 32BIT=Y REPRO=Y CCPP=Y STATIC=Y SUITES=FV3_GFS_v15_thompson_mynn,FV3_GFS_v15_gf_thompson,FV3_GSD_v0,FV3_GSD_noah" 2 "no" "no" >& grab_rt_ccpp_build_cray.log
