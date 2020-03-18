@@ -127,6 +127,13 @@ chmod u+x poe.${hour_name}
 ./poe.${hour_name} &
 
 ## err checking?
+err=$?
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem generating BC file"
+err_exit $msg
+fi
+
 
 hour=`expr $hour + $hour_inc`
 

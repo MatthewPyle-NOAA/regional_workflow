@@ -19,8 +19,6 @@ echo BEGIN NCO sminit Post-Processing for REG $RGIN $outreg $ogrd CYC $cyc FHR $
 
 RGUSE=`echo $RGIN | cut -c1-4`
 
-export COMOUTB=${COMOUT}/../
-
 if [ $outreg = "ak" -o $outreg = "akmem2" ]
 then
 res="3km"
@@ -71,9 +69,6 @@ if [ $SENDCOM = YES ]
 then
 cp ${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2  $COMOUT
 $WGRIB2   $COMOUT/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2.idx
-
-ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2 $COMOUTB
-ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_${res}.f${fhr}.${NEST}.grib2.idx $COMOUTB
 export err=$?; err_chk
 fi
 

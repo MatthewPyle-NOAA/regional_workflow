@@ -15,6 +15,8 @@ C   02-07-01  G MANIKIN - FIXED PROBLEM WITH DHCNVC AND DHRAIN
 C                          COMPUTATIONS - SEE COMMENTS BELOW
 C   03-04-01  M PYLE - BEGAN CONVERTING FOR WRF
 C   19-10-23  M PYLE - BEGAN CONVERTING FOR FV3SAR NETCDF output
+C   20-02-04  M Pyle - Parallelized version reading just the station data to 
+C                      improve performance for compressed netCDF output from model.
 C
 C USAGE:  CALL PROF FROM PROGRAM POST0
 C
@@ -38,6 +40,7 @@ c      use masks
 C
        use netcdf
       include 'wrf_io_flags.h'
+      include 'mpif.h'
 
 !      INCLUDE "parmeta"
       INCLUDE "parmsoil"
@@ -76,26 +79,25 @@ C------------------------------------------------------------------------
 C
        REAL, ALLOCATABLE::
      & RES(:),FIS(:),THS(:),HBOT(:)
-     &,CFRACL(:),CFRACM(:),CFRACH(:),SNO(:)
+     &,CFRACL(:),CFRACM(:),CFRACH(:)
      &,SOILTB(:),SFCEXC(:),SMSTAV(:),SMSTOT(:)
-     &,Z0(:),CZEN(:),CZMEAN(:),U00(:),SR(:)
+     &,Z0(:),CZEN(:),CZMEAN(:)
      &,ACPREC(:),CUPREC(:),ACSNOW(:),ACSNOM(:)
      &,SSROFF(:),BGROFF(:),SFCSHX(:),SFCLHX(:)
      &,SUBSHX(:),SNOPCX(:),ASWIN(:),ASWOUT(:)
      &,ASWTOA(:),ALWIN(:),ALWOUT(:),ALWTOA(:)
-     &,TSHLTR(:),QSHLTR(:),TH2_hold(:)
+     &,TSHLTR(:),QSHLTR(:)
      &,TH10(:),Q10(:),U10(:),V10(:)
      &,TLMIN(:),TLMAX(:)
      &,SMC(:,:),CMC(:),STC(:,:),SH2O(:,:)
-     &,VEGFRC(:),POTFLX(:),PSLP(:),PDSL1(:)
+     &,VEGFRC(:),POTFLX(:),PSLP(:)
      &,EGRID2(:),SM(:),SICE(:)
-     &,HBM2(:),FACTR(:),PSFC(:)
-     &,PTBL(:,:),TTBL(:,:)
+     &,FACTR(:),PSFC(:)
      &,STATPR(:),STACPR(:),STAEVP(:)
      &,STAPOT(:),STASHX(:),STASUB(:),STAPCX(:)
      &,STASWI(:),STASWO(:),STALWI(:),STALWO(:)
      &,STALWT(:),STASWT(:),STASNM(:),STASRF(:)
-     &,STABRF(:),STASNO(:)
+     &,STABRF(:),STASNO(:),SNO(:),SR(:)
      &,ACPREC0(:),CUPREC0(:),SFCLHX0(:),POTFLX0(:)
      &,SFCSHX0(:),SUBSHX0(:),SNOPCX0(:),ASWIN0(:)
      &,ASWOUT0(:),ALWIN0(:),ALWOUT0(:),ALWTOA0(:)
@@ -105,35 +107,34 @@ C
 C
 !                             R E A L
 !     & T(NSTAT,LM),Q(NSTAT,LM),U(NSTAT,LM),V(NSTAT,LM),Q2(NSTAT,LM)
-!     &,OMGALF(NSTAT,LM),CWM(NSTAT,LM),TRAIN(NSTAT,LM),TCUCN(NSTAT,LM)
-!     &,RSWTT(NSTAT,LM),RLWTT(NSTAT,LM),CCR(NSTAT,LM),RTOP(NSTAT,LM)
-!     &,HTM(NSTAT,LM),OMGA(NSTAT,LM)
+!     &,CWM(NSTAT,LM),TRAIN(NSTAT,LM),TCUCN(NSTAT,LM)
+!     &,RSWTT(NSTAT,LM),RLWTT(NSTAT,LM),RTOP(NSTAT,LM)
+!     &,OMGA(NSTAT,LM)
 
       REAL, ALLOCATABLE:: T(:,:),Q(:,:),U(:,:),V(:,:),Q2(:,:)
-     &,                   OMGALF(:,:),CWM(:,:),TRAIN(:,:),TCUCN(:,:)
-     &,                   RSWTT(:,:),RLWTT(:,:),CCR(:,:),RTOP(:,:)
-     &,                   HTM(:,:),OMGA(:,:),p_hold(:,:),t_hold(:,:)
-     &,                   PINT(:,:),UL(:),DPRES(:,:),DZ(:,:),CLDFRA(:,:)
+     &,           CWM(:,:),TRAIN(:,:),TCUCN(:,:)
+     &,           RSWTT(:,:),RLWTT(:,:),RTOP(:,:)
+     &,           OMGA(:,:),t_hold(:,:)
+     &,           PINT(:,:),UL(:),DPRES(:,:),DZ(:,:),CLDFRA(:,:)
+     &,           DUM3D(:,:),DUM3D2(:,:),DUM3D3(:,:), DUM3D4(:,:)
 C  
 
       REAL, ALLOCATABLE:: DHCNVC(:,:),DHRAIN(:,:),STADHC(:),STADHR(:),
-     &                      TCUCN0(:,:),TRAIN0(:,:)
+     &                 TCUCN0(:,:),TRAIN0(:,:),VARTMP(:),VARTMPSTA(:)
 
-      REAL,ALLOCATABLE:: DUM(:,:,:),DUMMY(:,:),DUMMY2(:,:),
-     & DUM3D(:,:,:),DUM3D2(:,:,:),DUM3D3(:,:,:),GDLAT(:,:),GDLON(:,:),
-     & DUM3D4(:,:,:)
+      REAL,ALLOCATABLE:: DUM(:,:,:),DUMMY(:,:),DUMMY2(:,:)
+
+        
 
 
+      REAL :: DUMSC
       REAL, ALLOCATABLE:: PRODAT(:),FPACK(:)
 
-      INTEGER, ALLOCATABLE:: IDUM(:,:),LMH(:,:),IW(:,:)
+      INTEGER, ALLOCATABLE:: LMH(:,:),IW(:,:),ICNT(:),IDSPL(:)
 
-
-!     &,p_hold(NSTAT,LM),t_hold(NSTAT,LM)
-!       REAL:: PINT(NSTAT,LM+1),LATSTART,LONSTART
 
        REAL, ALLOCATABLE :: PMID(:,:),W(:,:), WH(:,:),
-     &                      pint_part(:),PDS(:)
+     &                      PDS(:)
 
 	real, allocatable:: CROT(:),SROT(:),ak(:)
 C------------------------------------------------------------------------
@@ -161,7 +162,7 @@ C	new stuff
       character(len=2):: fhroldchar
 
 	real:: rinc(5)
-	integer:: IDATE(8),JDATE(8),im,jm,lm
+	integer:: IDATE(8),JDATE(8),im,jm,lm,K
         integer :: varid, ncid_dyn, ncid_phys
 
 C------------------------------------------------------------------------
@@ -176,34 +177,47 @@ c	write(6,*) 'startedate= ', startdate
 
 !	datestr=startdate
 
+      call mpi_init(ierr)
+      call mpi_comm_rank(MPI_COMM_WORLD,mype,ierr)
+      call mpi_comm_size(MPI_COMM_WORLD,npes,ierr)
+
+	if (MYPE .eq. 0) then
+
       REWIND 19
-C
       READ(19)NUMSTA,IDSTN,STNLAT,STNLON
      1,       IHINDX,JHINDX,IVINDX,JVINDX,CIDSTN
-	
-	write(6,*) 'STNLAT(1), STNLON(1): ', STNLAT(1), STNLON(1)
-	write(6,*) 'IHINDX(1),JHINDX(1): ', IHINDX(1),JHINDX(1)
-	write(6,*) 'IVINDX(1),JVINDX(1): ', IVINDX(1),JVINDX(1)
-      WRITE(6,20)NUMSTA
-   20 FORMAT('INIT:  NUMBER OF PROFILE STATIONS ',I5)
-
+	write(0,*) 'read from unit 19'
 !mp
 	allocate(CIDSTN_SAVE(NUMSTA))
 	DO N=1,NUMSTA
 	CIDSTN_SAVE(N)=CIDSTN(N)
 	ENDDO
-
 !mp
+        endif
 
-	if (ITAG .eq. 0) then
+       call mpi_bcast(NUMSTA,1,MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+
+       call mpi_bcast(IDSTN,NSTAT,MPI_INTEGER,0, MPI_COMM_WORLD,ierr)
+       call mpi_bcast(STNLAT,NSTAT,MPI_REAL,0,MPI_COMM_WORLD,ierr)
+       call mpi_bcast(STNLON,NSTAT,MPI_REAL,0,MPI_COMM_WORLD,ierr)
+       call mpi_bcast(IHINDX,NSTAT,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+       call mpi_bcast(JHINDX,NSTAT,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+       call mpi_bcast(IVINDX,NSTAT,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+       call mpi_bcast(JVINDX,NSTAT,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+	
+!	write(6,*) 'STNLAT(1), STNLON(1): ', STNLAT(1), STNLON(1)
+!	write(6,*) 'IHINDX(1),JHINDX(1): ', IHINDX(1),JHINDX(1)
+!	write(6,*) 'IVINDX(1),JVINDX(1): ', IVINDX(1),JVINDX(1)
+
+	if (mype .eq. 0) then
+      WRITE(6,20)NUMSTA
+         endif
+   20 FORMAT('INIT:  NUMBER OF PROFILE STATIONS ',I5)
+
+	if (ITAG .eq. 0 .and. mype .eq. 0) then
       WRITE(6,30)(IDSTN(N),STNLAT(N)/DTR,STNLON(N)/DTR
      1,               IHINDX(N),JHINDX(N),IVINDX(N),JVINDX(N)
      2,               CIDSTN(N),N=1,NUMSTA)
-!	else
-!      WRITE(6,30)(IDSTN(N),STNLAT(N)/DTR,STNLON(N)/DTR
-!     1,               IHINDX(N),JHINDX(N),IVINDX(N),JVINDX(N)
-!     2,               CIDSTN_SAVE(N),N=1,NUMSTA,20)
-!
 	endif
    30 FORMAT(2X,I6,2F8.2,4I8,4X,A8)
 
@@ -232,11 +246,11 @@ C Getting start time
 
         varname='time'
         call check( nf90_inq_varid(ncid_dyn,trim(varname),varid))
-        write(0,*) ncid_dyn,trim(varname),varid
+!        write(0,*) ncid_dyn,trim(varname),varid
         call check( nf90_get_var(ncid_dyn,varid,ihr))
 
         call check( nf_get_att_text(ncid_dyn,varid,'units',varin))
-        write(0,*) 'varin is: ', varin, ' and end'
+!        write(0,*) 'varin is: ', varin, ' and end'
 
         read(varin,101)idate(1),idate(2),idate(3),idate(4),idate(5)
  101    format(T13,i4,1x,i2,1x,i2,1x,i2,1x,i2)
@@ -658,37 +672,44 @@ C Getting start time
 
         write(6,*) 'allocate with IM, JM, LM: ', IM, JM, LM
 
-!  The end j row is going to be jend_2u for all variables except for V.
-	JSTA_2L=1
-	JEND_2U=JM
-      JS=JSTA_2L
-      JE=JEND_2U
-      IF (JEND_2U.EQ.JM) THEN
-       JEV=JEND_2U+1
-      ELSE
-       JEV=JEND_2U
-      ENDIF
-	write(6,*) 'js, je, jev: ', js,je,jev
+
+      allocate(ICNT(0:NPES-1),IDSPL(0:NPES-1))
+
+       do I=0,npes-1
+      call para_range(1,NUMSTA,npes,I,
+     &  NSTART,NEND)
+	ICNT(I)=(NEND-NSTART)+1
+        IDSPL(I)= NSTART-1 ! ?
+	if (mype .eq. 0) then
+	write(0,*) 'mype, ICNT, IDSPL: ', I,ICNT(I),IDSPL(I)
+        endif
+       enddo
+
+      call para_range(1,NUMSTA,npes,mype,
+     &  NSTART,NEND)
+
+      write(0,*) 'mype, NSTART, NEND: ', mype, NSTART, NEND,ICNT(MYPE)
+
 
 !!!!!
        ALLOCATE(RES(NUMSTA),FIS(NUMSTA),THS(NUMSTA),HBOT(NUMSTA))
        ALLOCATE(CFRACL(NUMSTA),CFRACM(NUMSTA),CFRACH(NUMSTA))
-       ALLOCATE(SNO(NUMSTA),SOILTB(NUMSTA),SFCEXC(NUMSTA))
+       ALLOCATE(SOILTB(NUMSTA),SFCEXC(NUMSTA))
        ALLOCATE(SMSTAV(NUMSTA),SMSTOT(NUMSTA))
        ALLOCATE(Z0(NUMSTA),CZEN(NUMSTA),CZMEAN(NUMSTA))
-       ALLOCATE(U00(NUMSTA),SR(NUMSTA),ACPREC(NUMSTA))
+       ALLOCATE(ACPREC(NUMSTA))
        ALLOCATE(CUPREC(NUMSTA),ACSNOW(NUMSTA),ACSNOM(NUMSTA))
        ALLOCATE(SSROFF(NUMSTA),BGROFF(NUMSTA),SFCSHX(NUMSTA))
        ALLOCATE(SFCLHX(NUMSTA),SUBSHX(NUMSTA),SNOPCX(NUMSTA))
        ALLOCATE(ASWIN(NUMSTA),ASWOUT(NUMSTA),ASWTOA(NUMSTA))
        ALLOCATE(ALWIN(NUMSTA),ALWOUT(NUMSTA),ALWTOA(NUMSTA))
-       ALLOCATE(TSHLTR(NUMSTA),QSHLTR(NUMSTA),TH2_hold(NUMSTA))
+       ALLOCATE(TSHLTR(NUMSTA),QSHLTR(NUMSTA))
        ALLOCATE(TH10(NUMSTA),Q10(NUMSTA),U10(NUMSTA),V10(NUMSTA))
        ALLOCATE(TLMIN(NUMSTA),TLMAX(NUMSTA),SMC(NUMSTA,NSOIL))
        ALLOCATE(CMC(NUMSTA),STC(NUMSTA,NSOIL),SH2O(NUMSTA,NSOIL))
        ALLOCATE(VEGFRC(NUMSTA),POTFLX(NUMSTA),PSLP(NUMSTA))
-       ALLOCATE(PDSL1(NUMSTA),EGRID2(NUMSTA),SM(NUMSTA),SICE(NUMSTA))
-       ALLOCATE(HBM2(NUMSTA),FACTR(NUMSTA),PTBL(ITB,JTB),TTBL(JTB,ITB))
+       ALLOCATE(EGRID2(NUMSTA),SM(NUMSTA),SICE(NUMSTA))
+       ALLOCATE(FACTR(NUMSTA))
        ALLOCATE(STATPR(NUMSTA),STACPR(NUMSTA),STAEVP(NUMSTA))
        ALLOCATE(STAPOT(NUMSTA),STASHX(NUMSTA),STASUB(NUMSTA))
        ALLOCATE(STAPCX(NUMSTA),STASWI(NUMSTA),STASWO(NUMSTA))
@@ -700,7 +721,7 @@ C Getting start time
        ALLOCATE(ASWIN0(NUMSTA),ASWOUT0(NUMSTA),ALWIN0(NUMSTA))
        ALLOCATE(ALWOUT0(NUMSTA),ALWTOA0(NUMSTA),ASWTOA0(NUMSTA))
        ALLOCATE(ACSNOW0(NUMSTA),ACSNOM0(NUMSTA),SSROFF0(NUMSTA))
-       ALLOCATE(BGROFF0(NUMSTA),PSFC(NUMSTA))
+       ALLOCATE(BGROFF0(NUMSTA),PSFC(NUMSTA),SNO(NUMSTA),SR(NUMSTA))
 
 
 	ALLOCATE(T(NUMSTA,LM))
@@ -708,21 +729,17 @@ C Getting start time
 	ALLOCATE(U(NUMSTA,LM))
 	ALLOCATE(V(NUMSTA,LM))
 	ALLOCATE(Q2(NUMSTA,LM))
-	ALLOCATE(OMGALF(NUMSTA,LM))
 	ALLOCATE(CWM(NUMSTA,LM))
 	ALLOCATE(TRAIN(NUMSTA,LM))
 	ALLOCATE(TCUCN(NUMSTA,LM))
 	ALLOCATE(RSWTT(NUMSTA,LM))
 	ALLOCATE(RLWTT(NUMSTA,LM))
-	ALLOCATE(CCR(NUMSTA,LM))
 	ALLOCATE(CLDFRA(NUMSTA,LM))
 	ALLOCATE(RTOP(NUMSTA,LM))
-	ALLOCATE(HTM(NUMSTA,LM))
 	ALLOCATE(OMGA(NUMSTA,LM))
-	ALLOCATE(p_hold(NUMSTA,LM))
 	ALLOCATE(t_hold(NUMSTA,LM))
 	ALLOCATE(PINT(NUMSTA,LM+1))
-        ALLOCATE(W(NUMSTA,LM+1))
+        ALLOCATE(W(NUMSTA,LM))
         ALLOCATE(WH(NUMSTA,LM))
         ALLOCATE(IW(NUMSTA,LM))
         ALLOCATE(DPRES(NUMSTA,LM))
@@ -730,10 +747,13 @@ C Getting start time
 
         ALLOCATE(STADHC(LM))
         ALLOCATE(STADHR(LM))
+        ALLOCATE(VARTMP(LM))
+        ALLOCATE(VARTMPSTA(NUMSTA))
         ALLOCATE(DHRAIN(LM,NUMSTA))
         ALLOCATE(DHCNVC(LM,NUMSTA))
         ALLOCATE(TCUCN0(LM,NUMSTA))
         ALLOCATE(TRAIN0(LM,NUMSTA))
+
 
 ! former parameter statements
         NWORDM=(LCL1ML+1)*LM+2*LCL1SL
@@ -749,20 +769,16 @@ C Getting start time
      &                          allocate(DUMMY(IM,JM))
         if (ALLOCATED(DUMMY2)) deallocate(DUMMY2);
      &                          allocate(DUMMY2(IM,JM))
+
         if (ALLOCATED(DUM3D)) deallocate(DUM3D);
-     &                          allocate(DUM3D(IM,JM,LM))
+     &                          allocate(DUM3D(NUMSTA,LM))
         if (ALLOCATED(DUM3D2)) deallocate(DUM3D2);
-     &                          allocate(DUM3D2(IM,JM,LM))
+     &                          allocate(DUM3D2(NUMSTA,LM))
         if (ALLOCATED(DUM3D3)) deallocate(DUM3D3);
-     &                          allocate(DUM3D3(IM,JM,LM))
+     &                          allocate(DUM3D3(NUMSTA,LM))
         if (ALLOCATED(DUM3D4)) deallocate(DUM3D4);
-     &                          allocate(DUM3D4(IM,JM,LM))
-        if (ALLOCATED(GDLAT)) deallocate(GDLAT);
-     &                          allocate(GDLAT(IM,JM))
-        if (ALLOCATED(GDLON)) deallocate(GDLON);
-     &                          allocate(GDLON(IM,JM))
-        if (ALLOCATED(IDUM)) deallocate(IDUM);
-     &                          allocate(IDUM(IM,JM))
+     &                          allocate(DUM3D4(NUMSTA,LM))
+
         if (ALLOCATED(LMH)) deallocate(LMH);
      &                          allocate(LMH(IM,JM))
 
@@ -790,8 +806,8 @@ C Getting start time
 
         truelat1=0.
         truelat2=0.
-        write(6,*) 'truelat1= ', truelat1
-        write(6,*) 'truelat2= ', truelat2
+!        write(6,*) 'truelat1= ', truelat1
+!        write(6,*) 'truelat2= ', truelat2
         maptype=5
         write(6,*) 'maptype is ', maptype
 !need to get DT
@@ -804,52 +820,52 @@ c
 	write(6,*) 'DateStr: ', DateStr
 
 	! start reading 3d netcdf output
-      do L=1,LM
  
        varname='ugrd'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D(1,1,L))
-       varname='vgrd'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D2(1,1,L))
-       enddo
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
 
-        DO L = 1, LM
-	DO N=1,NUMSTA
-	  U(N,L)=DUM3D(IHINDX(N),JHINDX(N),L)
-	  V(N,L)=DUM3D2(IHINDX(N),JHINDX(N),L)
-	if (L .eq. 20 .and. N .eq. 20) then
-	write(6,*) 'U(20,20): ', U(20,20)
-	write(6,*) 'V(20,20): ', V(20,20)
+       U(N,:)=VARTMP(:)
+
+	if (N .eq. 20) then
+           write(0,*) ' U(20,20): ', U(N,20)
         endif
-	ENDDO
-	ENDDO
 
+       ENDDO
+       varname='vgrd'
 
-	write(6,*) 'U,V defined: '
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+
+       V(N,:)=VARTMP(:)
+
+	if (N .eq. 20) then
+           write(0,*) 'V(20,20): ', V(N,20)
+        endif
+
+       ENDDO
+
+!       enddo
 
 
 ! W defined over LM, not LM+1??
 
        varname='dzdt'
-      do L=1,LM
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D(1,1,L))
-      enddo
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       W(N,:)=VARTMP(:)
+       WH(N,:)=VARTMP(:)
+	if (N .eq. 20) then
+           write(0,*) 'W(20,20): ', W(N,20)
+        endif
 
-	write(6,*) 'W: ', DUM3D(20,20,20)
-
-      DO l = 1, lm
-      DO N=1,NUMSTA
-	I=IHINDX(N)	
-	J=JHINDX(N)
-            w ( N,L ) = dum3d ( i, j, l )
-            WH ( N,L ) = dum3d ( i, j, l )
-      END DO
-      END DO
+       ENDDO
 
 !      DO L = 1,LM
-!      DO N=1,NUMSTA
+!      DO N=NSTART,NEND
 !	I=IHINDX(N)	
 !	J=JHINDX(N)
 !            WH(N,L) = (W(N,L)+W(N,L+1))*0.5
@@ -857,52 +873,76 @@ c
 !      END DO
 
 
-      do L=1,LM
        varname='tmp'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D(1,1,L))
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       DUM3D(N,:)=VARTMP(:)
+	if (N .eq. 20) then
+           write(0,*) 'T(20,20): ', DUM3D(N,20)
+        endif
+       ENDDO
+       
 
        varname='spfh'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D2(1,1,L))
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       DUM3D2(N,:)=VARTMP(:)
+	if (N .eq. 10) then
+           do L=1,LM
+           write(0,*) 'L,Q(10,L): ', L, DUM3D2(N,L)
+           enddo
+        endif
+       ENDDO
+
 
        varname='dpres'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D3(1,1,L))
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       DUM3D3(N,:)=VARTMP(:)
+	if (N .eq. 20) then
+           write(0,*) 'DP(20,20): ', DUM3D3(N,20)
+        endif
+       ENDDO
+
 
        varname='delz'
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D4(1,1,L))
-      enddo
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       DUM3D4(N,:)=VARTMP(:)
+	if (N .eq. 20) then
+           write(0,*) 'DZ(20,20): ', DUM3D4(N,20)
+        endif
+       ENDDO
+
 
         varname='pressfc'
-       call read_netcdf_2d(ncid_dyn,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-       write(0,*) 'past read_netcdf_2d'
-       write(0,*) 'shape(psfc): ', shape(psfc)
-
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-         PSFC(N)=DUMMY(I,J)
-        ENDDO
+       DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_dyn,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+       PSFC(N)=DUMSC
+       ENDDO
 
        write(0,*) 'past PSFC def with min/max: ', 
      &           minval(psfc),maxval(psfc)
+
 	DO L=1,LM
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-	 Q(N,L)=DUM3D2(I,J,L)  ! need to convert in any way?
-         T_hold( N , L ) = dum3d ( i, j, l ) 
-         DPRES(N,L) = DUM3D3(I,J,L)
-         DZ(N,L) = abs(DUM3D4(I,J,L))
+	DO N=NSTART,NEND
+	 Q(N,L)=DUM3D2(N,L)  ! need to convert in any way?
+         T_hold( N , L ) = dum3d ( N, L ) 
+         DPRES(N,L) = DUM3D3(N,L)
+         DZ(N,L) = abs(DUM3D4(N,L))
 	ENDDO
 	ENDDO
+
+	if (mype .eq. 0) then
        write(0,*) 'past big def block'
 	write(0,*) 'Q(1,1),T_hold(1,1),dpres(1,1),dz(1,1): ', 
      &              Q(1,1),T_hold(1,1),dpres(1,1),dz(1,1)
+	endif
 
 
 ! think interface vs. midlayer pressure - this below might not be correct.
@@ -910,9 +950,9 @@ c
 	if (allocated(PMID)) deallocate(PMID)
 	allocate(PMID(NUMSTA,LM))
 
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
+!	DO N=NSTART,NEND
+!         I=IHINDX(N)
+!         J=JHINDX(N)
 
 ! test going to post style PMID calc.  
 !was         PMID(N,LM)=PSFC(N)-0.5*DPRES(N,LM)
@@ -930,13 +970,9 @@ c
 
 !was        enddo
 
-        ENDDO
-
-	write(6,*) 'T: ', DUM3D(20,20,20)
+!        ENDDO
 
 
-        if (allocated(pint_part)) deallocate(pint_part)
-        allocate(pint_part(NUMSTA))
 
         if (allocated(PDS)) deallocate(PDS)
         allocate(PDS(NUMSTA))
@@ -944,11 +980,17 @@ c
 ! Did I mistranslate something wrong here?  the PMID/DPRES business seems weird.
 
       do L=1,LM
-	DO N=1,NUMSTA
+	DO N=NSTART,NEND
            if(DPRES(N,L)/=spval .and. T_hold(N,L)/=spval .and. 
      &     Q(N,L)/=spval .and. DZ(N,L)/=spval)then
            PMID(N,L)=con_rd*DPRES(N,L)* 
      &          T_hold(N,L)*(Q(N,L)*con_fvirt+1.0)/G/DZ(N,L)
+
+!	if (N .eq. NSTART .or. N .eq. NEND ) then
+!        write(0,*) 'N,L,DP,T,Q,DZ,PMID: ',N,L,DPRES(N,L),T_hold(N,L),
+!     &                                  Q(N,L),DZ(N,L),PMID(N,L)
+!	endif
+
            else
             PMID(N,L)=spval
 
@@ -963,201 +1005,178 @@ c
        ENDDO
 
 
-	DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-  	 pint_part(N)=DUMMY(I,J)+DUMMY2(I,J)
-	ENDDO
-
        varname='clwmr'
-      do L=1,LM
-       call read_netcdf_3d(ncid_dyn,ifhr,im,jm
-     & ,varname,l,DUM3D(1,1,L))
-      enddo
+       DO N=NSTART,NEND
+       call read_netcdf_3d(ncid_dyn,ifhr
+     & ,varname,IHINDX(N),JHINDX(N),LM,VARTMP)
+       CWM(N,:)=VARTMP(:)
+       ENDDO
+
 
         DO L = 1, LM
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           Q2(N,L)=0.
-          CWM(N,L)=DUM3D(IHINDX(N),JHINDX(N),L)
         ENDDO
         ENDDO
 
 
       VarName='soilt1'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D(:,:,1)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        STC(N,1) = DUMSC
+        ENDDO
+
 
       VarName='soilt2'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D(:,:,2)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        STC(N,2) = DUMSC
+        ENDDO
 
       VarName='soilt3'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D(:,:,3)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        STC(N,3) = DUMSC
+        ENDDO
+
 
       VarName='soilt4'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D(:,:,4)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        STC(N,4) = DUMSC
+        ENDDO
+
 
       VarName='soilw1'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D2(:,:,1)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SMC(N,1) = DUMSC
+        ENDDO
 
       VarName='soilw2'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D2(:,:,2)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SMC(N,2) = DUMSC
+        ENDDO
 
       VarName='soilw3'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D2(:,:,3)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SMC(N,3) = DUMSC
+        ENDDO
 
       VarName='soilw4'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D2(:,:,4)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SMC(N,4) = DUMSC
+        ENDDO
+
 
       VarName='soill1'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D3(:,:,1)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SH2O(N,1) = DUMSC
+        ENDDO
 
       VarName='soill2'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D3(:,:,2)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SH2O(N,2) = DUMSC
+        ENDDO
 
       VarName='soill3'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D3(:,:,3)=DUMMY(:,:)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SH2O(N,3) = DUMSC
+        ENDDO
 
       VarName='soill4'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-        DUM3D3(:,:,4)=DUMMY(:,:)
-
-      DO L = 1, NSOIL
-        DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-! flip soil layer again because wrf soil variable vertical indexing
-! is the same with eta and vertical indexing was flipped for both
-! atmospheric and soil layers within getVariable
-
-!! assuming this isn't needed for FV3SAR
-!
-            STC(N,L) = DUM3D(I,J,L)
-            SMC(N,L) = DUM3D2(I,J,L)
-            SH2O(N,L) = DUM3D3(I,J,L)
-        END DO
-      END DO
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        SH2O(N,4) = DUMSC
+        ENDDO
 
 
       VarName='spfh2m'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
 ! should QSHLTER be specific humidity?
-        QSHLTR(N)=DUMMY(IHINDX(N),JHINDX(N))
-      ENDDO
-
+       QSHLTR(N)=DUMSC
+       ENDDO
 
       VarName='tmp2m'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
-        TSHLTR(N)=DUMMY(IHINDX(N),JHINDX(N))
-      ENDDO
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        TSHLTR(N)=DUMSC
+        ENDDO
 
       VarName='ugrd10m'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
-        U10(N)=DUMMY(IHINDX(N),JHINDX(N))
-      ENDDO
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        U10(N)=DUMSC
+         ENDDO
 
       VarName='vgrd10m'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        V10(N)=DUMSC
+         ENDDO
 
-      DO N=1,NUMSTA
-        V10(N)=DUMMY(IHINDX(N),JHINDX(N))
-      ENDDO
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
+      DO N=NSTART,NEND
         TH10(N)=-9999.
         Q10(N)=-9999.
        END DO
 
       VarName='cnwat'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-        DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-        CMC(N)   = DUMMY (I,J)  ! canopy water 
-        END DO
-
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        CMC(N)=DUMSC ! canopy water
+         ENDDO
 
 c
 c reading SMSTAV
 !?      VarName='SMSTAV'
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-!        SMSTAV(N)=DUMMY(I,J)
+      DO N=NSTART,NEND
         SMSTAV(N)=-9999.
       ENDDO
 
 
       VarName='veg'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-        VEGFRC(N)=DUMMY(I,J)
-!	if (mod(N,25) .eq. 0) then
-!	write(6,*) 'N, VEGFRC(N): ', N, VEGFRC(N)
-!	endif
-      ENDDO
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        VEGFRC(N)=DUMSC ! canopy water
+        ENDDO
 
       VarName='snod'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-        ACSNOW(N)=DUMMY(I,J)
+        DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        ACSNOW(N)=DUMSC
         ACSNOM(N)=-9999.
-      ENDDO
-
-!      VarName='PB'
-!      call getVariable(fileName,DateStr,DataHandle,VarName,DUM3D,
-!     &  IM+1,1,JM+1,LM+1,IM,JS,JE,LM)
-
+       ENDDO
 
 	DO L=1,LM
-	DO N=1,NUMSTA
+	DO N=NSTART,NEND
          I=IHINDX(N)
          J=JHINDX(N)
-!?	 PMID(N,L)=p_hold(N,L)+DUM3D(I,J,L)
          T(N,L)=t_hold(N,L)
  	 OMGA(N,L)=-WH(N,L)*PMID(N,L)*G/
      &              (RD*T(N,L)*(1+.608*Q(N,L)))
@@ -1177,22 +1196,23 @@ c reading SMSTAV
 	ENDDO
 	ENDDO
 
-	do L=53,54
-	write(0,*) 'L, PMID(1,L),OMGA(1,L): ', L, PMID(1,L),OMGA(1,L)
-        enddo
-		
- 	
 
       VarName='hgtsfc'
-       call read_netcdf_2d(ncid_dyn,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_dyn,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
         RES(N)=1.0
-        FIS(N)=DUMMY(IHINDX(N),JHINDX(N))*G
+        FIS(N)=(DUMSC)*G
       ENDDO
 
-!HERENOW
+C***  PDS IS SURFACE PRESSURE.
+!      VarName='pressfc'
+      DO N=NSTART,NEND
+!       call read_netcdf_2d(ncid_dyn,ifhr,IHINDX(N),JHINDX(N)
+!     & ,varname,DUMSC)
+        PDS(N)=PSFC(N)
+        PINT(N,LM+1)=PSFC(N)
+      ENDDO
 
        call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"ak",ak))
 
@@ -1200,16 +1220,13 @@ c reading SMSTAV
 
 	write(6,*) 'returned P_TOP into PT as : ', PT
 
-        DO N=1,NUMSTA
-         I=IHINDX(N)
-         J=JHINDX(N)
-         PINT (N,LM+1)=pint_part(N)+PT
-         PINT (N,1)=PT
+        DO N=NSTART,NEND
+!         I=IHINDX(N)
+!         J=JHINDX(N)
+!         PINT (N,LM+1)=art(N)+PT
+!         PINT (N,1)=PT
 
 	THS(N)=TSHLTR(N)*(100000./PINT(N,LM+1))**CAPA
-
-        HBOT(N)=-9999.
-        CFRACL(N)=-9999.
 
 !!! constrain surface RH
 
@@ -1230,75 +1247,34 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
         write(6,*) 'getting prate_ave'
       VarName='prate_ave'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-        ACPREC(N)=DUMMY(I,J)*3600.*float(ITAG)*0.001
+      DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        ACPREC(N)=DUMSC*3600.*float(ITAG)*0.001
         CUPREC(N)=0.
-	write(0,*) 'N, ACPREC(N): ', N, ACPREC(N)
-      ENDDO
-!	write(0,*) 'maxval(ACPREC): ', maxval(ACPREC)
+       ENDDO
 
+	write(0,*) 'maxval(ACPREC): ', maxval(ACPREC)
 
-
-      write(0,*) 'calling for lat'
-      VarName='lat'
-      call read_netcdf_2d(ncid_phys,ifhr,im,jm,
-     & VarName,DUMMY(1,1))
-
-	write(0,*) 'past netcdf_2d call for lat'
-
-      do j = 1, jm
-        do i = 1, im
-            GDLAT ( i, j ) = DUMMY ( i, j )
-        end do
-       end do
-
-
-      write(0,*) 'calling for lon'
-      VarName='lon'
-      call read_netcdf_2d(ncid_phys,ifhr,im,jm,
-     & VarName,DUMMY)
-
-      do j = 1, jm
-        do i = 1, im
-	    if (DUMMY(I,J) .gt. 180) then
-            GDLON ( i, j ) = DUMMY ( i, j ) - 360.0
-            elseif (DUMMY(I,J) .lt. -180.) then
-            GDLON ( i, j ) = DUMMY ( i, j ) + 360.0
-            else
-            GDLON ( i, j ) = DUMMY ( i, j ) 
-            endif
-        end do
-       end do
-
-	write(0,*) 'min/max of gdlon: ', 
-     &   minval(gdlon),maxval(gdlon)
 
 ! XLAND 1 land 2 sea
-      VarName='land'
-      call read_netcdf_2d(ncid_phys,1,im,jm,
-     & VarName,DUMMY)
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-	if (DUMMY(I,J) .lt. 0.5) then
+        varname='land'
+       DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+	if (DUMSC .lt. 0.5) then
             SM(N)=1.
             SICE(N)=0.
-        elseif (DUMMY(I,J) .ge. 0.5 .and. DUMMY(i,J) .lt. 1.5 ) then
+        elseif (DUMSC .ge. 0.5 .and. DUMSC .lt. 1.5) then
             SM(N)=0.
             SICE(N)=0.
-        elseif (DUMMY(I,J) .ge. 1.5) then
+        elseif (DUMSC .gt. 1.5) then
             SM(N)=0.
             SICE(N)=1.
-	endif
-      ENDDO
+        endif
 
-!   SOILTB??
+       ENDDO
+
 
 !      VarName='HFX'
 !      call getVariable(fileName,DateStr,DataHandle,VarName,DUMMY,
@@ -1327,24 +1303,13 @@ C***
 C***  READ QUANTITIES NEEDED FROM THE NHB FILE
 C***
 
-      DO N=1,NUMSTA
-!       HBM2(N)=DUM(IHINDX(N),JHINDX(N),1)
-       HBM2(N)=1.0
-      ENDDO
-C
 
 !!	ICE available in wrfinput file...zero out for now
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
 	SICE(N)=0.0
       ENDDO
 C
-      DO L=1,LM
-       DO N=1,NUMSTA
-         HTM(N,L)=1.0
-       ENDDO
-      ENDDO
-
 
 	write(6,*) 'set LMH to : ', LM
 	write(6,*) 'IM,jm: ', Im,jm
@@ -1355,54 +1320,6 @@ C
 	enddo
 
 C
-C       Define a GDS, then use GDSWIZ to find N.N. point
-
-
-!        GDS=-1
-!        if(maptype .eq. 1)THEN  ! Lambert conformal
-!          GDS(1)=3
-!          GDS(2)=im
-!          GDS(3)=jm
-!          GDS(4)=int(GDLAT(1,1)*1000)
-!          GDS(5)=int(GDLON(1,1)*1000)
-!          GDS(6)=8
-!          GDS(7)=CENLON
-!          GDS(8)=DXVAL
-!          GDS(9)=DYVAL
-!          GDS(10)=0
-!          GDS(11)=64
-!          GDS(12)=TRUELAT2
-!          GDS(13)=TRUELAT1
-!        ELSE IF(MAPTYPE .EQ. 2)THEN  !Polar stereographic
-!          GDS(1)=5
-!          GDS(2)=im
-!          GDS(3)=jm
-!          GDS(4)=int(GDLAT(1,1)*1000)
-!          GDS(5)=int(GDLON(1,1)*1000)
-!          GDS(6)=8
-!          GDS(7)=CENLON
-!          GDS(8)=DXVAL
-!          GDS(9)=DYVAL
-!          GDS(10)=0
-!          GDS(11)=64
-!        ELSE IF(MAPTYPE .EQ. 3)THEN  !Mercator
-!          GDS(1)=1
-!          GDS(2)=im
-!          GDS(3)=jm
-!          GDS(4)=int(GDLAT(1,1)*1000)
-!          GDS(5)=int(GDLON(1,1)*1000)
-!          GDS(6)=8
-!          GDS(7)=int(GDLAT(IM,JM)*1000)
-!          GDS(8)=int(GDLON(IM,JM)*1000)
-!          GDS(9)=TRUELAT1
-!          GDS(10)=0
-!          GDS(11)=64
-!          GDS(12)=DXVAL
-!          GDS(13)=DYVAL
-!        END IF
-!
-!	write(6,*) 'GDS= ', (GDS(NN),NN=1,13)
-
 
 C
 C	GET ROTATION ANGLES FOR WIND
@@ -1415,17 +1332,6 @@ C
 	CROT=0.	
 	SROT=0.
 
-!	DO N=1,NUMSTA
-!	I=IHINDX(N)
-!	J=JHINDX(N)
-!	RLATX=GDLAT(I,J)
-!	RLONX=GDLON(I,J)
-!	
-!        CALL GDSWIZ(GDS,-1,1,-9999.,xout,yout,
-!     &                  RLONX,RLATX,NRET,1,CROT(N),SROT(N))
-!
-!	ENDDO
-
       NTSPH=INT(3600./DT+0.50)
 
 
@@ -1435,13 +1341,13 @@ C------------------------------------------------------------------------
 C
 
 	DO L=1,LM
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
 	  TRAIN(N,L)=-9999.
 	  TCUCN(N,L)=-9999.
         ENDDO
         ENDDO
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
 	Z0(N)=-9999.
         HBOT(N)=-9999.
         CFRACL(N)=-9999.
@@ -1450,18 +1356,17 @@ C
       ENDDO
 
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         SNO(N)=-9999. ! many "sno" type variables...which do we need here?
 	PSLP(N)=-9999.
 	CFRACH(N)=-9999.
 	SMSTOT(N)=-9999.
 	SFCEXC(N)=-9999.
 	CZMEAN(N)=-9999.
-	U00(N)=-9999.
-	SR(N)=-9999.
+        SR(N)=-9999.
       ENDDO
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         SSROFF(N)=-9999.
         BGROFF(N)=-9999.
        SFCSHX(N)=-9999.
@@ -1470,7 +1375,7 @@ C
        SNOPCX(N)=-9999.
       ENDDO
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         ASWIN(N)=-9999.
         ASWOUT(N)=-9999.
         ASWTOA(N)=-9999.
@@ -1479,7 +1384,7 @@ C
         ALWTOA(N)=-9999.
       ENDDO
 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
 	POTFLX(N)=-9999.
 	TLMIN(N)=-9999.
 	TLMAX(N)=-9999.
@@ -1489,7 +1394,7 @@ C***
 C***  READ RADIATIVE TEMPERATURE TENDENCIES
 C***
       DO L=1,LM
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
          RSWTT(N,L)=-9999.
          RLWTT(N,L)=-9999.
         ENDDO
@@ -1595,19 +1500,14 @@ C Getting start time
       print*,'im,jm,lm= ',im,jm,lm
 c
 
-      VarName='snod'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
+        varname='snod'
+       DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        ACSNOW0(N)=DUMSC
+        ACSNOM0(N)=-9999.
+       ENDDO
 
-        DO N=1,NUMSTA
-          ACSNOW0(N)=DUMMY(IHINDX(N),JHINDX(N))
-	ENDDO
-
-      VarName='ACSNOM'
-
-        DO N=1,NUMSTA
-          ACSNOM0(N)=-9999.
-	ENDDO
 
 
 
@@ -1616,18 +1516,14 @@ CC RAINC is "ACCUMULATED TOTAL CUMULUS PRECIPITATION"
 CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
         write(6,*) 'getting tprcp'
-      VarName='tprcp'
       VarName='prate_ave'
-       call read_netcdf_2d(ncid_phys,ifhr,im,jm
-     & ,varname,DUMMY(1,1))
-
-      DO N=1,NUMSTA
-        I=IHINDX(N)
-        J=JHINDX(N)
-        ACPREC0(N)=DUMMY(I,J)*3600.*float(ITAG0)*0.001
+       DO N=NSTART,NEND
+       call read_netcdf_2d(ncid_phys,ifhr,IHINDX(N),JHINDX(N)
+     & ,varname,DUMSC)
+        ACPREC0(N)=DUMSC*3600.*float(ITAG0)*0.001
         CUPREC0(N)=0.
-	write(0,*) 'N, ACPREC0(N): ', N, ACPREC0(N)
-      ENDDO
+       ENDDO
+
 !	write(0,*) 'maxval(ACPREC0): ', maxval(ACPREC0)
 
 
@@ -1643,7 +1539,7 @@ CC RAINNC is "ACCUMULATED TOTAL GRID SCALE PRECIPITATION"
 
 C
         DO L=1,LM
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
 c           TRAIN0(N,L)=DUM(IHINDX(N),JHINDX(N),1)
 c           TCUCN0(N,L)=DUM(IHINDX(N),JHINDX(N),2)
 	TRAIN0(L,N)=-9999.
@@ -1658,19 +1554,19 @@ C
 !!!	THESE RUNOFF ASSIGNMENTS COULD BE *WRONG* !!!!!!
 !!!
 
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           SSROFF0(N)=DUM(IHINDX(N),JHINDX(N),3)
           BGROFF0(N)=DUM(IHINDX(N),JHINDX(N),4)
         ENDDO
 C
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
          SFCSHX0(N)=-9999.
          SFCLHX0(N)=-9999.
          SUBSHX0(N)=-9999.
          SNOPCX0(N)=-9999.
         ENDDO
 C
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
         ASWIN0(N)=-9999.
         ASWOUT0(N)=-9999.
         ASWTOA0(N)=-9999.
@@ -1685,7 +1581,7 @@ C
 C
 c     CLOSE(LRSTRT)
 
-!	write(6,*) 'down to here (a)'
+	write(0,*) 'down to here (a)'
 C
 C
 Cmp 	IDEALLY, WON'T NEED MANY MODS BELOW THIS POINT
@@ -1704,12 +1600,9 @@ C------------------------------------------------------------------------
       CLIMIT =1.E-20
 C-----------------------------------------------------------------------
 !$OMP parallel do 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         IW(N,1)=-9999
-        CCR(N,1)=-9999.
         CLDFRA(N,1)=-9999.
-!        PDSL1(N)=PD(IHINDX(N),JHINDX(N))*RES(N)
-        PDSL1(N)=pint_part(N)*RES(N)
       ENDDO
 
 !	write(6,*) 'here b'
@@ -1726,15 +1619,13 @@ C
 C
 !$OMP parallel do private(cwmkl,fiq,hh,iwkl,lml,pp,qc,qi,qint,qkl,qw,
 !$OMP*                    rqkl,tkl,tmt0,tmt15,u00kl)
-      DO 210 N=1,NUMSTA
+      DO 210 N=NSTART,NEND
 	IW(N,L)=-9999
-        CCR(N,L)=-9999.
         CLDFRA(N,L)=-9999.
 
 !      LML=LM-LMH(IHINDX(N),JHINDX(N))
 !	write(6,*) 'LML, IHINDX,JHINDX,LMH: ', IHINDX(N), 
 !     &            JHINDX(N),LMH(IHINDX(N),JHINDX(N))
-!      HH=HTM(N,L)*HBM2(N)
 !      TKL=T(N,L)
 !      QKL=Q(N,L)
 !      CWMKL=CWM(N,L)
@@ -1748,7 +1639,6 @@ C
 !        BI=0.9674
 !      ENDIF
 C
-Cmp      PP=PDSL1(N)*AETA(L)+PT
 !      PP=PMID(N,L)
 !      QW=HH*PQ0/PP*EXP(HH*A2*(TKL-A3)/(TKL-A4))
 !      QI=QW*(BI+AI*AMIN1(TMT0,0.))
@@ -1758,13 +1648,12 @@ C
 C-------------------ICE-WATER ID NUMBER IW------------------------------
 C
 
-!	no defs for U00 or UL
+!	no defs for UL
 !
-!	so no U00KL,FIQ,IW,CWM
+!	so no U00KL,FIQ,IW,CWM.  Skip whole section
 !
 !	write(6,*) 'here c'
 !	write(6,*) 'L+LML: ', L+LML
-!	write(6,*) 'U00(N): ', U00(N)
 !	write(6,*) 'UL(L+LML): ', UL(L+LML)
 
 !      U00KL=U00(N)+UL(L+LML)*(0.95-U00(N))*UTIM
@@ -1827,7 +1716,7 @@ C
 C what would appropriate if test be here?
 C
 C
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
 C
 C*** ZERO ACCUMLATION ARRAYS.
 C
@@ -1882,7 +1771,7 @@ c     RESET1=(NPHS-1)*DT+3600.
 
 C
 c      IF(MOD(NTSD,NPREC).GE.NPHS.AND.RESET0.LE.RESET1)THEN
-c        DO N=1,NUMSTA
+c        DO N=NSTART,NEND
 c          STATPR(N)=0.
 c          STACPR(N)=0.
 c          STASNM(N)=0.
@@ -1892,7 +1781,7 @@ c          STABRF(N)=0.
 c        ENDDO
 c      ELSE
 !	write(6,*) 'set STATPR'
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           STATPR(N)=ACPREC0(N)*1.E3
 !	if (ACPREC0(N) .gt. 0) then
 !	write(6,*) 'N,ACPREC0(N),STATPR(N): ', N,
@@ -1910,13 +1799,13 @@ c      ENDIF
 C
 c     RESET0=TIME-(NTSD/NRDSW)*NRDSW*DT
 c     IF(MOD(NTSD,NRDSW).GE.NPHS.AND.RESET0.LE.RESET1)THEN
-c       DO N=1,NUMSTA
+c       DO N=NSTART,NEND
 c         STASWI(N)=0.
 c         STASWO(N)=0.
 c         STASWT(N)=0.
 c       ENDDO
 c     ELSE
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           STASWI(N)=ASWIN0(N)
           STASWO(N)=ASWOUT0(N)
           STASWT(N)=ASWTOA0(N)
@@ -1925,13 +1814,13 @@ c     ENDIF
 C
 c     RESET0=TIME-(NTSD/NRDLW)*NRDLW*DT
 c     IF(MOD(NTSD,NRDLW).GE.NPHS.AND.RESET0.LE.RESET1)THEN
-c       DO N=1,NUMSTA
+c       DO N=NSTART,NEND
 c         STALWI(N)=0.
 c         STALWO(N)=0.
 c         STALWT(N)=0.
 c       ENDDO
 c     ELSE
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           STALWI(N)=ALWIN0(N)
           STALWO(N)=ALWOUT0(N)
           STALWT(N)=-ALWTOA0(N)
@@ -1940,7 +1829,7 @@ c     ENDIF
 C
 c     RESET0=TIME-(NTSD/NSRFC)*NSRFC*DT
 c     IF(MOD(NTSD,NSRFC).GE.NPHS.AND.RESET0.LE.RESET1)THEN
-c       DO N=1,NUMSTA
+c       DO N=NSTART,NEND
 c         STAEVP(N)=0.
 c         STAPOT(N)=0.
 c         STASHX(N)=0.
@@ -1948,7 +1837,7 @@ c         STASUB(N)=0.
 c         STAPCX(N)=0.
 c       ENDDO
 c     ELSE
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           STAEVP(N)=SFCLHX0(N)
           STAPOT(N)=POTFLX0(N)
           STASHX(N)=SFCSHX0(N)
@@ -1959,14 +1848,14 @@ c     ENDIF
 C
 c     RESET0=TIME-(NTSD/NHEAT)*NHEAT*DT
 c     IF(MOD(NTSD,NHEAT).GE.NCNVC.AND.RESET0.LE.RESET1)THEN
-c       DO N=1,NUMSTA
+c       DO N=NSTART,NEND
 c         DO L=1,LM
 c           DHCNVC(L,N)=0.
 c           DHRAIN(L,N)=0.
 c         ENDDO
 c       ENDDO
 c     ELSE
-       DO N=1,NUMSTA
+       DO N=NSTART,NEND
          DO L=1,LM
             DHCNVC(L,N)=TCUCN0(L,N)
             DHRAIN(L,N)=TRAIN0(L,N)
@@ -1988,7 +1877,7 @@ C***  INITIAL CALCULATIONS/PREPARATIONS.  WE LOAD SEVERAL
 C***  ARRAYS WITH PROFILE VARIABLES.
 C
 !$OMP parallel do
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         IF(CZMEAN(N).GT.0.)THEN
           FACTR(N)=CZEN(N)/CZMEAN(N)
         ELSE
@@ -2001,7 +1890,7 @@ C***  BETWEEN CALLS TO RADIATION
 C
 !$OMP parallel do
       DO L=1,LM
-        DO N=1,NUMSTA
+        DO N=NSTART,NEND
           RSWTT(N,L)=RSWTT(N,L)*FACTR(N)
         ENDDO
       ENDDO
@@ -2010,29 +1899,16 @@ C***  COMPUTE RTOP
 C
 !$OMP parallel do
       DO L=1,LM
-        DO N=1,NUMSTA
-!          APEL=PT+AETA(L)*PDSL1(N)
+        DO N=NSTART,NEND
           APEL=PMID(N,L)
           RTOP(N,L)=RD*T(N,L)*(1.+0.608*Q(N,L))/APEL
         ENDDO
       ENDDO
 C
-C***  PDS IS SURFACE PRESSURE.
-C
-!$OMP parallel do 
-	DO N=1,NUMSTA
-!	I=IHINDX(N)	
-!	J=JHINDX(N)
-!        PDS(N)=PD(I,J)+PT
-        PDS(N)=pint_part(N)+PT
-
-
-	ENDDO
-C
 C***  EGRID2 IS THE SURFACE TEMPERATURE.
 C
 !$OMP parallel do 
-      DO N=1,NUMSTA
+      DO N=NSTART,NEND
         EGRID2(N)= THS(N)*(PDS(N)*1.E-5)**CAPA
         IF(ACPREC(N).LT.0.)ACPREC(N)=0.
         IF(CUPREC(N).LT.0.)CUPREC(N)=0.
@@ -2102,6 +1978,292 @@ C***
 C***  OUTPUT PROFILE DATA.  THE FOLLOWING LOOP IS OVER ALL PROFILE SITES.
 C***
 C--------------------------------------------------------------------------
+
+!! gather all onto root task?
+
+	write(0,*) 'call collect_all - mype, NSTART: ',mype,nstart
+
+      call mpi_barrier(MPI_COMM_WORLD,ierr)
+
+      call collect_all(RES,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(FIS,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(THS,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(HBOT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(CFRACL,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(CFRACM,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(CFRACH,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(SOILTB,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SFCEXC,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(SMSTAV,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SMSTOT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(Z0,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+! skip CZEN, CZMEAN as not written to profdat
+
+      call collect_all(ACPREC,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(CUPREC,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ACSNOW,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ACSNOM,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(SNO,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SR,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(SSROFF,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(BGROFF,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SFCSHX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(SFCLHX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SUBSHX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SNOPCX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(ASWIN,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ASWOUT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ASWTOA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(ALWIN,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ALWOUT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(ALWTOA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(PDS,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(TSHLTR,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(QSHLTR,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(TH10,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(Q10,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(U10,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(V10,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(TLMIN,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(TLMAX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(CMC,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(VEGFRC,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(POTFLX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(PSLP,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(EGRID2,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SM,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(SICE,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+      call collect_all(STATPR,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STACPR,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STAEVP,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STAPOT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASHX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASUB,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STAPCX,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASWI,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASWO,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASWT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STALWI,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STALWO,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STALWT,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASNM,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASRF,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STABRF,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      call collect_all(STASNO,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+
+
+      do L=1,NSOIL
+
+      VARTMPSTA(:)=SMC(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      SMC(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=STC(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      STC(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=SH2O(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      SH2O(:,L)=VARTMPSTA(:)
+
+      enddo
+
+!	if (MYPE .eq. 0) then
+!	do I=1,NUMSTA
+!         write(0,*) 'I, STC(I,1:4): ', I, STC(I,1),STC(I,2),
+!     *                                    STC(I,3),STC(I,4)
+!        enddo
+!        endif
+
+       do L=1,LM
+
+       
+      VARTMPSTA(:)=T(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      T(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=Q(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      Q(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=U(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      U(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=V(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      V(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=Q2(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      Q2(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=CWM(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      CWM(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=TRAIN(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      TRAIN(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=TCUCN(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      TCUCN(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=RSWTT(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      RSWTT(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=RLWTT(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      RLWTT(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=CLDFRA(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      CLDFRA(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=RTOP(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      RTOP(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=PMID(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      PMID(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=OMGA(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      OMGA(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=t_hold(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      t_hold(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=W(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      W(:,L)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=WH(:,L)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      WH(:,L)=VARTMPSTA(:)
+
+
+      VARTMPSTA(:)=DHRAIN(L,:)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      DHRAIN(L,:)=VARTMPSTA(:)
+
+      VARTMPSTA(:)=DHCNVC(L,:)
+      call collect_all(VARTMPSTA,NSTART,NEND,icnt,idspl,
+     &                       NUMSTA,mype,npes,ierr)
+      DHCNVC(L,:)=VARTMPSTA(:)
+
+      enddo ! on LM
+
+! only write on root task
+
+	write(0,*) 'task: ', mype, ' to edge of big root task write block'
+
+	if (MYPE .eq. 0) then
+
+	write(0,*) 'task: ', mype, ' IS INSIDE big root task write block'
 	LCLAS1=79
 
 
@@ -2148,29 +2310,38 @@ C
       FPACK(2) = -STNLON(N)/DTR
       IF(FPACK(2).LT.-180.)FPACK(2)=FPACK(2)+360.
       IF(FPACK(2).GT. 180.)FPACK(2)=FPACK(2)-360.
+
+!	if (mod(N,20) .eq. 0) then
+!	write(0,*) 'N, IDSTN,CIDSTN_SAVE, STNLAT, STNLON: ', 
+!     &             N, IDSTN(N), CIDSTN_SAVE(N), FPACK(1:2)
+!	endif
+
       FPACK(3) = FIS(N)*GI
-      write(0,*) 'FPACK(2): ', FPACK(2)
       FPACK(4) = FLOAT(LMHK)
       FPACK(5) = LCL1ML -2 !20080708: B Zhou don't store 13 and 14th sounding
       FPACK(6) = LCL1SL
       FPACK(7) = 9+FPACK(5)*FPACK(4)+FPACK(6)
+	if (N .eq. 1) then
+         write(0,*) 'FPACK(1:7): ', FPACK(1:7)
+        endif
       FPACK(8) = 999.
       FPACK(9) = 999.
 
 C
 C***  WIND ROTATION SINES AND COSINES
 C
-      DLM    = STNLON(N)+TLM0D*DTR
-      XX     = COSPH0*COS(STNLAT(N))*COS(DLM)
-     1        +SINPH0*SIN(STNLAT(N))
-      YY     = -COS(STNLAT(N))*SIN(DLM)
-      TLON   = ATAN(YY/XX)
-      ALPHA  = ASIN(SINPH0*SIN(TLON)/COS(STNLAT(N)))
-      SINALP = SIN(ALPHA)
-      COSALP = COS(ALPHA)
+C      DLM    = STNLON(N)+TLM0D*DTR
+C      XX     = COSPH0*COS(STNLAT(N))*COS(DLM)
+C     1        +SINPH0*SIN(STNLAT(N))
+C      YY     = -COS(STNLAT(N))*SIN(DLM)
+C      TLON   = ATAN(YY/XX)
+C      ALPHA  = ASIN(SINPH0*SIN(TLON)/COS(STNLAT(N)))
+C      SINALP = SIN(ALPHA)
+C      COSALP = COS(ALPHA)
 
 C      SINALP = SROT(N)
 C      COSALP = CROT(N)
+
 C
 C------------------------------------------------------------------
 C***  EXTRACT PRESSURE AND TEMPERATURE PROFILES.
@@ -2184,9 +2355,9 @@ C
       DO LV=1,LMHK
         LVL=LMHK-LV+1
         PRODAT(LVL)      = PMID(N,LV)
-!	if (N .eq. 1) then
-!	write(6,*) 'PRODAT definition, PMID: ', N,LV,PMID(N,LV)
-!	endif
+	if (N .eq. NSTART .or. N .eq. 36) then
+	write(6,*) 'PRODAT definition, PMID: ', N,LV,LVL,PMID(N,LV)
+	endif
 	
 
         PRODAT(LMHK+LVL) = T(N,LV)
@@ -2195,22 +2366,17 @@ C***  ROTATE WINDS
 C
         UT     = U(N,LV)
         VT     = V(N,LV)
-        PRODAT(NWORD2+LVL) = UT*COSALP+VT*SINALP
-        PRODAT(NWORD3+LVL) = VT*COSALP-UT*SINALP
+!        PRODAT(NWORD2+LVL) = UT*COSALP+VT*SINALP
+!        PRODAT(NWORD3+LVL) = VT*COSALP-UT*SINALP
 
-	if (N .eq. 1) THEN
-c	WRITE(6,*) 'orig U,V: ', UT,VT	
-c	write(6,*) 'COSALP,SINALP: ', COSALP,SINALP
-c	WRITE(6,*) 'rotat U,V: ', PRODAT(NWORD2+LVL),PRODAT(NWORD3+LVL)
-c	write(6,*) '-----------------'
-	endif
+        PRODAT(NWORD2+LVL) = UT
+        PRODAT(NWORD3+LVL) = VT
 
 C
         PRODAT(NWORD4+LVL) = Q(N,LV)
 C
         IF(RTOP(N,LV).GT.1.E-12) THEN
            PRODAT(NWORD5+LVL) = OMGA(N,LV)
-Cmp     1   PRODAT(NWORD5+LVL) = OMGALF(N,LV)*CP/(RTOP(N,LV)*DT)
 	ENDIF
 
         IF(IW(N,LV).GT.0.5)THEN
@@ -2272,7 +2438,7 @@ C
       STAPRX=PRODAT(NWORD13+7)-STATPR(N)
       STACRX=PRODAT(NWORD13+8)-STACPR(N)
 
-	if (STAPRX .gt. 0) then
+	if (STAPRX .gt. 5.) then
 	write(6,*) '1hr precip: ',  N,STAPRX
 	endif
 C
@@ -2280,8 +2446,11 @@ C***  ROTATE WINDS
 C
       UT     = U10(N)
       VT     = V10(N)
-      PRODAT(NWORD13+28) = UT*COSALP+VT*SINALP
-      PRODAT(NWORD13+29) = VT*COSALP-UT*SINALP
+!      PRODAT(NWORD13+28) = UT*COSALP+VT*SINALP
+!      PRODAT(NWORD13+29) = VT*COSALP-UT*SINALP
+
+      PRODAT(NWORD13+28) = UT
+      PRODAT(NWORD13+29) = VT
 C
       PRODAT(NWORD13+30) = TH10  (N)
       PRODAT(NWORD13+31) = Q10   (N)
@@ -2414,65 +2583,68 @@ C***
 C***  WRITE PROFILE DATA
 C***
       
-!	write(6,*) 'IFHR, NUMSTA, N, NREC: ', IFHR, NUMSTA, N, 
-!     &                      IFHR*NUMSTA+N
-
 !       NREC=(IFHR/INCR)*NUMSTA+N
        NREC=N
 
-!	write(6,*) 'NREC, NLEN, FPACK: ', NREC, NLEN,
-!     &                       (FPACK(NNN),NNN=1,NLEN,NLEN/5)
-
-
-!	if (mod(NREC,20) .eq. 0) then
-!	write(6,*) 'NREC, IHRST, IDAT, IFCST, ISTAT, CISTAT: ', 
-!     &	NREC, IHRST, IDAT, IFCST, ISTAT, CISTAT
-!	endif
-
       WRITE(LCLAS1,REC=NREC)IHRST,IDAT,IFCST,ISTAT,CISTAT
      1,                    (FPACK(NL),NL=1,NLEN)
+
+	if (N .le. 1) then
+	write(0,*) 'IHRST,IDAT,IFCST,ISTAT,CISTAT: ', 
+     &          IHRST,IDAT,IFCST,ISTAT,CISTAT
+
+	do I=1,NLEN
+	write(0,*) 'N, I, FPACK(I): ', N, I, FPACK(I)
+        enddo
+
+	endif
+
 
 
 C---------------------------------------------------------------------
  1000 CONTINUE
       CLOSE(LCLAS1)
-	DEALLOCATE(T,Q,U,V,Q2,OMGALF,CWM,TRAIN,TCUCN)
-	DEALLOCATE(RSWTT,RLWTT,CCR,CLDFRA,RTOP,HTM,OMGA,p_hold)
+      endif ! mype=0
+
+	write(0,*) 'this task: ', mype, ' is to the end deallocs'
+
+	DEALLOCATE(T,Q,U,V,Q2,CWM,TRAIN,TCUCN)
+	DEALLOCATE(RSWTT,RLWTT,CLDFRA,RTOP,OMGA)
 	DEALLOCATE(t_hold,PINT)
 
        DEALLOCATE(DHCNVC,DHRAIN,STADHC,STADHR,TCUCN0,TRAIN0)
-        DEALLOCATE(DUM,DUMMY,DUMMY2,DUM3D,DUM3D2,DUM3D3,GDLAT)
-        DEALLOCATE(GDLON,PRODAT,FPACK,IDUM,LMH)
+        DEALLOCATE(DUM,DUMMY,DUMMY2,DUM3D,DUM3D2,DUM3D3)
+        DEALLOCATE(PRODAT,FPACK,LMH,VARTMP)
 
         DEALLOCATE(
      & RES,FIS,THS,HBOT
-     &,CFRACL,CFRACM,CFRACH,SNO
+     &,CFRACL,CFRACM,CFRACH
      &,SOILTB,SFCEXC,SMSTAV,SMSTOT
-     &,Z0,CZEN,CZMEAN,U00,SR
+     &,Z0,CZEN,CZMEAN
      &,ACPREC,CUPREC,ACSNOW,ACSNOM
      &,SSROFF,BGROFF,SFCSHX,SFCLHX
      &,SUBSHX,SNOPCX,ASWIN,ASWOUT
      &,ASWTOA,ALWIN,ALWOUT,ALWTOA
-     &,TSHLTR,QSHLTR,TH2_hold
+     &,TSHLTR,QSHLTR
      &,TH10,Q10,U10,V10
      &,TLMIN,TLMAX
      &,SMC,CMC,STC,SH2O
-     &,VEGFRC,POTFLX,PSLP,PSFC,PDSL1
+     &,VEGFRC,POTFLX,PSLP,PSFC
      &,EGRID2,SM,SICE
-     &,HBM2,FACTR
-     &,PTBL,TTBL
+     &,FACTR
      &,STATPR,STACPR,STAEVP
      &,STAPOT,STASHX,STASUB,STAPCX
      &,STASWI,STASWO,STALWI,STALWO
      &,STALWT,STASWT,STASNM,STASRF
-     &,STABRF,STASNO
+     &,STABRF,STASNO,SNO,SR
      &,ACPREC0,CUPREC0,SFCLHX0,POTFLX0
      &,SFCSHX0,SUBSHX0,SNOPCX0,ASWIN0
      &,ASWOUT0,ALWIN0,ALWOUT0,ALWTOA0
      &,ASWTOA0,ACSNOW0,ACSNOM0,SSROFF0
-     &,BGROFF0)
+     &,BGROFF0,ICNT,IDSPL)
 
 
+      call mpi_finalize(ierr)
 C
 C***  END OF PROFILE SITE LOOP
 C
@@ -2495,82 +2667,81 @@ C---------------------------------------------------------------------
 ! --------------------------------
 
 
-      subroutine read_netcdf_3d(ncid,ifhr,im,jm,
-     & VarName,L,buf) 
+      subroutine read_netcdf_3d(ncid,ifhr,
+     & VarName,itarg,jtarg,LM,buf) 
 
       use netcdf
       implicit none
       character(len=31),intent(in) :: VarName
-!      real,intent(in)    :: spval
-      integer,intent(in) :: ncid,ifhr,im,jm,L
-      real,intent(out)   :: buf(im,jm)
+      integer,intent(in) :: ncid,ifhr,itarg,jtarg,LM
+      real,intent(out)   :: buf(LM)
       integer            :: iret,i,j,jj,varid
-      real dummy(im,jm),dummy2(im,jm)
       real,parameter     :: spval_netcdf=-1.e+10
 
-!        write(0,*) 'inside with ncid, trim(varname): ', 
-!     &            ncid, trim(varname)
         iret = nf90_inq_varid(ncid,trim(varname),varid)
-        !print*,stat,varname,varid
-        iret = nf90_get_var(ncid,varid,dummy2,start=(/1,1,L,1/),
-     &       count=(/im,jm,1,1/))
-        if (iret /= 0) then
-          print*,VarName,L," not found ", IRET
-          
-          do j=1,jm
-            do i=1,im
-              dummy(i,j) = -9999.
-            end do
-          end do
-        else
-          do j=1,jm
-            do i=1,im
-              dummy(i,j)=dummy2(i,j)
-              if(dummy(i,j)==spval_netcdf)dummy(i,j)=-9999.
-            end do
-           end do
-        end if
 
-        buf=dummy
+        iret = nf90_get_var(ncid,varid,buf,
+     &       start=(/itarg,jtarg,1,1/),
+     &       count=(/1,1,LM,1/))
+        if (iret /= 0) then
+          print*,VarName," not found ", IRET
+          buf=-9999.
+        end if
 
       end subroutine read_netcdf_3d
 
 ! --------------------------------
 
-      subroutine read_netcdf_2d(ncid,ifhr,im,jm,
-     &  VarName,buf)
+      subroutine read_netcdf_2d(ncid,ifhr,itarg,jtarg,
+     &  VarName,bufvar)
 
       use netcdf
       implicit none
       character(len=31),intent(in) :: VarName
-      integer,intent(in) :: ncid,ifhr,im,jm
-      real,intent(out)   :: buf(im,jm)
+      integer,intent(in) :: ncid,ifhr,itarg,jtarg
+      real,intent(out)   :: bufvar(1,1)
       integer            :: iret,i,j,jj,varid
-      real,parameter     :: spval_netcdf=9.99e+20
-! dong for hgtsfc 2d var but with 3d missing value
-      real,parameter     :: spval_netcdf_3d=-1.e+10
-      real dummy(im,jm),dummy2(im,jm)
-
 
         iret = nf90_inq_varid(ncid,trim(varname),varid)
-        write(0,*) ncid,trim(varname),varid
-        iret = nf90_get_var(ncid,varid,dummy)
-        write(0,*) 'maxval(dummy): ', maxval(dummy), iret
+!        write(0,*) ncid,trim(varname),varid
+
+        iret = nf90_get_var(ncid,varid,bufvar,
+     &       start=(/itarg,jtarg,1/),
+     &       count=(/1,1,1/))
 
         if (iret /= 0) then
           print*,VarName, " not found -Assigned missing values"
-          do j=1,jm
-            do i=1,im
-              dummy(i,j) = -9999.
-            end do
-          end do
-
-        else
-
-        buf=dummy
-
+              bufvar = -9999.
         endif
 
 
       end subroutine read_netcdf_2d
 
+! --------------------------------
+
+      subroutine collect_all(var,buf_start,buf_end,icnt,idspl,
+     &                       ntot,mype,npes,ierr)
+     
+      include 'mpif.h'
+      real var(ntot),varout(ntot)
+      integer :: icnt(0:NPES-1),idspl(0:NPES-1),ierr
+      integer :: buf_start, buf_end, ntot, mype, npes
+
+!	write(0,*) 'size(var): ', size(var)
+!        write(0,*) 'buf_start in collect_all: ', buf_start
+!	write(0,*) 'mype, icnt(MYPE),idspl(MYPE): ', 
+!     &             mype, icnt(MYPE),idspl(MYPE)
+!	write(0,*) 'what is MPI_COMM_WORLD: ', MPI_COMM_WORLD
+
+      call mpi_gatherv(var(buf_start),icnt(mype),MPI_REAL,
+     &            varout,icnt,idspl,MPI_REAL,0,MPI_COMM_WORLD,ierr)
+
+!	write(0,*) 'mype, ierr from mpi_gatherv: ', mype, ierr
+
+	if (mype == 0) then
+          var=varout
+        endif
+
+      end subroutine collect_all
+
+! --------------------------------
