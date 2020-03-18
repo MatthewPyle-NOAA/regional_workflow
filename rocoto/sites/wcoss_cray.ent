@@ -34,7 +34,7 @@
 
   <!ENTITY FORECAST_TM00_RESOURCES_hi "<nodes>7:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>84</value></envar><envar><name>TASK_X</name><value>6</value></envar><envar><name>TASK_Y</name><value>12</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>12</value></envar>&FORECAST_EXTRA;">
 
-  <!ENTITY FORECAST_TM00_RESOURCES_conus "<nodes>70:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>840</value></envar><envar><name>TASK_X</name><value>15</value></envar><envar><name>TASK_Y</name><value>48</value></envar><envar><name>WG</name><value>5</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
+  <!ENTITY FORECAST_TM00_RESOURCES_conus "<nodes>74:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>888</value></envar><envar><name>TASK_X</name><value>16</value></envar><envar><name>TASK_Y</name><value>48</value></envar><envar><name>WG</name><value>5</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
 
   <!ENTITY FORECAST_TM00_RESOURCES_ak "<nodes>56:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>672</value></envar><envar><name>TASK_X</name><value>12</value></envar><envar><name>TASK_Y</name><value>48</value></envar><envar><name>WG</name><value>4</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
 
@@ -44,7 +44,6 @@
 
   <!ENTITY POST_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:20:00</walltime>">
   <!ENTITY ALTPOST_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:45:00</walltime>">
-  <!ENTITY BUFR_EXTRA "<envar><name>NCTSK</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:59:00</walltime>">
   <!ENTITY POST_RESOURCES_conus "<nodes>4:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>96</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_ak "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_hi "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>24</value></envar>&POST_EXTRA;">
@@ -61,15 +60,15 @@
 
   <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
 
-  <!ENTITY POST_GOES_RESOURCES_conus "<nodes>15:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>360</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_ak "<nodes>5:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>120</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_hi "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_pr "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
-  <!ENTITY POST_GOES_RESOURCES_guam "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
 
+  <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>2:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>16</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
+  <!ENTITY BUFRPOST_RESOURCES_ak "<nodes>1:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>8</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
+  <!ENTITY BUFRPOST_RESOURCES_hi "<nodes>1:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
+  <!ENTITY BUFRPOST_RESOURCES_pr "<nodes>1:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
+  <!ENTITY BUFRPOST_RESOURCES_guam "<nodes>1:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES "<nodes>1:ppn=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
 
-  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>5G</memory><walltime>03:00:00</walltime>">
+  <!ENTITY BUFR_EXTRA "<envar><name>OMP_THREADS</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:59:00</walltime>">
 
-  <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><walltime>00:10:00</walltime>">
-
+  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>03:00:00</walltime>">
+  <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>00:10:00</walltime>">

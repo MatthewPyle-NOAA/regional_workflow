@@ -29,8 +29,6 @@ set -x
 export INCR=01
 ######
 
-export COMOUTB=${COMOUT}/../
-
 cd $DATA
 filedir=$DATA
 
@@ -292,9 +290,6 @@ ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
 
-ln -sf $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx $COMOUTB
-
-
 rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
 
     if [ $SENDDBN = YES ]; then
@@ -314,7 +309,6 @@ then
   if [ $tmmark = tm00 ] ; then
 #    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.grib2
     cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.grib2
-    ln -sf ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.grib2 ${COMOUTB}
   else
 #    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.${tmmark}.grib2
     cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.${tmmark}.grib2

@@ -18,7 +18,7 @@ atmos_nthreads:          NTHRD
 use_hyper_thread:        .false.
 ncores_per_node:         NCNODE
 debug_affinity:          .true.
-restart_interval:        12
+restart_interval:        6
 output_1st_tstep_rst:    .false.
 
 quilting:                .true.
@@ -29,7 +29,7 @@ filename_base:           'dyn''phy'
 output_file:             'netcdf'
 write_nemsioflip:        .false.
 write_fsyncflag:         .false.
-ideflate:                0
+ideflate:                1
 nbits:                   18
 
 

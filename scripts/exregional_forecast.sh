@@ -22,9 +22,15 @@ ulimit -a
 
 resterr=1
 
+restart_interval=6
+FHMAX=60
+
+cd $DATA
+
+
 if [ -e RESTART ]
 then
-files=`ls RESTART/*00.sfc_data.nc`
+files=`ls ${DATA}/RESTART/*00.sfc_data.nc`
 resterr=$?
 echo resterr is $resterr
 
@@ -34,35 +40,42 @@ mkdir -p INPUT RESTART
 
 fi
 
+RERUN="NO"
 
 if [ $resterr -eq 0 ]
 then
 echo "have restart"
 RESTART=1
-mv RESTART/* INPUT/
 
 # from GFS
-
 # determine if restart IC exists to continue from a previous forecast
-# RERUN="NO"
-# filecount=$(find $RSTDIR_TMP -type f | wc -l)
-# if [ $CDUMP = "gfs" -a $restart_interval -gt 0 -a $FHMAX -gt $restart_interval -a $filecount -gt 10 ]; then
-#     SDATE=$($NDATE +$FHMAX $CDATE)
-#     EDATE=$($NDATE +$restart_interval $CDATE)
-#     while [ $SDATE -gt $EDATE ]; do
-#         PDYS=$(echo $SDATE | cut -c1-8)
-#         cycs=$(echo $SDATE | cut -c9-10)
-#         flag1=$RSTDIR_TMP/${PDYS}.${cycs}0000.coupler.res
-#         flag2=$RSTDIR_TMP/coupler.res
-#         if [ -s $flag1 ]; then
-#              mv $flag1 ${flag1}.old
-#           if [ -s $flag2 ]; then mv $flag2 ${flag2}.old ;fi
-#            RERUN="YES"
-#            CDATE_RST=$($NDATE -$restart_interval $SDATE)
-#            break
-#        fi
-#        SDATE=$($NDATE -$restart_interval $SDATE)
-#    done
+filecount=$(find ${DATA}/RESTART -type f | wc -l)
+if [  $restart_interval -gt 0 -a  $FHMAX -gt $restart_interval -a $filecount -gt 5 ]; then
+     echo into the key ifdef block
+     SDATE=$($NDATE +$FHMAX $CDATE)
+     EDATE=$($NDATE +$restart_interval $CDATE)
+
+     while [ $SDATE -ge $EDATE ]; do
+         PDYS=$(echo $SDATE | cut -c1-8)
+         cycs=$(echo $SDATE | cut -c9-10)
+	echo PDYS  $PDYS cycs $cycs
+         flag1=${DATA}/RESTART/${PDYS}.${cycs}0000.coupler.res
+         flag2=${DATA}/RESTART/coupler.res
+         if [ -s $flag1 ]; then
+              mv $flag1 ${flag1}.old
+           if [ -s $flag2 ]; then mv $flag2 ${flag2}.old ;fi
+            RERUN="YES"
+            CDATE_RST=$($NDATE -$restart_interval $SDATE)
+	echo set RERUN to $RERUN
+	echo found CDATE_RST as $CDATE_RST
+            break
+        fi
+        SDATE=$($NDATE -$restart_interval $SDATE)
+	echo at test with SDATE $SDATE
+	echo at test with EDATE $EDATE
+    done
+fi
+
 #fi
 
 
@@ -100,8 +113,25 @@ mv RESTART/* INPUT/
 #  fi
 
 
+    PDYT=$(echo $CDATE_RST | cut -c1-8)
+    cyct=$(echo $CDATE_RST | cut -c9-10)
+
+    echo PDYT $PDYT
+    echo cyct $cyct
+
+    
+    for file in $DATA/RESTART/${PDYT}.${cyct}0000.*; do
+      file2=$(echo $(basename $file))
+      file2=$(echo $file2 | cut -d. -f3-)
+      ln -sf $file $DATA/INPUT/$file2
+      echo just generated  $DATA/INPUT/$file2
+    done
+
+
+
 
 # end from GFS
+
 else
 echo "not restart"
 cp ${NWGES}/anl.${dom}.${tmmark}/*.nc INPUT
@@ -165,6 +195,10 @@ done
 #---------------------------------------------- 
 ntiles=1
 tile=7
+
+
+if [ $RERUN = "NO" ]
+then
 cp $FIXsar/${CASE}_grid.tile${tile}.halo3.nc INPUT/.
 cp $FIXsar/${CASE}_grid.tile${tile}.halo4.nc INPUT/.
 cp $FIXsar/${CASE}_oro_data.tile${tile}.halo0.nc INPUT/.
@@ -182,7 +216,9 @@ if [ $model = fv3sar ] ; then
   ln -sf sfc_data.tile7.nc sfc_data.nc
   ln -sf gfs_data.tile7.nc gfs_data.nc
 fi
+
 cd ..
+fi
 
 #-------------------------------------------------------------------
 # Copy or set up files data_table, diag_table, field_table,
@@ -207,10 +243,12 @@ if [ $tmmark = tm00 ] ; then
       then
 
        cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
-       sed s:_MAKENH_:.F.: | \
+#was       sed s:_MAKENH_:.F.: | \
+       sed s:_MAKENH_:.T.: | \
        sed s:_NAINIT_:0: | \
        sed s:_NGGPSIC_:.F.: | \
        sed s:_EXTERNALIC_:.F.: | \
+       sed s:_NSTF_NAME_:1,1,1,0,5: | \
        sed s:_MOUNTAIN_:.T.: | \
        sed s:_WARMSTART_:.T.:  > input.nml
       else
@@ -219,6 +257,7 @@ if [ $tmmark = tm00 ] ; then
        sed s:_NAINIT_:1: | \
        sed s:_NGGPSIC_:.T.: | \
        sed s:_EXTERNALIC_:.T.: | \
+       sed s:_NSTF_NAME_:2,0,0,0,0: | \
        sed s:_MOUNTAIN_:.F.: | \
        sed s:_WARMSTART_:.F.:  > input.nml
        fi
@@ -258,7 +297,7 @@ hr=`echo $CYCLEanl | cut -c9-10`
 
 if [ $tmmark = tm00 ] ; then
   NFCSTHRS=$NHRS
-  NRST=12
+  NRST=06
 else
   NFCSTHRS=$NHRSda
   NRST=01

@@ -23,9 +23,9 @@ export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
 # 
 # tmp reintroduce deletion until restarts work
 
-if [ -d $DATA ]; then
-  rm -rf $DATA
-fi
+# if [ -d $DATA ]; then
+#   rm -rf $DATA
+# fi
 
 mkdir -p $DATA
 cd $DATA
@@ -37,7 +37,7 @@ export pgmerr=errfile
 #####################################
 # Define COM directories
 #####################################
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES

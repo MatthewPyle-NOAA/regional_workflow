@@ -149,8 +149,8 @@
        ncld           = 5
        imp_physics    = 11
        pdfcld         = .false.
-       fhswr          = 1200.
-       fhlwr          = 1200.
+       fhswr          = 900.
+       fhlwr          = 900.
        ialb           = 1
        iems           = 1
        IAER           = 111
@@ -175,7 +175,7 @@
        ivegsrc        = 1
        isot           = 1
        debug          = .false.
-       nstf_name      = 2,0,0,0,0
+       nstf_name      = _NSTF_NAME_
        iau_delthrs    = 6
        iaufhrs        = 30
        iau_inc_files  = ''

@@ -21,6 +21,7 @@ fi
 # install forecast
 #------------------------------------
  ${CP} regional_forecast.fd/NEMS/exe/NEMS.x            ../exec/regional_forecast.x
+ ${CP} regional_forecast_debug.fd/NEMS/exe/NEMS.x            ../exec/regional_forecast.x_debug
 
 #------------------------------------
 # install post
@@ -31,7 +32,7 @@ fi
 # install bufrpost
 #------------------------------------
  ${CP} regional_bufr.fd/regional_bufr.x                 ../exec/regional_bufr.x
- ${CP} regional_bufr_pnet.fd/regional_bufr_pnet.x       ../exec/regional_bufr_pnet.x
+#  ${CP} regional_bufr_pnet.fd/regional_bufr_pnet.x       ../exec/regional_bufr_pnet.x
 
 #------------------------------------
 # install sndp
