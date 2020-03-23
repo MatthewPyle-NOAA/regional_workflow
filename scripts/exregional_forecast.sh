@@ -22,7 +22,7 @@ ulimit -a
 
 resterr=1
 
-restart_interval=6
+restart_interval=12
 FHMAX=60
 
 cd $DATA
