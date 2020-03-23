@@ -111,6 +111,34 @@ fi
 
 done
 
+if [ ${dom} = "conus" ]
+then
+ls -1 $dir | grep ${rhcycle} | awk '
+            /conusfv3.class1.bufr/ { print "./"$0 >> "conus" ; next }
+            { print "./"$0 >> "therest" ; next } '
+elif [ ${dom} = "pr" ]
+then
+ls -1 $dir | grep ${rhcycle} | awk '
+            /prfv3.class1.bufr/ { print "./"$0 >> "pr" ; next }
+            { print "./"$0 >> "therest" ; next } '
+elif [ ${dom} = "ak" ]
+then
+ls -1 $dir | grep ${rhcycle} |  awk '
+            /akfv3.class1.bufr/ { print "./"$0 >> "ak" ; next }
+            { print "./"$0 >> "therest" ; next } '
+elif [ ${dom} = "hi" ]
+then
+ls -1 $dir | grep ${rhcycle} | awk '
+            /hifv3.class1.bufr/ { print "./"$0 >> "hi" ; next }
+            { print "./"$0 >> "therest" ; next } '
+elif [ ${dom} = "guam" ]
+then
+ls -1 $dir | grep ${rhcycle} | awk '
+            /guamfv3.class1.bufr/ { print "./"$0 >> "guam" ; next }
+            { print "./"$0 >> "therest" ; next } '
+fi
+
+
 cd $dir
 
 #  Now create a tar file for each group of files

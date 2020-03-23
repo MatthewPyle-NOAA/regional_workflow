@@ -121,7 +121,8 @@ echo "cp ../regional_chgres_cube.x ." >> poe.${hour_name}
 
 echo "${APRUNC} ./regional_chgres_cube.x" >> poe.${hour_name}
 
-echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name}
+# echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name}
+echo "cd ../" >> poe.${hour_name}
 
 chmod u+x poe.${hour_name}
 ./poe.${hour_name} &
@@ -140,6 +141,21 @@ hour=`expr $hour + $hour_inc`
 done
 
 wait
+
+hrlist="03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
+
+for hr in $hrlist
+do
+hruse=0${hr}
+mv ${hruse}/gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hruse}.nc
+err=$?
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem generating BC file"
+err_exit $msg
+fi
+
+done
 
 echo " All poe scripts completed - normal finish "
 
