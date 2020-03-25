@@ -1,4 +1,4 @@
-WRFDIR=../hiresw_wrfarwfcst.fd
+WRFDIR=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/sorc/hiresw_wrfarwfcst.fd
 
 mkdir wrflibs
 

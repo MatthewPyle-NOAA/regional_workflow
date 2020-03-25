@@ -1,7 +1,7 @@
 #! /bin/sh
 
 
-module purge >& /dev/null
+source ./machine-setup.sh > /dev/null 2>&1
 
 module load ncep
 module load craype-sandybridge

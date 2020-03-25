@@ -18,6 +18,10 @@ fi
 
 if [ $target = hera ]; then target=hera.intel ; fi
 
+## add Nam_levels fix
+
+cp ./nam_levs_fix/*.F90 ./regional_forecast.fd/FV3/atmos_cubed_sphere/tools/
+
 cd regional_forecast.fd/
 FV3=$( pwd -P )/FV3
 CCPP=${CCPP:-"false"}
