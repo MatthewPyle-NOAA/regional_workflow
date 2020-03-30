@@ -33,7 +33,7 @@
   <!ENTITY CPU_ACCOUNT "@[CPU_ACCOUNT:-HREF-T2O]">
 
   <!-- Variables for directories -->
-  <!ENTITY HOMEfv3 "@[HOMEfv3:-/gpfs/dell2/emc/modeling/noscrub/&USER;/regional_workflow_new;]">
+  <!ENTITY HOMEfv3 "@[HOMEfv3:-/gpfs/dell2/emc/modeling/noscrub/&USER;/regional_workflow_hiresw;]">
   <!ENTITY JOBS "&HOMEfv3;/jobs">
   <!ENTITY UTILush "&HOMEfv3;/util/ush">
   <!ENTITY SCRIPTS "&HOMEfv3;/scripts">

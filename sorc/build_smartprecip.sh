@@ -22,6 +22,8 @@ make clean
 make
 
 
+make clean
+
 cd ${BASE}
 
 

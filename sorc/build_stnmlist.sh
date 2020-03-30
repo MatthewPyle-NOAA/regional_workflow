@@ -18,4 +18,6 @@ cd ./regional_stnmlist.fd
 make clean
 make
 
+make clean
+
 cd ../

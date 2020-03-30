@@ -18,5 +18,7 @@ cd ./regional_bufr.fd
 make clean
 make
 
+make clean
+
 cd ../
 

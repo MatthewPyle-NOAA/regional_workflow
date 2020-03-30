@@ -82,6 +82,22 @@ echo " .... Building stnmlist .... "
 }
 
 #------------------------------------
+# build smartinit
+#------------------------------------
+$Build_smartinit && {
+echo " .... Building smartinit .... "
+./build_smartinit.sh > $logs_dir/build_smartinit.log 2>&1
+}
+
+#------------------------------------
+# build smartprecip
+#------------------------------------
+$Build_smartprecip && {
+echo " .... Building smartprecip .... "
+./build_smartprecip.sh > $logs_dir/build_smartprecip.log 2>&1
+}
+
+#------------------------------------
 # build fv3snowbucket
 #------------------------------------
 $Build_fv3snowbucket && {
