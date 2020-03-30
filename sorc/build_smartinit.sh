@@ -22,6 +22,8 @@ make
 
 module unload iobuf/2.0.7
 
+make clean
+
 cd ${BASE}
 
 
