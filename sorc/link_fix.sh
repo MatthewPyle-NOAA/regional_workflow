@@ -8,7 +8,6 @@ LINK="cp -rp"
 pwd=$(pwd -P)
 
 if [[ ${target} == "wcoss_dell_p3" || ${target} == "wcoss" ||  ${target} == "wcoss_cray" ]]; then
-#    FIX_DIR="/gpfs/dell2/emc/modeling/noscrub/emc.campara/fix_fv3cam"
     FIX_DIR="/gpfs/dell2/emc/modeling/noscrub/emc.campara/fix_hrefv3_fv3cam"
 elif [ ${target} == "hera" ]; then
     FIX_DIR="/scratch2/NCEPDEV/fv3-cam/emc.campara/fix_fv3cam"
@@ -21,10 +20,12 @@ fi
 
 mkdir -p ${pwd}/../fix
 cd ${pwd}/../fix                ||exit 8
-for dir in fix_am fix_nest fix_sar ; do
+for dir in fix_am fix_sar ; do
     [[ -d $dir ]] && rm -rf $dir
 done
 
-${LINK} $FIX_DIR/* .
+${LINK} $FIX_DIR/fix_am .
+${LINK} $FIX_DIR/fix_sar .
+${LINK} $FIX_DIR/wrflibs  ${pwd}/regional_bufr.fd/
 
 exit
