@@ -20,10 +20,12 @@ if [ ! -d $logs_dir  ]; then
   mkdir $logs_dir
 fi
 
+EXEdir=../../exec/fv3
+
 # Check final exec folder exists
-if [ ! -d "../exec" ]; then
-  echo "Creating ../exec folder"
-  mkdir ../exec
+if [ ! -d $EXEdir ]; then
+  echo "Creating $EXEdir folder"
+  mkdir $EXEdir
 fi
 
 #------------------------------------
