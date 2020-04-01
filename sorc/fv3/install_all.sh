@@ -5,10 +5,13 @@ build_dir=`pwd`
 
 CP='cp -rp'
 
+
+EXEdir=../../exec/fv3
+
 # Check final exec folder exists
-if [ ! -d "../exec" ]; then
-  echo "Creating ../exec folder"
-  mkdir ../exec
+if [ ! -d $EXEdir ]; then
+  echo "Creating $EXEdir folder"
+  mkdir -p $EXEdir
 fi
 
 #------------------------------------

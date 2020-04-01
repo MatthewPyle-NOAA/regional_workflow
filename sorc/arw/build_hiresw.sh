@@ -4,7 +4,7 @@ module purge
 module load ncep
 module load craype-sandybridge
 module use -a /opt/cray/modulefiles
-module load ../modulefiles/HIRESW/v7.0.13
+module load ../modulefiles_arw/HIRESW/v7.0.13
 module list
 
 

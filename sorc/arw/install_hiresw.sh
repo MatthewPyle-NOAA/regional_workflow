@@ -26,7 +26,7 @@ INSTALL_hiresw_smartprecipg2=1
 INSTALL_hiresw_sndp=1
 INSTALL_hiresw_stnmlist=1
 
-EXEdir=../exec
+EXEdir=../../exec/arw
 
 if [ ! -d $EXEdir ]; then
   echo "Creating $EXEdir folder"
