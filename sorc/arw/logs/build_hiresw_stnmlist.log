@@ -1,0 +1,7 @@
++++ cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/sorc/hiresw_stnmlist.fd
++++ make clean
+rm -f stnmlist.o 
++++ make
+ftn -O  -c -o stnmlist.o stnmlist.f
+ftn  -o hiresw_stnmlist stnmlist.o  /gpfs/hps/nco/ops/nwprod/lib/w3nco/v2.0.6/intel/libw3nco_v2.0.6_4.a /gpfs/hps/nco/ops/nwprod/lib/w3emc/v2.2.0/intel/libw3emc_v2.2.0_4.a /gpfs/hps/nco/ops/nwprod/lib/bufr/v11.3.0/intel/libbufr_v11.3.0_4_64.a
++++ cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/sorc
