@@ -26,6 +26,7 @@ done
 
 ${LINK} $FIX_DIR/fix_am .
 ${LINK} $FIX_DIR/fix_sar .
+${LINK} $FIX_DIR/fix_arw .
 ${LINK} $FIX_DIR/wrflibs  ${pwd}/regional_bufr.fd/
 
 exit
