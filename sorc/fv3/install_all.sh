@@ -71,7 +71,7 @@ fi
 #------------------------------------
 # install chgres
 #------------------------------------
- ${CP} regional_utils.fd/exec/global_chgres            $EXEdir/regional_chgres.x
+#  ${CP} regional_utils.fd/exec/global_chgres            $EXEdir/regional_chgres.x
 
 #------------------------------------
 # install chgres_cube
@@ -91,18 +91,18 @@ fi
 #------------------------------------
 # install regional_grid
 #------------------------------------
- ${CP} regional_utils.fd/exec/regional_grid            $EXEdir/regional_grid.x
+#  ${CP} regional_utils.fd/exec/regional_grid            $EXEdir/regional_grid.x
 
 #------------------------------------
 # install fre-nctools
 #------------------------------------
- ${CP} regional_utils.fd/exec/make_hgrid               $EXEdir/regional_make_hgrid.x
+# ${CP} regional_utils.fd/exec/make_hgrid               $EXEdir/regional_make_hgrid.x
 #${CP} regional_utils.fd/exec/make_hgrid_parallel      $EXEdir/regional_make_hgrid_parallel.x
- ${CP} regional_utils.fd/exec/make_solo_mosaic         $EXEdir/regional_make_solo_mosaic.x
- ${CP} regional_utils.fd/exec/fregrid                  $EXEdir/regional_fregrid.x
+# ${CP} regional_utils.fd/exec/make_solo_mosaic         $EXEdir/regional_make_solo_mosaic.x
+# ${CP} regional_utils.fd/exec/fregrid                  $EXEdir/regional_fregrid.x
 #${CP} regional_utils.fd/exec/fregrid_parallel         $EXEdir/regional_fregrid_parallel.x
- ${CP} regional_utils.fd/exec/filter_topo              $EXEdir/regional_filter_topo.x
- ${CP} regional_utils.fd/exec/shave.x                  $EXEdir/regional_shave.x
+# ${CP} regional_utils.fd/exec/filter_topo              $EXEdir/regional_filter_topo.x
+# ${CP} regional_utils.fd/exec/shave.x                  $EXEdir/regional_shave.x
 
 
 echo;echo " .... Install system finished .... "
