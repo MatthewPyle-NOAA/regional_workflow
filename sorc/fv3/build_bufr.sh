@@ -12,7 +12,7 @@ module load -a ../modulefiles_fv3/wcoss_cray/v8.0.0-cray-intel
 
 module list
 
-cd ./regional_bufr.fd
+cd ./hireswfv3_bufr.fd
 
 make clean
 make

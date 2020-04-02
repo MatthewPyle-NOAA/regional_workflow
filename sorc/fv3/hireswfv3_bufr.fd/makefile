@@ -22,7 +22,7 @@
 # Define the name of the executable
 #
 CMD = ../../exec/hiresw_wrfbufr
-CMD = regional_bufr.x
+CMD = hireswfv3_bufr.x
 #
 # CPP, Compiler, and Linker Options
 #

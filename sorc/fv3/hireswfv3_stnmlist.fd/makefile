@@ -38,7 +38,7 @@ FC =		${COMPILER}
 LDFLAGS =	
 LIBS = ${W3NCO_LIB4} ${W3EMC_LIB4} ${BUFR_LIB4}
 
-CMD =	        regional_stnmlist.x
+CMD =	        hireswfv3_stnmlist.x
 PROFLIB =
 
 # To perform the default compilation, use the first line

@@ -13,7 +13,7 @@ INCG2=-I${G2_INC4} -I${G2TMPL_INC}
 FFLAGS = -O -fp-model strict -list
 LDFLAGS =-FR -assume byterecl
 
-CMD =	regional_smartprecip
+CMD =	hireswfv3_smartprecip
 PROFLIB =	-lprof
 
 all:		$(CMD)

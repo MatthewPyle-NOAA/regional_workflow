@@ -13,15 +13,15 @@ FFLAGS = -O2 -g -traceback -assume noold_ldout_format
 # Lines from here on down should not need to be changed.  They are the
 # actual rules which make uses to build a.out.
 #
-all:	 clean regional_fv3bucket
+all:	 clean hireswfv3_fv3bucket
 
 $(OBJS):       
 	$(COMPILER) ${INC} -c $(FFLAGS) $(@:.o=.f)
 
-regional_fv3bucket:
+hireswfv3_fv3bucket:
 	$(COMPILER) ${INC} $(FFLAGS) -o $(@) fv3bucket.f GET_BITS.f $(LIBS)
 clean:
-	/bin/rm   regional_fv3bucket
+	/bin/rm   hireswfv3_fv3bucket
 copy:
-	/bin/cp regional_fv3bucket ../../exec/href_fv3bucket
+	/bin/cp hireswfv3_fv3bucket ../../exec/href_fv3bucket
 

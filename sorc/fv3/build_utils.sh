@@ -20,7 +20,7 @@ fi
 
 . ./partial_build.sh
 
-cd regional_utils.fd/sorc
+cd hireswfv3_utils.fd/sorc
 
 #------------------------------------
 # build chgres

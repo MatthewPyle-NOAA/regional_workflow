@@ -12,7 +12,7 @@ module load -a ../modulefiles_fv3/wcoss_cray/v8.0.0-cray-intel
 
 module list
 
-cd ./regional_stnmlist.fd
+cd ./hireswfv3_stnmlist.fd
 
 make clean
 make

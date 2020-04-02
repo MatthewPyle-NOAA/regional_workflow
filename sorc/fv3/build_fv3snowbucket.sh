@@ -14,11 +14,11 @@ module list
 
 echo COMPILER $COMPILER
 
-cd ./regional_fv3snowbucket.fd
+cd ./hireswfv3_fv3snowbucket.fd
 
 make clean
 
-make regional_fv3bucket
+make hireswfv3_fv3bucket
 
 cd ../
 

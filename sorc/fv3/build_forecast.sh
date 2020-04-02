@@ -18,7 +18,7 @@ fi
 
 if [ $target = hera ]; then target=hera.intel ; fi
 
-cd regional_forecast.fd/
+cd hireswfv3_forecast.fd/
 FV3=$( pwd -P )/FV3
 CCPP=${CCPP:-"false"}
 cd tests/

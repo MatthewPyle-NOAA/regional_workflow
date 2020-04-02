@@ -12,9 +12,7 @@ module load -a ../modulefiles_fv3/wcoss_cray/hiresw_fv3_module
 
 module list
 
-echo COMPILER $COMPILER
-
-cd ./regional_bucket.fd
+cd ./hireswfv3_bucket.fd
 
 make clean
 

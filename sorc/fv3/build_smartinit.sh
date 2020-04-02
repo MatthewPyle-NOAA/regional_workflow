@@ -15,7 +15,7 @@ module load -a ../modulefiles_fv3/wcoss_cray/v8.0.0-cray-intel
 ##############################
 
 module load iobuf/2.0.7
-cd ${BASE}/regional_smartinit.fd
+cd ${BASE}/hireswfv3_smartinit.fd
 make clean
 make
 

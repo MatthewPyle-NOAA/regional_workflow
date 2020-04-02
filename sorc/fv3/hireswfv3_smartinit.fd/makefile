@@ -18,7 +18,7 @@ INC= -I${G2_INC4} -I${G2TMPL_INC}
 FFLAGS = -O3 -list 
 LDFLAGS =-FR -assume byterecl # -check all -debug all -warn nounused  
 
-CMD =	regional_smartinit
+CMD =	hireswfv3_smartinit
 
 PROFLIB =	-lprof
 

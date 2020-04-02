@@ -15,7 +15,7 @@ module load -a ../modulefiles_fv3/wcoss_cray/v8.0.0-cray-intel
 
 ##############################
 
-cd ${BASE}/regional_smartprecip.fd
+cd ${BASE}/hireswfv3_smartprecip.fd
 make clean
 make
 
