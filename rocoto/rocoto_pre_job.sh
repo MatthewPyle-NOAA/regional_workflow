@@ -2,10 +2,8 @@
 set -x -u -e
 date
 
-# . ${HOMEfv3}/rocoto/machine-setup.sh
-# export machine=${target}
-
-export machine=wcoss_cray
+. ${HOMEfv3}/rocoto/machine-setup.sh
+export machine=${target}
 
 if [ "$machine" = "wcoss_dell_p3" ] ; then
   . /usrx/local/prod/lmod/lmod/init/sh
@@ -21,5 +19,10 @@ else
   module load regional
 fi
 module list
+
+
+export WGRIB2=${HOMEfv3}/exec/fv3/hireswfv3_wgrib2
+
+echo here in rocoto_pre_job with WGRIB2 as $WGRIB2
 
 exec "$@"

@@ -94,7 +94,7 @@ export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
 
 ########################################################
 # Execute the script.
-$HOMEfv3/scripts/exregional_smartinit.sh.ecf
+$HOMEfv3/scripts/fv3/exregional_smartinit.sh.ecf
 ########################################################
 
 date

@@ -154,7 +154,7 @@ export FORT11="itag"
 
 startmsg
 
-${APRUNC} $EXECfv3/regional_bufr.x  > pgmout.log_${fhr} 2>&1
+${APRUNC} $EXECfv3/hireswfv3_bufr.x  > pgmout.log_${fhr} 2>&1
 export err=$?;err_chk
 
 echo DONE $fhr at `date`
@@ -204,7 +204,7 @@ echo here model $model
 nlev=60
 
 echo "${model} $nlev" > itag
-${APRUNS} $EXECfv3/regional_sndp.x  < itag >> $pgmout 2>$pgmout
+${APRUNS} $EXECfv3/hireswfv3_sndp.x  < itag >> $pgmout 2>$pgmout
 export err=$?;err_chk
 
 ############### Convert BUFR output into format directly readable by GEMPAK namsnd on WCOSS
@@ -243,14 +243,14 @@ EOF
 
   mkdir -p ${COMOUT}/bufr.${NEST}${MODEL}${cyc}
 
-  export pgm=regional_stnmlist
+  export pgm=hireswfv3_stnmlist
   . prep_step
 
   export FORT20=$DATA/class1.bufr
   export DIRD=${COMOUT}/bufr.${NEST}${MODEL}${cyc}/${NEST}${MODEL}bufr
 
   startmsg
-${APRUNS}  $EXECfv3/regional_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
+${APRUNS}  $EXECfv3/hireswfv3_stnmlist.x < stnmlist_input >> $pgmout 2>errfile
   export err=$?;err_chk
 
   echo ${COMOUT}/bufr.${NEST}${MODEL}${cyc} > ${COMOUT}/bufr.${NEST}${MODEL}${cyc}/bufrloc

@@ -93,7 +93,7 @@ cat <<EOF >fort.41
 /
 EOF
 
-time ${APRUNC} ./regional_chgres_cube.x
+time ${APRUNC} ./hireswfv3_chgres_cube.x
 
 #
 # move output files to save directory

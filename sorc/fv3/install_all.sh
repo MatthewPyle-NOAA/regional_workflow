@@ -79,6 +79,12 @@ fi
  ${CP} hireswfv3_utils.fd/exec/chgres_cube.exe          $EXEdir/hireswfv3_chgres_cube.x
 
 #------------------------------------
+# install wgrib2
+#------------------------------------
+ ${CP} hireswfv3_wgrib2.cd/grib2/wgrib2/wgrib2          $EXEdir/hireswfv3_wgrib2
+
+
+#------------------------------------
 # install orog
 #------------------------------------
  ${CP} hireswfv3_utils.fd/exec/orog.x                   $EXEdir/hireswfv3_orog.x

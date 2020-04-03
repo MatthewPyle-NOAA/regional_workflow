@@ -117,7 +117,7 @@ fi
 cp ${PARMfv3}/params_grib2_tbl_new      ./params_grib2_tbl_new
 
 # Run the post processor
-export pgm=regional_post.x
+export pgm=hireswfv3_post.x
 . prep_step
 
 startmsg
@@ -234,7 +234,7 @@ filecheck=BGDAWP${fhr}.tm00
 # 1 h added to even time file
 if [ -e $filecheck ]
 then
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 cat ./PCP1HR${fhr}.tm00 >> $filecheck
 fi
@@ -254,13 +254,13 @@ echo "$dim1 $dim2" >> input
 # 3 h added to even time file
 if [ -e $filecheck ]
 then
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 cat ./PCP3HR${fhr}.tm00 >> $filecheck
 fi
 
 
-## do 3 h QPF from regional_bucket?
+## do 3 h QPF from hireswfv3_bucket?
 
   echo "${curpath}" > input.card
   echo "temp.t${cyc}z.f" >> input.card
@@ -272,7 +272,7 @@ fi
 if [ -e $filecheck ]
 then
  mv PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_snow
- $EXECfv3/regional_bucket.x < input.card
+ $EXECfv3/hireswfv3_bucket.x < input.card
  cat ./PCP3HR${fhr}.tm00 >> $filecheck
  cp PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_qpf
 fi
@@ -299,13 +299,13 @@ echo $fhrold >> input
 echo 0 >> input
 echo "$dim1 $dim2" >> input
 
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 
 # 1 h added to odd time file
 if [ -e $altpath/BGDAWP${fhrold}.tm00 ]
 then
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 cat ./PCP1HR${fhrold}.tm00 >> $altpath/BGDAWP${fhrold}.tm00
 fi
@@ -324,12 +324,12 @@ echo "$dim1 $dim2" >> input
 # 3 h added to odd time file
 if [ -e $altpath/BGDAWP${fhrold}.tm00  ]
 then
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 cat ./PCP3HR${fhrold}.tm00 >>  $altpath/BGDAWP${fhrold}.tm00
 fi
 
-## do 3 h QPF from regional_bucket?
+## do 3 h QPF from hireswfv3_bucket?
 
 
   echo "${curpath}" > input.card
@@ -350,7 +350,7 @@ if [ -e $altpath/BGDAWP${fhrold}.tm00  ]
 then
  mv PCP3HR${fhrold}.tm00 PCP3HR${fhrold}.tm00_snow
 
- $EXECfv3/regional_bucket.x < input.card
+ $EXECfv3/hireswfv3_bucket.x < input.card
 if [ $fhrold = '03' ]
 then
  echo " will not duplicate the 3 h total at f03 "
@@ -373,13 +373,13 @@ echo 01 >> input
 echo 0 >> input
 echo "$dim1 $dim2" >> input
 
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 
 # 1 h added to f01
 if [ -e $altpath/BGDAWP01.tm00 ]
 then
-$EXECfv3/regional_fv3snowbucket.x < input
+$EXECfv3/hireswfv3_fv3snowbucket.x < input
 export err=$?; err_chk
 cat ./PCP1HR01.tm00 >> $altpath/BGDAWP01.tm00
 echo done > $altpath/postdone01

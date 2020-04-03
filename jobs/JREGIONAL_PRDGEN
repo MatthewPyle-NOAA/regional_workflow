@@ -15,6 +15,8 @@ export SENDDBN=${SENDDBN:-NO}
 ####################################
 export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 
+echo here with WGRIB2 as $WGRIB2
+
 ####################################
 # Run setpdy and initialize PDY variables
 ####################################
@@ -55,7 +57,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/exregional_prdgen.sh
+${HOMEfv3}/scripts/fv3/exregional_prdgen.sh
 export err=$?
 #####################################
 

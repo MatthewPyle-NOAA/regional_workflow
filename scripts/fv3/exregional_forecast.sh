@@ -319,11 +319,11 @@ cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
 #----------------------------------------- 
 # Run the forecast
 #-----------------------------------------
-export pgm=regional_forecast.x
+export pgm=hireswfv3_forecast.x
 . prep_step
 
 startmsg
-${APRUNC} $EXECfv3/regional_forecast.x >$pgmout 2>err
+${APRUNC} $EXECfv3/hireswfv3_forecast.x >$pgmout 2>err
 export err=$?;err_chk
 
 # Copy files needed for next analysis

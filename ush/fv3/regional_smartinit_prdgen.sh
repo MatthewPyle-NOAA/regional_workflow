@@ -837,9 +837,8 @@ fi
 	ls -l fort.*
 	sleep 2
 
-      ls -l $EXECfv3/regional_smartprecip.x
 
-     $EXECfv3/regional_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>&1 
+     $EXECfv3/hireswfv3_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>&1 
 $pfhr1 $pfhr2 $pfhr3 $pfhr4 $IARW
 EOF
 export err=$?; err_chk

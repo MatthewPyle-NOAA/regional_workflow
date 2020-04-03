@@ -95,7 +95,7 @@ export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
 export IOBUF_PARAMS='fort.11:size=64M:count=16:verbose'
 ########################################################
 # Execute the script.
-$HOMEfv3/scripts/exregional_smartinitb.sh.ecf
+$HOMEfv3/scripts/fv3/exregional_smartinitb.sh.ecf
 ########################################################
 
 date

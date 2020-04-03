@@ -117,9 +117,9 @@ cd ../
 
 echo "cd ${hour_name}" >  poe.${hour_name}
 
-echo "cp ../regional_chgres_cube.x ." >> poe.${hour_name}
+echo "cp ../hireswfv3_chgres_cube.x ." >> poe.${hour_name}
 
-echo "${APRUNC} ./regional_chgres_cube.x" >> poe.${hour_name}
+echo "${APRUNC} ./hireswfv3_chgres_cube.x" >> poe.${hour_name}
 
 # echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name}
 echo "cd ../" >> poe.${hour_name}

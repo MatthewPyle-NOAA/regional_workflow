@@ -59,7 +59,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/exregional_prdgen.sh_even
+${HOMEfv3}/scripts/fv3/exregional_prdgen.sh_even
 export err=$?
 #####################################
 

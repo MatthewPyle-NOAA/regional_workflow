@@ -18,14 +18,14 @@ else
     exit 1
 fi
 
-mkdir -p ${pwd}/../../fix
-cd ${pwd}/../../fix                ||exit 8
+mkdir -p ${pwd}/../../fix/fv3
+cd ${pwd}/../../fix/fv3                ||exit 8
 for dir in fix_am fix_sar ; do
     [[ -d $dir ]] && rm -rf $dir
 done
 
 ${LINK} $FIX_DIR/fix_am .
 ${LINK} $FIX_DIR/fix_sar .
-${LINK} $FIX_DIR/wrflibs  ${pwd}/regional_bufr.fd/
+${LINK} $FIX_DIR/wrflibs  ${pwd}/hireswfv3_bufr.fd/
 
 exit

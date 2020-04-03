@@ -13,7 +13,7 @@ export SENDDBN=${SENDDBN:-NO}
 ####################################
 # Specify Execution Areas
 ####################################
-export POSTGPEXEC=${EXECfv3}/regional_post.x
+export POSTGPEXEC=${EXECfv3}/hireswfv3_post.x
 export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 
 ####################################
@@ -55,7 +55,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/exregional_post.sh_odd
+${HOMEfv3}/scripts/fv3/exregional_post.sh_odd
 export err=$?
 #####################################
 

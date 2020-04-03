@@ -1,0 +1,666 @@
+--------------------
+./configure --prefix=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2 --static
+Fri Apr  3 16:51:11 UTC 2020
+=== ztest47248.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest47248.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest47248.c ===
+int foo() { return 0; }
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest47248.c
+ztest47248.c:1:5: warning: no previous prototype for 'foo' [-Wmissing-prototypes]
+ int foo() { return 0; }
+     ^
+ztest47248.c: In function 'foo':
+ztest47248.c:1:5: warning: old-style function definition [-Wold-style-definition]
+
+Building static library libz.a version 1.2.11 with gcc.
+
+=== ztest47248.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest47248.c
+Checking for size_t... Yes.
+
+
+=== ztest47248.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest47248.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest47248 ztest47248.c
+ztest47248.c: In function 'main':
+ztest47248.c:3:5: warning: old-style function definition [-Wold-style-definition]
+ int main() { return strlen(strerror(errno)); }
+     ^
+Checking for strerror... Yes.
+
+=== ztest47248.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+ztest47248.c: In function 'main':
+ztest47248.c:2:5: warning: old-style function definition [-Wold-style-definition]
+ int main() { return 0; }
+     ^
+Checking for unistd.h... Yes.
+
+=== ztest47248.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+ztest47248.c: In function 'main':
+ztest47248.c:2:5: warning: old-style function definition [-Wold-style-definition]
+ int main() { return 0; }
+     ^
+Checking for stdarg.h... Yes.
+
+=== ztest47248.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+ztest47248.c: In function 'main':
+ztest47248.c:4:5: warning: old-style function definition [-Wold-style-definition]
+ int main()
+     ^
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest47248.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest47248 ztest47248.c
+ztest47248.c:3:5: warning: no previous prototype for 'mytest' [-Wmissing-prototypes]
+ int mytest(const char *fmt, ...)
+     ^
+ztest47248.c: In function 'main':
+ztest47248.c:12:5: warning: old-style function definition [-Wold-style-definition]
+ int main()
+     ^
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest47248.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+ztest47248.c:3:5: warning: no previous prototype for 'mytest' [-Wmissing-prototypes]
+ int mytest(const char *fmt, ...)
+     ^
+ztest47248.c: In function 'main':
+ztest47248.c:13:5: warning: old-style function definition [-Wold-style-definition]
+ int main()
+     ^
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest47248.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest47248.c
+ztest47248.c: In function 'main':
+ztest47248.c:3:5: warning: old-style function definition [-Wold-style-definition]
+ int main()
+     ^Checking for attribute(visibility) support... No.
+
+ALL = static all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -Wall -Wmissing-prototypes -Wold-style-definition -Werror=format-security --fast-math -O3 -DGFORTRAN -fopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -fPIC -D_LARGEFILE64_SOURCE=1
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2 --static
+Fri Apr  3 17:43:25 UTC 2020
+=== ztest31805.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+icc -c ztest31805.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest31805.c ===
+int foo() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest31805.c
+
+Building static library libz.a version 1.2.11 with icc.
+
+=== ztest31805.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest31805.c
+Checking for size_t... Yes.
+
+
+=== ztest31805.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest31805.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest31805 ztest31805.c
+Checking for strerror... Yes.
+
+=== ztest31805.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking for unistd.h... Yes.
+
+=== ztest31805.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking for stdarg.h... Yes.
+
+=== ztest31805.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest31805.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest31805 ztest31805.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest31805.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest31805.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest31805.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static all64
+AR = ar
+ARFLAGS = rc
+CC = icc
+CFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = icc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = icc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2 --static
+Fri Apr  3 17:46:28 UTC 2020
+=== ztest43084.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+icc -c ztest43084.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest43084.c ===
+int foo() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest43084.c
+
+Building static library libz.a version 1.2.11 with icc.
+
+=== ztest43084.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest43084.c
+Checking for size_t... Yes.
+
+
+=== ztest43084.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest43084.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest43084 ztest43084.c
+Checking for strerror... Yes.
+
+=== ztest43084.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking for unistd.h... Yes.
+
+=== ztest43084.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking for stdarg.h... Yes.
+
+=== ztest43084.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest43084.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest43084 ztest43084.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest43084.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest43084.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest43084.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static all64
+AR = ar
+ARFLAGS = rc
+CC = icc
+CFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = icc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = icc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2 --static
+Fri Apr  3 18:00:22 UTC 2020
+=== ztest15739.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+icc -c ztest15739.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest15739.c ===
+int foo() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest15739.c
+
+Building static library libz.a version 1.2.11 with icc.
+
+=== ztest15739.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include ztest15739.c
+Checking for size_t... Yes.
+
+
+=== ztest15739.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest15739.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest15739 ztest15739.c
+Checking for strerror... Yes.
+
+=== ztest15739.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking for unistd.h... Yes.
+
+=== ztest15739.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking for stdarg.h... Yes.
+
+=== ztest15739.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest15739.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -o ztest15739 ztest15739.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest15739.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest15739.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+icc -c -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 ztest15739.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static all64
+AR = ar
+ARFLAGS = rc
+CC = icc
+CFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = icc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = icc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/include -O2 -DIFORT -cxxlib -qopenmp -I/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2/jasper-1.900.1/src/libjasper/include -I/usr/include -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_workflow_hiresw/sorc/fv3/hireswfv3_wgrib2.cd/grib2
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
