@@ -2,7 +2,7 @@
 ######################################################################
 ####  UNIX Script Documentation Block
 #                      .                                             .
-# Script name:         exregional_bufr.sh
+# Script name:         exhireswfv3_bufr.sh
 # Script description:  Trigger sounding post job
 #
 # Author:        Eric Rogers       Org: NP22         Date: 1999-06-23
@@ -32,10 +32,10 @@ RUNLOC=${NEST}${MODEL}
 export tmmark=tm00
 
 echo FIXsar is $FIXsar
-echo profdat file name is regional_${RUNLOC}_profdat
+echo profdat file name is hiresw_${RUNLOC}_profdat
 
 
-cp $FIXsar/regional_${RUNLOC}_profdat regional_profdat
+cp $FIXsar/hiresw_${RUNLOC}_profdat hiresw_profdat
 
 OUTTYP=netcdf
 
@@ -144,11 +144,11 @@ $OUTFILDYN
 $OUTFILPHYS
 EOF
 
-export pgm=regional_bufr.x
+export pgm=hireswfv3_bufr.x
 
 . prep_step
 
-export FORT19="$DATA/bufrpost/regional_profdat"
+export FORT19="$DATA/bufrpost/hiresw_profdat"
 export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
 export FORT11="itag"
 

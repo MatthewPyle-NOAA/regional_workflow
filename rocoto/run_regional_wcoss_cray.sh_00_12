@@ -10,19 +10,14 @@ module load NetCDF-intel-haswell/4.2
 module use -a /usrx/local/emc_rocoto/modulefiles
 module load rocoto/1.2.4
 
-
 # if want a non-CONUS domain, export DOMAIN here
 
-
-doms="hi conus guam"
-doms="hi"
-
+doms="conus"
 
 for DOMAIN in $doms
 do
 
 export DOMAIN
-
 
 cd ${HOMEfv3}/rocoto
 
@@ -36,8 +31,8 @@ CPU_ACCOUNT=HREF-T2O
 # Experiment name
 EXPT=hiresw
 # First, last, and interval of the workflow cycles
-CYCLE_YMDH_BEG="2019083012"
-CYCLE_YMDH_END="2020103112"
+CYCLE_YMDH_BEG="2019083000"
+CYCLE_YMDH_END="2020103100"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
@@ -68,7 +63,6 @@ else
 template=regional_workflow.xml.in_small
 echo template is $template
 fi
-
 
 # Generate the workflow definition file by parsing regional_workflow.xml.in
 sed -e "s|@\[EXPT.*\]|${EXPT}|g" \

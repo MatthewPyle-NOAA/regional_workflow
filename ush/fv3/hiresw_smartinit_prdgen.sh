@@ -833,7 +833,7 @@ fi
 	IARW=1
 	fi
 
-	echo about to execute regional_smartprecip
+	echo about to execute hireswfv3_smartprecip
 	ls -l fort.*
 	sleep 2
 
@@ -914,7 +914,7 @@ cp ${freq}snow ${freq}snow.${fhr}_interp
   fi
 
   if [ $rg = "guam" ];then
-    cat  $FIXsar/regional_smartsfcr${rg}_${MODEL}.grib2 >> meso${rg}.NDFDf${fhr} 
+    cat  $FIXsar/hiresw_smartsfcr${rg}_${MODEL}.grib2 >> meso${rg}.NDFDf${fhr} 
   fi
   $GRB2INDEX meso${rg}.NDFDf${fhr} meso${rg}.NDFDif${fhr}
   export err=$?; err_chk

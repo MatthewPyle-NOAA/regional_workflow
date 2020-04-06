@@ -42,21 +42,6 @@ mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-if [ $tmmark = tm06 ] ; then
-  export tmmark_next=tm05
-fi
-if [ $tmmark = tm05 ] ; then
-  export tmmark_next=tm04
-fi
-if [ $tmmark = tm04 ] ; then
-  export tmmark_next=tm03
-fi
-if [ $tmmark = tm03 ] ; then
-  export tmmark_next=tm02
-fi
-if [ $tmmark = tm02 ] ; then
-  export tmmark_next=tm01
-fi
 if [ $tmmark = tm01 -o $tmmark = tm00 ] ; then
   export tmmark_next=tm00
 fi
