@@ -569,7 +569,7 @@ fi
                  *) RGIN=`echo $rg |tr '[a-z]'  '[A-Z]' `;;
   esac
 
-  export pgm=regional_smartinit;. prep_step
+  export pgm=hiresw_smartinit;. prep_step
 
 	ls -l fort.*
 
@@ -610,11 +610,11 @@ export err=$?; err_chk
    export ogrd 
    export mksmart
 
-echo run regional_ncoprocg2.sh
+echo run hiresw_ncoprocg2.sh
 
-   ${USHfv3}/regional_ncoprocg2.sh
+   ${USHfv3}/hiresw_ncoprocg2.sh
 
-echo past run regional_ncoprocg2.sh
+echo past run hiresw_ncoprocg2.sh
 
 
 done  #fhr loop

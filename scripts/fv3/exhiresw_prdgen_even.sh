@@ -114,18 +114,18 @@ then
 # put USH calls in here
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 12 $DATA/poescript_${fhr} "
@@ -214,11 +214,11 @@ then
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 5 $DATA/poescript_${fhr} "
@@ -265,8 +265,8 @@ else
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 2 $DATA/poescript_${fhr} "

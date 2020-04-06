@@ -26,16 +26,17 @@
 set -x
 
 ######
-export INCR=01
+export INCR=02
 ######
+
 
 cd $DATA
 filedir=$DATA
 
 export tmmark=tm00
 
-export fhr=00
-export fhrend=60
+export fhr=01
+export fhrend=59
 
 ## see if any prdgendone?? files exist, and if so, which is the last hour completed
 
@@ -44,7 +45,7 @@ do
 
 if [ -e prdgendone${fhr} ]
 then
-let fhr=fhr+1
+let fhr=fhr+INCR
 
 if [ $fhr -lt 10 ]
 then
@@ -114,24 +115,21 @@ then
 # put USH calls in here
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 1 west &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh_eastwest $fhr $dom $cyc $MODEL 2 west &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 15 $DATA/poescript_${fhr} "
+command="aprun -n 1 -N 1 -d 12 $DATA/poescript_${fhr} "
 
 time $command
 export err=$?; err_chk
@@ -148,7 +146,8 @@ cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_1 $DATA/${RUN}.t${cyc
     $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
 
 $WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s >   $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2.idx
+
 
 ## subset the full CONUS grid to approximate the CAM common grid list
 ## now likely will interpolate subset products to 3 km grid instead for CONUS
@@ -162,7 +161,6 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2 -s > $COMOUT/${
 
 cat $DATA/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.grib2_1  > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_3km.f${fhr}.conus.subset.grib2.idx
-
 
 
     if [ $SENDDBN = YES ]; then
@@ -198,23 +196,15 @@ rm $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2_3
 
   if test $SENDCOM = 'YES'
   then
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
 
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
+cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_2 > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
 
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
+$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx
 
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2.idx
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2.idx
   fi
 
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2
+
 
 ################################################
 elif [ $dom = "ak" ]
@@ -222,11 +212,11 @@ then
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 5 $DATA/poescript_${fhr} "
@@ -261,7 +251,6 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f 
 $WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
 
 
-
 $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
 
   fi
@@ -271,8 +260,8 @@ else
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/regional_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 2 $DATA/poescript_${fhr} "
@@ -319,11 +308,7 @@ fi
 echo "done executing prdgen" > $DATA/prdgendone${fhr}
 postmsg "$jlogfile" "HIRESW ${NEST}${MODEL} PRDGEN done for F${fhr}"
 
-if [ $fhr -eq 60 -a $SENDECF = YES ]; then
-  ecflow_client --event prdgen60_ready
-fi
-
-let fhr=fhr+1
+let fhr=fhr+INCR
 
 if [ $fhr -lt 10 ]
 then

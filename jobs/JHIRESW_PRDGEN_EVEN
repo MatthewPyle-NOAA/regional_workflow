@@ -1,18 +1,18 @@
 #!/bin/ksh
 set -x
 
-. $HOMEfv3/jobs/JREGIONAL_ENVIR
+. $HOMEfv3/jobs/JHIRESW_ENVIR
 . $USHfv3/run_commands_forecast.sh
 
 ####################################
 # SENDCOM - Copy files to /com directory
 ####################################
 export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
 
 ####################################
 # Specify Execution Areas
 ####################################
-export POSTGPEXEC=${EXECfv3}/hireswfv3_bufr.x
 export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 
 ####################################
@@ -25,12 +25,17 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/regional_forecast_tm00_${tmmark}_${dom}_${PDY}${cyc}}
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${STMP}/tmpnwprd/regional_posteven_${dom}_${PDY}${cyc}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${STMP}/tmpnwprd/regional_postodd_${dom}_${PDY}${cyc}}
 export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
-if [ -d $DATA ]; then
-  rm -rf $DATA
-fi
+# if [ -d $DATA ]; then
+#   rm -rf $DATA
+# fi
+
+if [ ! -e $DATA ]; then
 mkdir -p $DATA
+fi
+
 cd $DATA
 
 export pid=$$
@@ -54,7 +59,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/fv3/exregional_bufr.sh
+${HOMEfv3}/scripts/fv3/exhiresw_prdgen_even.sh
 export err=$?
 #####################################
 

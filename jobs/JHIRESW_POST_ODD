@@ -1,7 +1,7 @@
 #!/bin/ksh
 set -x
 
-. $HOMEfv3/jobs/JREGIONAL_ENVIR
+. $HOMEfv3/jobs/JHIRESW_ENVIR
 . $USHfv3/run_commands_forecast.sh
 
 ####################################
@@ -28,15 +28,10 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 #####################################
 export INPUT_DATA=${INPUT_DATA:-${STMP}/tmpnwprd/regional_forecast_${tmmark}_${dom}_${PDY}${cyc}}
 export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
-# if [ -d $DATA ]; then
-#   rm -rf $DATA
-# fi
-
-if [ ! -e $DATA ]
-then
-mkdir -p $DATA
+if [ -d $DATA ]; then
+  rm -rf $DATA
 fi
-
+mkdir -p $DATA
 cd $DATA
 
 export pid=$$
@@ -60,7 +55,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/fv3/exregional_post.sh_even
+${HOMEfv3}/scripts/fv3/exhiresw_post_odd.sh
 export err=$?
 #####################################
 

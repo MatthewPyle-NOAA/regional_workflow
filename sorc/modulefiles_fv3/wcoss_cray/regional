@@ -62,10 +62,9 @@ module load g2-intel/3.1.0
 
 module load prod_util/1.1.0
 module load prod_envir/1.0.2
-module load grib_util/1.1.0
+module load  grib_util/1.1.0
 #Use wgrib2 v2.0.8
-#setenv WGRIB2 /u/Wesley.Ebisuzaki/bin/wgrib2.v2.0.8b9
-setenv WGRIB2 /gpfs/hps3/emc/hwrf/noscrub/emc.hurpara/local/bin/wgrib2.v2.0.8b9
+# setenv WGRIB2 /gpfs/hps3/emc/hwrf/noscrub/emc.hurpara/local/bin/wgrib2.v2.0.8b9
 
 module load crtm-intel/2.2.5
 

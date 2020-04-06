@@ -187,11 +187,11 @@ export pgm=hiresw_sndp_${RUNLOC}
 
 . prep_step
 
-cp $PARMfv3/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
-cp $PARMfv3/regional_bufr.tbl $DATA/regional_bufr.tbl
+cp $PARMfv3/hiresw_sndp.parm.mono $DATA/hiresw_sndp.parm.mono
+cp $PARMfv3/hiresw_bufr.tbl $DATA/hiresw_bufr.tbl
 
-export FORT11="$DATA/regional_sndp.parm.mono"
-export FORT32="$DATA/regional_bufr.tbl"
+export FORT11="$DATA/hiresw_sndp.parm.mono"
+export FORT32="$DATA/hiresw_bufr.tbl"
 export FORT66="$DATA/profilm.c1.${tmmark}"
 export FORT78="$DATA/class1.bufr"
 
@@ -218,9 +218,6 @@ then
 cp $DATA/class1.bufr $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr
 cp $DATA/class1.bufr.wcoss $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
 cp $DATA/profilm.c1.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${RUNLOC}.profilm.c1
-cp $DATA/class1.bufr $COMOUTalt/${RUNalt}.t${cyc}z.${RUNLOC}.class1.bufr
-cp $DATA/class1.bufr.wcoss $COMOUTalt/${RUNalt}.t${cyc}z.${RUNLOC}.class1.bufr.wcoss
-cp $DATA/profilm.c1.${tmmark} ${COMOUTalt}/${RUNalt}.t${cyc}z.${RUNLOC}.profilm.c1
 fi
 
 # remove bufr file breakout directory in $COMOUT if it exists

@@ -30,6 +30,10 @@ postmsg "$jlogfile" "$msg"
 errsum=0
 
 echo RUN is $RUN
+
+echo reset model to fv3hrw
+model=fv3hrw
+
 echo model is $model
 
 echo COMOUT is $COMOUT
