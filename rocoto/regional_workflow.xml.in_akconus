@@ -91,7 +91,7 @@
         <and>
           <datadep age="10:00" minsize="15779010324"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf006.nemsio</cyclestr></datadep>
           <datadep age="10:00" minsize="1170221688"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.sfcf006.nemsio</cyclestr></datadep>
-          <timedep> <cyclestr offset="03:05:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task> 
@@ -116,7 +116,7 @@
         <and>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf063.nemsio</cyclestr></datadep>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf066.nemsio</cyclestr></datadep> 
-          <timedep> <cyclestr offset="03:05:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task>
