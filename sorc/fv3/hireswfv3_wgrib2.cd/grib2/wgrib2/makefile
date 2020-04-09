@@ -64,4 +64,4 @@ gribtab.o:	gribtab.c gribtab.dat misc_gribtab.dat NDFD_gribtab.dat
 
 clean:
 	touch wgrib2
-	rm ${o}
+	rm ${o} wgrib2
