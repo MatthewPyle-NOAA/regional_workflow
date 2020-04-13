@@ -27,6 +27,9 @@ export HOMEfv3=${HOMEfv3:-/gpfs/dell2/emc/modeling/noscrub/$USER/regional_workfl
 elif [ ${machine} = "wcoss_cray" ]
 then
 
+
+export NWROOT=/gpfs/hps/nco/ops/nwprod
+export hiresw_ver=v8.0.0
 export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}

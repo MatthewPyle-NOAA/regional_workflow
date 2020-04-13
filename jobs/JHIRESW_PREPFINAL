@@ -34,10 +34,10 @@ export cycle=${cycle:-t${cyc}z}
 export SENDDBN=NO
 
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec}
-export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix}
-export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm}
-export USHhiresw=${USHhiresw:-$HOMEhiresw/ush}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 
 # Run setpdy and initialize PDY variables
 setpdy.sh
@@ -49,7 +49,7 @@ mkdir -p -m 775 $COMOUT
  
 ########################################################
 # Execute the script.
-${HOMEhiresw}/scripts/exhiresw_prepfinal.sh.ecf
+${HOMEhiresw}/scripts/arw/exhiresw_prepfinal.sh.ecf
 ########################################################
 
 cd $DATAROOT

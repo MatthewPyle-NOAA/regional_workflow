@@ -22,7 +22,7 @@ ulimit -a
 
 resterr=1
 
-restart_interval=12
+restart_interval=6
 FHMAX=60
 
 cd $DATA
@@ -75,43 +75,6 @@ if [  $restart_interval -gt 0 -a  $FHMAX -gt $restart_interval -a $filecount -gt
 	echo at test with EDATE $EDATE
     done
 fi
-
-#fi
-
-
-  # Link all (except sfc_data) restart files from $gmemdir
-#  for file in $gmemdir/RESTART/${PDY}.${cyc}0000.*.nc; do
-#    file2=$(echo $(basename $file))
-#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
-#    fsuf=$(echo $file2 | cut -d. -f1)
-#    if [ $fsuf != "sfc_data" ]; then
-#       $NLN $file $DATA/INPUT/$file2
-#    fi
-#  done
-
-  # Link sfcanl_data restart files from $memdir
-#  for file in $memdir/RESTART/${PDY}.${cyc}0000.*.nc; do
-#    file2=$(echo $(basename $file))
-#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
-#    fsufanl=$(echo $file2 | cut -d. -f1)
-#    if [ $fsufanl = "sfcanl_data" ]; then
-#      file2=$(echo $file2 | sed -e "s/sfcanl_data/sfc_data/g")
-#      $NLN $file $DATA/INPUT/$file2
-#    fi
-#  done
-
-  # Handle coupler.res file for DA cycling
-#  if [ ${USE_COUPLER_RES:-"NO"} = "YES" ]; then
-#    # In DA, this is not really a "true restart",
-#    # and the model start time is the analysis time
-#    # The alternative is to replace
-#    # model start time with current model time in coupler.res
-#    file=$gmemdir/RESTART/${PDY}.${cyc}0000.coupler.res
-#    file2=$(echo $(basename $file))
-#    file2=$(echo $file2 | cut -d. -f3-) # remove the date from file
-#    $NLN $file $DATA/INPUT/$file2
-#  fi
-
 
     PDYT=$(echo $CDATE_RST | cut -c1-8)
     cyct=$(echo $CDATE_RST | cut -c9-10)
@@ -243,8 +206,8 @@ if [ $tmmark = tm00 ] ; then
       then
 
        cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
-#was       sed s:_MAKENH_:.F.: | \
-       sed s:_MAKENH_:.T.: | \
+       sed s:_MAKENH_:.F.: | \
+#test       sed s:_MAKENH_:.T.: | \
        sed s:_NAINIT_:0: | \
        sed s:_NGGPSIC_:.F.: | \
        sed s:_EXTERNALIC_:.F.: | \
