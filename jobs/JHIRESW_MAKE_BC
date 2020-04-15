@@ -13,22 +13,24 @@ export CHGRESEXEC=$EXECfv3/hireswfv3_chgres_cube.x
 # Run setpdy and initialize PDY variables
 ####################################
 # PDY, CDATE, and tmmark are passed in through Rocoto xml
-#setpdy.sh
-#. ./PDY
+
+if [ ${RUN_ENVIR} = 'prod' ]
+then
+setpdy.sh
+. ./PDY
+
+export CDATE=${PDY}${cyc}
+
+fi
 
 export month=`echo $CDATE | cut -c 5-6`
 export day=`echo $CDATE | cut -c 7-8`
 
-offset=`echo $tmmark | cut -c 3-4`
-export CYCLEGUESS=`$NDATE -${offset} $CDATE`
-export CDATE=$CYCLEGUESS
-export ymd=`echo $CDATE | cut -c 1-8`
-export hhcyc=`echo $CDATE | cut -c 9-10`
 
 #####################################
 # Obtain unique process id (pid) and make temp directory
 #####################################
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
+export DATA=${DATA:-${DATAROOT}/${job}}
 mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA
@@ -45,7 +47,7 @@ export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
 
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES

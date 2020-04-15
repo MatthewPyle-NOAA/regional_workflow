@@ -215,7 +215,7 @@
 <!--  ********************** Run the BUFR post processor *********************  -->
 
     <task name="bufrpost" maxtries="&MAX_TRIES;">
-      <command>&PRE; &JOBS;/JHIRESW_BUFR</command>
+      <command>&PRE; &JOBS;/JHIRESW_WRFBUFRSND</command>
       <jobname>regional_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
       <join><cyclestr>&LOGDIR;/regional_bufrpost_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>

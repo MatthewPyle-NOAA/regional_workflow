@@ -1,5 +1,9 @@
 #!/bin/sh
+
+if [ $MODEL = 'fv3' ]
+then
 . $HOMEfv3/jobs/JHIRESW_ENVIR
+fi
 
 ########################################
 # Runs HIRESW WRFBUFR and SNDP programs
@@ -18,11 +22,18 @@ export SENDCOM=${SENDCOM:-YES}
 # 
 # obtain unique process id (pid) and make temp directories
 #
-export pid=$$
-# export DATA=${DATA:-${DATAROOT:?}/regional_smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
 
+export pid=$$
+
+if [ $MODEL = 'fv3' ]
+then
+export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/regional_post_${NEST}_${MODEL}_${cyc}_${envir}}
+else
+export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+fi
+
 mkdir -p $DATA
 cd $DATA
 
@@ -35,17 +46,29 @@ export pgmout="OUTPUT.${pid}"
 export cycle=${cycle:-t${cyc}z}
 
 export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXECfv3=${EXECfv3:-$HOMEfv3/exec}
-export FIXfv3=${FIXfv3:-$HOMEfv3/fix}
-export PARMfv3=${PARMfv3:-$HOMEfv3/parm}
-export USHfv3=${USHfv3:-$HOMEfv3/ush}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 
 ###################################
 # Set up the UTILITIES
 ###################################
 #module load grib_util
 
+if [ $MODEL = 'fv3' ]
+then
 hrs="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
+else
+hrs="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48"
+fi
+
 for hr in $hrs
 do
 
@@ -53,8 +76,11 @@ do
   cd $DATA/smartinit_${hr}
 
   # Run setpdy and initialize PDY variables
-  setpdy.sh
-  . ./PDY
+  if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+  then
+    setpdy.sh
+    . ./PDY
+  fi
 done
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
@@ -94,7 +120,31 @@ export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
 
 ########################################################
 # Execute the script.
+
+if [ $MODEL = 'fv3' ]
+then
 $HOMEfv3/scripts/fv3/exhiresw_smartinit.sh
+else
+$HOMEhiresw/scripts/arw/exhiresw_smartinit.sh.ecf
+fi
+
+export err=$?
+
+if [ -e $pgmerr ] ; then
+cat $pgmerr
+fi
+
+if [ -e $pgmout ] ; then
+cat $pgmout
+fi
+
+if [ $err -eq 0 ]
+then
+msg="JOB $job FOR NEST=${NEST}${MODEL} HAS COMPLETED NORMALLY."
+postmsg "$jlogfile" "$msg"
+fi
+
+
 ########################################################
 
 date

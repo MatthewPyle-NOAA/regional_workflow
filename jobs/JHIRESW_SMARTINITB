@@ -1,5 +1,9 @@
 #!/bin/sh
+
+if [ $MODEL = 'fv3' ]
+then
 . $HOMEfv3/jobs/JHIRESW_ENVIR
+fi
 
 ########################################
 # Runs HIRESW WRFBUFR and SNDP programs
@@ -21,9 +25,21 @@ export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
 # obtain unique process id (pid) and make temp directories
 #
 export pid=$$
-# export DATA=${DATA:-${DATAROOT:?}/regional_smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+
+
+if [ $MODEL = 'fv3' ]
+then
 export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
-export PRDGEN_DATA=${PRDGEN_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+# export PRDGEN_DATA=${PRDGEN_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/regional_smartinit_${NEST}_${PDY}${cyc}}
+
+else
+
+export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
+# export PRDGEN_DATA=${PRDGEN_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+
+fi
 
 mkdir -p $DATA
 cd $DATA
@@ -53,10 +69,13 @@ export USHfv3=${USHfv3:-$HOMEfv3/ush}
 #module load grib_util
 
 # Run setpdy and initialize PDY variables
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
 setpdy.sh
 . ./PDY
+fi
 
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/regional_smartinit_${NEST}_${PDY}${cyc}}
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMsref=${COMsref:-$(compath.py sref/prod)}
@@ -95,7 +114,13 @@ export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
 export IOBUF_PARAMS='fort.11:size=64M:count=16:verbose'
 ########################################################
 # Execute the script.
+
+if [ $MODEL = 'fv3' ]
+then
 $HOMEfv3/scripts/fv3/exhiresw_smartinitb.sh
+else
+$HOMEhiresw/scripts/arw/exhiresw_smartinitb.sh.ecf
+fi
 ########################################################
 
 date
