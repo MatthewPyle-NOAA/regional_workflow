@@ -25,9 +25,9 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${STMP}/tmpnwprd/regional_posteven_${dom}_${PDY}${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${STMP}/tmpnwprd/regional_postodd_${dom}_${PDY}${cyc}}
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hireswfv3_posteven_${dom}_${PDY}${cyc}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hireswfv3_postodd_${dom}_${PDY}${cyc}}
+export DATA=${DATA:-${DATAROOT}/${job}}
 # if [ -d $DATA ]; then
 #   rm -rf $DATA
 # fi

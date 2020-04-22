@@ -13,7 +13,7 @@ set -x
 ##################################
 # Working directories
 ##################################
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
+export DATA=${DATA:-${DATAROOT}/${job}}
 mkdir -p $DATA
 cd $DATA
 

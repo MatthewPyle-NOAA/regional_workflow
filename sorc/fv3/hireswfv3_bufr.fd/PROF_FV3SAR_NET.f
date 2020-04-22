@@ -786,26 +786,26 @@ C Getting start time
 !!!!!
 
 
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
-       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lat",cenlat))
-       TPH0D=cenlat
-       cenlat=nint(1000.0*cenlat)
-       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lon",cenlon))
-       TLM0D=cenlon
-       cenlon=nint(1000.0*cenlon)
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
+!       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lat",cenlat))
+!       TPH0D=cenlat
+!       cenlat=nint(1000.0*cenlat)
+!       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lon",cenlon))
+!       TLM0D=cenlon
+!       cenlon=nint(1000.0*cenlon)
+!
+!
+!
+!        write(6,*) 'dxval= ', dxval
+!        write(6,*) 'dyval= ', dyval
+!        write(6,*) 'cenlat= ', cenlat
+!        write(6,*) 'cenlon= ', cenlon
 
-
-
-        write(6,*) 'dxval= ', dxval
-        write(6,*) 'dyval= ', dyval
-        write(6,*) 'cenlat= ', cenlat
-        write(6,*) 'cenlon= ', cenlon
-
-        truelat1=0.
-        truelat2=0.
+!        truelat1=0.
+!        truelat2=0.
 !        write(6,*) 'truelat1= ', truelat1
 !        write(6,*) 'truelat2= ', truelat2
         maptype=5
@@ -1470,21 +1470,21 @@ C Getting start time
         ihrst=IDATE(4)
 
 
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
-       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
-       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lat",cenlat))
-       cenlat=nint(1000.0*cenlat)
-       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lon",cenlon))
-       cenlon=nint(1000.0*cenlon)
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lon1", wbd))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"lat1", sbd))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlon", dxval))
+!       call check (nf90_get_att(ncid_dyn, NF90_GLOBAL,"dlat", dyval))
+!       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lat",cenlat))
+!       cenlat=nint(1000.0*cenlat)
+!       call check(nf90_get_att(ncid_dyn,NF90_GLOBAL,"cen_lon",cenlon))
+!       cenlon=nint(1000.0*cenlon)
+!
+!
 
-
-
-        write(6,*) 'dxval= ', dxval
-        write(6,*) 'dyval= ', dyval
-        write(6,*) 'cenlat= ', cenlat
-        write(6,*) 'cenlon= ', cenlon
+!        write(6,*) 'dxval= ', dxval
+!        write(6,*) 'dyval= ', dyval
+!        write(6,*) 'cenlat= ', cenlat
+!        write(6,*) 'cenlon= ', cenlon
 
         truelat1=0.
         truelat2=0.
@@ -1870,8 +1870,8 @@ C
 C***  FOR ROTATION OF WINDS FROM E-GRID TO GEODETIC ORIENTATION
 C***  WE NEED THE TWO QUANTITIES BELOW.
 C
-      SINPH0=SIN(TPH0D*DTR)
-      COSPH0=COS(TPH0D*DTR)
+!      SINPH0=SIN(TPH0D*DTR)
+!      COSPH0=COS(TPH0D*DTR)
 C
 C***  INITIAL CALCULATIONS/PREPARATIONS.  WE LOAD SEVERAL
 C***  ARRAYS WITH PROFILE VARIABLES.

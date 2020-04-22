@@ -32,7 +32,7 @@ errsum=0
 echo RUN is $RUN
 
 echo reset model to fv3hrw
-model=fv3hrw
+model=hireswfv3
 
 echo model is $model
 
@@ -49,13 +49,13 @@ echo PDY is $PDY
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 00
       ;;
 
-   regional_archive_pr|regional_archive_ak|regional_archive_hi|regional_archive_guam)
+   hireswfv3_archive_pr|hireswfv3_archive_ak|hireswfv3_archive_hi|hireswfv3_archive_guam)
       
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}
       ;;
 
-   regional_archive_conus)
+   hireswfv3_archive_conus)
       
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}

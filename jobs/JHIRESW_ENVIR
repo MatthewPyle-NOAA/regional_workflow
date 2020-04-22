@@ -34,43 +34,14 @@ export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
 
-export PTMP=${PTMP:-/gpfs/hps3/ptmp/${USER}}
-export STMP=${STMP:-/gpfs/hps3/stmp/${USER}}
+export MYCOMROOT=${MYCOMROOT:-/gpfs/hps3/ptmp/${USER}/com}
+export DATAROOT=${DATAROOT:-/gpfs/hps3/stmp/${USER}/tmpnwprd}
 export rzdmuser=mpyle
 
 export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/noscrub/$USER/regional_workflow_hiresw}
 export NDATE=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/ndate
 export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
 
-elif [ ${machine} = "hera" ]
-then
-
-export COMINgdas=${COMINgdas:-/scratch2/NCEPDEV/fv3-cam/emc.campara/fv3-input/COMGFS}
-export GBCOMINgfs=${GBCOMINgfs:-/scratch2/NCEPDEV/fv3-cam/emc.campara/fv3-input/COMGFS}
-export COMINgfs=${COMINgfs:-/scratch2/NCEPDEV/fv3-cam/emc.campara/fv3-input/COMGFS}
-   
-export PTMP=${PTMP:-/scratch2/NCEPDEV/stmp3/${USER}}
-export STMP=${STMP:-/scratch2/NCEPDEV/stmp3/${USER}}
-export rzdmuser=mpyle
-
-export NDATE=/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/ndate
-export NHOUR=/scratch2/NCEPDEV/nwprod/NCEPLIBS/utils/prod_util.v1.1.0/exec/nhour
-export HOMEfv3=${HOMEfv3:-/scratch2/NCEPDEV/fv3-cam/$USER/regional_workflow}
-
-elif [ ${machine} = "theia" ]
-then
-
-export COMINgdas=${COMINgdas:-/scratch3/NCEPDEV/hwrf/noscrub/hafs-input/COMGFS}
-export GBCOMINgfs=${GBCOMINgfs:-/scratch3/NCEPDEV/hwrf/noscrub/hafs-input/COMGFS}
-export COMINgfs=${COMINgfs:-/scratch3/NCEPDEV/hwrf/noscrub/hafs-input/COMGFS}
-   
-export PTMP=${PTMP:-/scratch4/NCEPDEV/stmp3/${USER}}
-export STMP=${STMP:-/scratch4/NCEPDEV/stmp3/${USER}}
-export rzdmuser=mpyle
-
-export NDATE=/scratch3/NCEPDEV/nwprod/lib/prod_util/v1.1.0/exec/ndate
-export NHOUR=/scratch3/NCEPDEV/nwprod/lib/prod_util/v1.1.0/exec/nhour
-export HOMEfv3=${HOMEfv3:-/scratch4/NCEPDEV/fv3-cam/noscrub/$USER/regional_workflow}
 
 else
 
@@ -94,13 +65,14 @@ export FIXsar=$FIXfv3/fix_sar/${dom}
 export FIXam=$FIXfv3/fix_am
 export FIXco2=$FIXam/fix_co2_proj
 
-export COMROOT=${PTMP}/com
-export GESROOT=${PTMP}/nwges
-export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
-mkdir -p $GESROOT_HOLD
+export COMROOT=${MYCOMROOT}
+export GESROOT=${MYCOMROOT}/../nwges
+# export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
+# mkdir -p $GESROOT_HOLD
 
-export NHRSguess=06	#-- Forecast length for 1st guess generation
-export NHRSda=01	#-- Forecast length for cycled DA
+# export NHRSguess=06	#-- Forecast length for 1st guess generation
+# export NHRSda=01	#-- Forecast length for cycled DA
+
 export NHRS=60          #-- Forecast length for free fcst
 
-export jlogfile=${STMP}/jlogfile.${RUN}.jlog
+export jlogfile=${DATAROOT}/../jlogfile.${RUN}.jlog

@@ -91,6 +91,9 @@ fi
     done
 
 
+# test new copy
+
+cp $DATA/INPUT/sfc_data.nc $DATA/INPUT/sfc_data.tile7.nc
 
 
 # end from GFS
@@ -207,11 +210,10 @@ if [ $tmmark = tm00 ] ; then
 
        cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
        sed s:_MAKENH_:.F.: | \
-#test       sed s:_MAKENH_:.T.: | \
        sed s:_NAINIT_:0: | \
        sed s:_NGGPSIC_:.F.: | \
        sed s:_EXTERNALIC_:.F.: | \
-       sed s:_NSTF_NAME_:1,1,1,0,5: | \
+       sed s:_NSTF_NAME_:2,0,0,0,0: | \
        sed s:_MOUNTAIN_:.T.: | \
        sed s:_WARMSTART_:.T.:  > input.nml
       else

@@ -27,8 +27,8 @@ export pid=$$
 
 if [ $MODEL = 'fv3' ]
 then
-export DATA=${DATA:-${STMP}/tmpnwprd/${job}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/regional_post_${NEST}_${MODEL}_${cyc}_${envir}}
+export DATA=${DATA:-${DATAROOT}/${job}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hireswfv3_post_${NEST}_${MODEL}_${cyc}_${envir}}
 else
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
