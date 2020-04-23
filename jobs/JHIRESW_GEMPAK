@@ -7,6 +7,12 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
+if [ $MODEL = 'fv3' ]
+then
+. $HOMEfv3/jobs/JHIRESW_ENVIR
+fi
+
+
 ###############################
 # Specify NET and RUN name
 ###############################
@@ -17,7 +23,14 @@ export RUN=${RUN:-hiresw}
 # obtain unique process id (pid) and make temp directories
 ###########################################################
 export pid=$$
+
+if [ $MODEL = 'fv3' ]
+then
+export DATA=${DATA:-${DATAROOT:?}/${job:?}}
+else
 export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
+fi
+
 mkdir $DATA
 cd $DATA 
 
@@ -30,7 +43,12 @@ export pgmout="OUTPUT.${pid}"
 export cycle=${cycle:-t${cyc}z}
 
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+if [ ${MODEL} = 'arw' ]
+then
 export GEMPAKhiresw=${GEMPAKhiresw:-$HOMEhiresw/gempak}
+else
+export GEMPAKhiresw=${GEMPAKhiresw:-$HOMEfv3/gempak}
+fi
 
 export finc=1
 export fend=48
@@ -46,10 +64,22 @@ export DBN_ALERT_TYPE=${DBN_ALERT_TYPE:-HIRESW_GEMPAK}
 # Copy model specific GEMPAK tables into working directory
 #
 cp $GEMPAKhiresw/fix/*.tbl .
+err=$?
+
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR:  Did not copy fix .tbl files needed for GEMPAK processing"
+err_exit $msg
+fi
+
 
 # Run setpdy and initialize PDY variables
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
 setpdy.sh
-. PDY
+. ./PDY
+fi
+
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/nawips/${envir}/hiresw.${PDY}}
@@ -62,7 +92,12 @@ env
 
 #################################################################
 # Execute the script
-$HOMEhiresw/scripts/exnawips_hiresw.sh.ecf
+if [ $MODEL = 'arw' ]
+then
+$HOMEhiresw/scripts/arw/exnawips_hiresw.sh.ecf
+else
+$HOMEfv3/scripts/fv3/exhiresw_gempak.sh
+fi
 #################################################################
 
 cd ${DATAROOT}

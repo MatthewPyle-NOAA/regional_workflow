@@ -20,13 +20,10 @@
    <name>COMINgfs</name><value>&COMINgfs;</value>
  </envar>
  <envar>
-   <name>PTMP</name><value>&PTMP;</value>
- </envar>
- <envar>
-   <name>STMP</name><value>&STMP;</value>
- </envar>
- <envar>
    <name>DATAROOT</name><value>&DATAROOT;</value>
+ </envar>
+ <envar>
+   <name>MYCOMROOT</name><value>&MYCOMROOT;</value>
  </envar>
  <envar>
    <name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value>
