@@ -113,14 +113,14 @@ EOF
   fi
 
   if [ $SENDCOM = "YES" ] ; then
-    cp $GEMGRD $COMOUT/.${GEMGRD}
+    cp $GEMGRD $COMOUT/gempak/.${GEMGRD}
     export err=$?;err_chk
-    mv $COMOUT/.${GEMGRD} $COMOUT/${GEMGRD}
+    mv $COMOUT/gempak/.${GEMGRD} $COMOUT/gempak/${GEMGRD}
 
     if [ $SENDDBN = "YES" ] ; then
       if [ $NEST != "guam" ]; then
          $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job \
-           $COMOUT/$GEMGRD
+           $COMOUT/gempak/$GEMGRD
       fi
     else
     echo "##### DBN_ALERT_TYPE is: ${DBN_ALERT_TYPE} #####"

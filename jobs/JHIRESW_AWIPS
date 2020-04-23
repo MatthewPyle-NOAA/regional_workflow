@@ -7,6 +7,12 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
+if [ $MODEL = 'fv3' ]
+then
+. $HOMEfv3/jobs/JHIRESW_ENVIR
+fi
+
+
 ###############################
 # Specify NET and RUN name
 ###############################
@@ -17,7 +23,13 @@ export RUN=${RUN:-hiresw}
 # obtain unique process id (pid) and make temp directories
 ############################################################# 
 export pid=$$
+if [ $MODEL = 'arw' ] 
+then
 export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
+else
+export DATA=${DATA:-${DATAROOT:?}/${job:?}}
+fi
+
 mkdir $DATA
 cd $DATA 
 
@@ -35,27 +47,47 @@ export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
 
 # these will be used for ensemble mean
 
+if [ $MODEL = 'arw' ]
+then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
 export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
 export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
 export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
 export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-export PARMutil=${PARMutil:-$HOMEhiresw/util/parm/arw}
+export PARMutil=${PARMutil:-$HOMEhiresw/parm/arw/wmo}
+
+else
+
+export PARMutil=${PARMutil:-$HOMEfv3/parm/fv3/wmo}
+fi
+
+
 ###################################
 # Set up the UTILITIES
 ###################################
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
 setpdy.sh
 . PDY
+fi
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
-export PCOM=${PCOM:-${PCOMROOT:?}/${NET}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 
-mkdir -p $PCOM
+mkdir -p $COMOUT/wmo
+
+export SENDCOM=${SENDCOM:-YES}
+export SENDDBN_NTC=${SENDDBN_NTC:-NO}
  
 ########################################################
 # Run the ex-script
 #
+if [ $MODEL = 'arw' ] 
+then
 $HOMEhiresw/scripts/arw/exhiresw_awips.sh.ecf
+else
+$HOMEfv3/scripts/fv3/exhiresw_awips.sh
+fi
 #
 ########################################################
 

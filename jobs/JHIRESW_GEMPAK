@@ -13,6 +13,9 @@ then
 fi
 
 
+export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
+
 ###############################
 # Specify NET and RUN name
 ###############################
@@ -82,10 +85,10 @@ fi
 
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
-export COMOUT=${COMOUT:-${COMROOT:?}/nawips/${envir}/hiresw.${PDY}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
 
-if [ ! -f $COMOUT ] ; then
-  mkdir -p -m 775 $COMOUT
+if [ ! -f $COMOUT/gempak ] ; then
+  mkdir -p -m 775 $COMOUT/gempak
 fi
  
 env

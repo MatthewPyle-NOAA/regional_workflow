@@ -59,6 +59,7 @@
   <!ENTITY PRDGEN_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
 
   <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY GEMAWIPS_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
 
 
   <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>2:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>16</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
