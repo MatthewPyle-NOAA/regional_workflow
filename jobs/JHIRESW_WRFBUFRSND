@@ -44,6 +44,15 @@ setpdy.sh
 . ./PDY
 fi
 
+if [ $MODEL = 'arw' ]
+then
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+fi
+
 #####################################
 # Working directories
 #####################################
@@ -89,7 +98,7 @@ if [ $MODEL = 'fv3' ]
 then
 ${HOMEfv3}/scripts/fv3/exhiresw_bufr.sh
 else
-${HOMEfv3}/scripts/arw/exhiresw_wrfbufr.sh.ecf
+${HOMEhiresw}/scripts/arw/exhiresw_wrfbufr.sh.ecf
 fi
 
 export err=$?

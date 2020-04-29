@@ -37,12 +37,10 @@
   <!ENTITY JOBS "&HOMEfv3;/jobs">
   <!ENTITY UTILush "&HOMEfv3;/util/ush">
   <!ENTITY SCRIPTS "&HOMEfv3;/scripts">
-  <!ENTITY PTMP "@[PTMP:-/gpfs/dell1/ptmp/&USER;/&EXPT;]">
-  <!ENTITY STMP "@[STMP:-/gpfs/dell1/stmp/&USER;/&EXPT;]">
-  <!ENTITY COMDIR "&PTMP;/com">
-  <!ENTITY LOGDIR "&PTMP;/log">
 
-  <!ENTITY DATAROOT "&STMP;/tmpnwprd">
+  <!ENTITY MYCOMROOT "@[MYCOMROOT:-/gpfs/dell1/ptmp/&USER;/com]">
+  <!ENTITY DATAROOT "@[DATAROOT:-/gpfs/dell1/stmp/&USER;/tmpnwprd]">
+  <!ENTITY LOGDIR "&MYCOMROOT;/../log">
 
   <!ENTITY TIMEOFFSET "-00:06:00:00">
 
@@ -68,7 +66,7 @@
 
   <cycledef>&CYCLE_YMDH_BEG;00 &CYCLE_YMDH_END;00 &CYCLE_INTERVAL;</cycledef>
 
-  <log><cyclestr>&LOGDIR;/workflow_regional_&DOMAIN;_@Y@m@d@H.log</cyclestr></log>
+  <log><cyclestr>&LOGDIR;/workflow_hireswfv3_&DOMAIN;_@Y@m@d@H.log</cyclestr></log>
 
 
 <!--  *******************************************************************  -->
@@ -76,8 +74,8 @@
 
   <task name="make_ic" maxtries="&MAX_TRIES;">
     <command>&PRE; &JOBS;/JHIRESW_MAKE_IC</command>
-    <jobname>regional_make_ic_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_make_ic_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>hireswfv3_make_ic_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_make_ic_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
@@ -85,7 +83,7 @@
     &MAKE_IC_RESOURCES;
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
-    <envar><name>job</name><value>regional_make_ic_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>job</name><value>hireswfv3_make_ic_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
         <and>
@@ -101,8 +99,8 @@
 
   <task name="make_bc" maxtries="&MAX_TRIES;">
     <command>&PRE; &JOBS;/JHIRESW_MAKE_BC</command>
-    <jobname>regional_make_bc_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_make_bc_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>hireswfv3_make_bc_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_make_bc_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
@@ -110,7 +108,7 @@
     &MAKE_BC_RESOURCES_AK;
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
-    <envar><name>job</name><value>regional_make_bc_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>job</name><value>hireswfv3_make_bc_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
         <and>
@@ -126,8 +124,8 @@
 
   <task name="forecast_tm00" maxtries="&MAX_TRIES_BIG_JOBS;">
     <command>&PRE; &JOBS;/JHIRESW_FORECAST</command>
-    <jobname>regional_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>hireswfv3_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_forecast_tm00_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
@@ -135,7 +133,7 @@
     &FORECAST_TM00_RESOURCES_@[DOMAIN:-conus];
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
-    <envar><name>job</name><value>regional_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>job</name><value>hireswfv3_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
       <and>
@@ -150,8 +148,8 @@
 
   <task name="postodd" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_POST_ODD</command>
-      <jobname>regional_postodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_postodd_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_postodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -159,17 +157,17 @@
       &ALTPOST_RESOURCES_@[DOMAIN:-conus];
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_postodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_postodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <dependency>
           <!-- Start the post if the forecast is running or if it has already completed.  -->
-           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
       </dependency>
    </task>
 
    <task name="posteven" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_POST_EVEN</command>
-      <jobname>regional_posteven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_posteven_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_posteven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -177,20 +175,20 @@
       &ALTPOST_RESOURCES_@[DOMAIN:-conus];
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_posteven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_posteven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
       <dependency>
         <and>
           <!-- Start the even post if the forecast is running and the odd post job has started.  -->
-           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf000</cyclestr></datadep>
-           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/BGDAWP01.tm00</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf000</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/BGDAWP01.tm00</cyclestr></datadep>
         </and>
       </dependency>
    </task>
 
   <task name="prdgenodd" maxtries="&MAX_TRIES_PRDGEN;">
       <command>&PRE; &JOBS;/JHIRESW_PRDGEN_ODD</command>
-      <jobname>regional_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_prdgenodd_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -198,19 +196,19 @@
       &PRDGEN_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_prdgenodd_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
           <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
-           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/postdone01</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/postdone01</cyclestr></datadep>
       </dependency>
    </task>
 
   <task name="prdgeneven" maxtries="&MAX_TRIES_PRDGEN;">
       <command>&PRE; &JOBS;/JHIRESW_PRDGEN_EVEN</command>
-      <jobname>regional_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_prdgeneven_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -218,12 +216,12 @@
       &PRDGEN_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_prdgeneven_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
           <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
-           <datadep age="05:00"><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/postdone02</cyclestr></datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/postdone02</cyclestr></datadep>
       </dependency>
    </task>
 
@@ -233,8 +231,8 @@
 
     <task name="bufrpost" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_WRFBUFRSND</command>
-      <jobname>regional_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_bufrpost_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_bufrpost_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -242,8 +240,8 @@
       &BUFRPOST_RESOURCES_@[DOMAIN:-conus];
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>INPUT_DATA</name><value>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_bufrpost_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA</name><value>&DATAROOT;/hireswfv3_forecast_tm00_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
       <dependency>
         <and>
@@ -252,7 +250,7 @@
            <taskdep task="forecast_tm00" state="RUNNING"/>
            <taskdep task="forecast_tm00"/>
           </or>
-          <datadep age="05:00"><cyclestr>&DATAROOT;/regional_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
+          <datadep age="05:00"><cyclestr>&DATAROOT;/hireswfv3_forecast_tm00_&DOMAIN;_@Y@m@d@H/logf001</cyclestr></datadep>
         </and>
       </dependency>
     </task>
@@ -260,8 +258,8 @@
 
    <task name="smartinit_a" maxtries="&MAX_TRIES_SMARTINIT;">
       <command>&PRE; &JOBS;/JHIRESW_SMARTINIT</command>
-      <jobname>regional_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_smartinit_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_smartinit_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -269,14 +267,14 @@
       &SMARTINIT_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_smartinit_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_ODD</name><value><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>INPUT_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
          <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H/prdgendone31</cyclestr></datadep>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hireswfv3_prdgenodd_&DOMAIN;_@Y@m@d@H/prdgendone31</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hireswfv3_prdgeneven_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
            <timedep> <cyclestr offset="02:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
          </and>
       </dependency>
@@ -284,8 +282,8 @@
 
    <task name="smartinit_b" maxtries="&MAX_TRIES_SMARTINIT;">
       <command>&PRE; &JOBS;/JHIRESW_SMARTINITB</command>
-      <jobname>regional_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/regional_smartinitb_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+      <jobname>hireswfv3_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hireswfv3_smartinitb_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -293,19 +291,68 @@
       &BUFRPOST_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
-      <envar><name>job</name><value>regional_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
-      <envar><name>POST_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>PRDGEN_DATA_ODD</name><value><cyclestr>&DATAROOT;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
-      <envar><name>PRDGEN_DATA_EVEN</name><value><cyclestr>&DATAROOT;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>job</name><value>hireswfv3_smartinitb_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+      <envar><name>POST_DATA_ODD</name><value><cyclestr>&DATAROOT;/hireswfv3_postodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hireswfv3_posteven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>PRDGEN_DATA_ODD</name><value><cyclestr>&DATAROOT;/hireswfv3_prdgenodd_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
+      <envar><name>PRDGEN_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hireswfv3_prdgeneven_&DOMAIN;_@Y@m@d@H/</cyclestr></value></envar>
       <dependency>
          <and>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgenodd_&DOMAIN;_@Y@m@d@H/prdgendone31</cyclestr></datadep>
-           <datadep age="01:00"><cyclestr>&DATAROOT;/regional_prdgeneven_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hireswfv3_prdgenodd_&DOMAIN;_@Y@m@d@H/prdgendone31</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hireswfv3_prdgeneven_&DOMAIN;_@Y@m@d@H/prdgendone30</cyclestr></datadep>
            <timedep> <cyclestr offset="02:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
          </and>
       </dependency>
    </task>
+
+
+
+<!-- ***************************** GEMPAK job ***************************** -->
+
+  <task name="gempak" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_GEMPAK</command>
+    <jobname><cyclestr>hireswfv3_gempak_&DOMAIN;_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_gempak_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &SERVICE_EXTRA;
+    &RESERVATION;
+    &GEMAWIPS_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hireswfv3_gempak_&DOMAIN;</value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="prdgenodd"/>
+        <taskdep task="prdgeneven"/>
+      </and>
+    </dependency>
+  </task>
+
+
+<!-- *********************************************************************** -->
+<!-- ***************************** AWIPS job ***************************** -->
+
+  <task name="awips" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_AWIPS</command>
+    <jobname><cyclestr>hireswfv3_awips_&DOMAIN;_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_awips_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &SERVICE_EXTRA;
+    &RESERVATION;
+    &GEMAWIPS_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hireswfv3_awips_&DOMAIN;</value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="prdgenodd"/>
+        <taskdep task="prdgeneven"/>
+      </and>
+    </dependency>
+  </task>
+
 
 
 <!-- *********************************************************************** -->
@@ -313,15 +360,15 @@
 
   <task name="archive" maxtries="&MAX_TRIES_TRANSFER;">
     <command>&PRE; &JOBS;/JHIRESW_ARCHIVE</command>
-    <jobname><cyclestr>regional_archive_&DOMAIN;_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_archive_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname><cyclestr>hireswfv3_archive_&DOMAIN;_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_archive_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_SERVICE;</queue>
     &SERVICE_EXTRA;
     &RESERVATION;
     &ARCHIVE_RESOURCES;
     &ENV_VARS;
-    <envar><name>job</name><value>regional_archive_&DOMAIN;</value></envar>
+    <envar><name>job</name><value>hireswfv3_archive_&DOMAIN;</value></envar>
 
     <dependency>
       <and>
@@ -329,6 +376,8 @@
         <taskdep task="smartinit_b"/>
         <taskdep task="prdgeneven"/>
         <taskdep task="bufrpost"/>
+        <taskdep task="awips"/>
+        <taskdep task="gempak"/>
       </and>
     </dependency>
   </task>
@@ -338,15 +387,15 @@
 
   <task name="cleanup" maxtries="&MAX_TRIES;">
     <command>&PRE; &JOBS;/JHIRESW_CLEANUP</command>
-    <jobname>regional_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/regional_cleanup_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>hireswfv3_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hireswfv3_cleanup_&DOMAIN;_@Y@m@d@H.log</cyclestr></join>
     <account>&ACCOUNT;</account>
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
     &RESERVATION;
     &CLEANUP_RESOURCES;
     &ENV_VARS;
-    <envar><name>job</name><value>regional_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>job</name><value>hireswfv3_cleanup_&DOMAIN;_<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
       <and>
