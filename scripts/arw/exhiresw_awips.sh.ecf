@@ -9,6 +9,7 @@
 #  History: April 8, 2008 - Original script from Boi Vuong at NCO
 #           Feb 27, 2014 - Update for HiresW v6 domain changes by Matthew Pyle
 #           March 27, 2015 - Update for HiresW v6.1 filename changes by Matthew Pyle
+#           April 30, 2020 - Unified CONUS output grid
 #
 ##################################################################################
 
@@ -32,7 +33,7 @@ then
   maxtries=100
   while [ $icnt -lt $maxtries ]
   do
-    if [ -f $COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2.idx ] ; then
+    if [ -f $COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx ] ; then
       break
     else
       let "icnt=icnt+1"
@@ -40,55 +41,27 @@ then
     fi
   done
   if [ $icnt -ge $maxtries ]; then
-     msg="FATAL ERROR - ABORTING after 50 minutes of waiting for conuseast F$fhr to become available."
+     msg="FATAL ERROR - ABORTING after 50 minutes of waiting for conus F$fhr to become available."
      err_exit $msg
   fi
 
-    export FORT11=$COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
+    export FORT11=$COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
     export FORT31=""
-    export FORT51=grib2.t${cyc}z.awpregeast_${RUNLOC}f${fhr}
-    $TOCGRIB2 < $PARMutil/grib2_${NEST}east_hiresw.awpreg_f${fhr}
-
+    export FORT51=grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
+    $TOCGRIB2 < $PARMutil/grib2_${NEST}_hiresw.awpreg_f${fhr}
+east
     if [ $SENDCOM = "YES" ] ; then
        cp  $FORT51  $PCOM
     fi
 
     if [ $SENDDBN_NTC = "YES" ] ; then
-       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $PCOM/grib2.t${cyc}z.awpregeast_${RUNLOC}f${fhr}
+       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $PCOM/grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
     else
        msg="File $output_grb.$job not posted to db_net."
        postmsg "$jlogfile" "$msg"
     fi
   icnt=1
   maxtries=100
-  while [ $icnt -lt $maxtries ]
-  do
-    if [ -f $COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2.idx ]; then 
-      break
-    else
-      let "icnt=icnt+1"
-      sleep 30
-    fi
-  done
-  if [ $icnt -ge $maxtries ]; then
-     msg="FATAL ERROR - ABORTING after 50 minutes of waiting for conuswest F$fhr to become available."
-     err_exit $msg
-  fi
-    export FORT11=$COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-    export FORT31=""
-    export FORT51=grib2.t${cyc}z.awpregwest_${RUNLOC}f${fhr}
-    $TOCGRIB2 < $PARMutil/grib2_${NEST}west_hiresw.awpreg_f${fhr}
-
-    if [ $SENDCOM = "YES" ] ; then
-       cp  $FORT51  $PCOM
-    fi
-
-    if [ $SENDDBN_NTC = "YES" ] ; then
-       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $PCOM/grib2.t${cyc}z.awpregwest_${RUNLOC}f${fhr}
-    else
-       msg="File $output_grb.$job not posted to db_net."
-       postmsg "$jlogfile" "$msg"
-    fi
 
 else
   icnt=1

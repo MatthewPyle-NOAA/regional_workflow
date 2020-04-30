@@ -39,6 +39,8 @@ fi
 ####################################
 # PDY and CDATE are passed in through Rocoto xml
 
+export cycle=${cycle:-t${cyc}z}
+
 if [ $RUN_ENVIR = 'prod' -o $MODEL = 'arw' ]
 then
 setpdy.sh
@@ -73,8 +75,6 @@ export pid=$$
 export pgmout="OUTPUT.${pid}"
 export pgmerr=errfile
 
-export cycle=${cycle:-t${cyc}z}
-
 if [ $MODEL = 'arw' ]
 then
 export IOBUF_PARAMS='*:size=64M:count=8:verbose'
@@ -87,8 +87,6 @@ export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
 export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
 export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
 export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-
-
 
 #####################################
 # Define COM directories

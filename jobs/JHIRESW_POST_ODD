@@ -13,6 +13,8 @@ then
 . $USHfv3/run_commands_forecast.sh
 fi
 
+export cycle=${cycle:-t${cyc}z}
+
 ###############################
 # Specify NET and RUN name
 ###############################
@@ -72,8 +74,6 @@ export outid="LL$job"
 export pid=$$
 export pgmout="OUTPUT.${pid}"
 export pgmerr=errfile
-
-export cycle=${cycle:-t${cyc}z}
 
 if [ $MODEL = 'arw' ]
 then
