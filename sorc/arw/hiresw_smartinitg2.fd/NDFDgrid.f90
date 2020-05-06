@@ -27,7 +27,8 @@
       integer i,j, ierr,k,ib,jb, ivar,ix,iy
       integer ibuf, ia,ja,iw,jw,id,n_rough_yes,n_rough_no
       integer m_rough_yes,m_rough_no
-      real zs,qv,qq,e,enl,dwpt,z6,t6,gam,tsfc,td
+!     real zs,qv,qq,e,enl,dwpt,z6,t6,gam,tsfc,td
+      real zs,qv,qq,e,enl,dwpt,z6,t6,tsfc,td
       real tddep,td_orig,zdif_max,tup, qvdif2m5m,qv2m
       real qc,qvc,thetavc,uc,vc,ratio,speed,speedc,frac
       real tmean,dz,theta1,theta6
@@ -162,7 +163,7 @@
 !        sfchtnew = topo_ndfd
         tnew=spval;qnew=spval
         dewnew=spval;unew=spval;vnew=spval
-        pnew=spval
+        pnew=spval;gam=spval
 
         do 120 j=1,jm
         do 120 i=1,im
@@ -192,17 +193,17 @@
           T6=T(I,J,6)
           Z1=HGHT(I,J,1)
           Z6=HGHT(I,J,6)
-          GAM = (TP1-T6)/(Z6-Z1)
+          GAM(I,J) = (TP1-T6)/(Z6-Z1)
 
 !============================================
           if (topo_ndfd(i,j).le.zs ) then
 !============================================
-          GAM = MIN(GAMD,MAX(GAM,GAMi))
+          GAM(I,J) = MIN(GAMD,MAX(GAM(I,J),GAMi))
 
 ! --- temperature at NDFD topo
 ! -- again, use 2m T at NAM regular terrain from similarity
 !      theory for derivation of 2m T at topomini elevation
-          tsfc = t2(i,j) + (zs-topo_ndfd(i,j))*gam
+          tsfc = t2(i,j) + (zs-topo_ndfd(i,j))*gam(i,j)
 
 !        if (I .eq. 534 .and. J .eq. 826) then
 !        write(0,*) 'zs, topo_ndfd, gam: ', zs, topo_ndfd(i,j),gam
@@ -231,12 +232,12 @@
           tnew(i,j) = tsfc
 
 ! --- Use the 2mT if the terrain differences are <= 1
-        if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
-          zdiff = abs(zs-topo_ndfd(i,j))
-          if(zdiff .le. 1.0)then
-            tnew(i,j)=t2(i,j)
-          endif
-        endif
+!       if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+!         zdiff = abs(zs-topo_ndfd(i,j))
+!         if(zdiff .le. 1.0)then
+!           tnew(i,j)=t2(i,j)
+!         endif
+!       endif
 
 !        if (I .eq. 534 .and. J .eq. 826) then
 !        write(0,*) 'tnew defined: ', tnew(i,j)
@@ -264,7 +265,12 @@
 !        Here, when topo-NDFD > topo-NAM, we allow a small
 !        subisothermal lapse rate with slight warming with height.
 
-          GAM = MIN(GAMD,MAX(GAM,GAMsubj))
+          if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+! Constrain local lapse rate to be between dry adiabatic and isothermal
+            GAM(I,J) = MIN(GAMD,MAX(GAM(I,J),GAMi))
+          else
+            GAM(I,J) = MIN(GAMD,MAX(GAM(I,J),GAMsubj))
+          endif
 
           DO K=1,LM
            if (hght(i,j,k) .gt. topo_ndfd(i,j)) exit
@@ -332,12 +338,22 @@
 !     This will avoid the problem with NDFD temp values
 !     being set to be much warmer than NAM 2m temp.
 
-      tsfc=t2(i,j) + (zs-topo_ndfd(i,j))*gam
+      tsfc=t2(i,j) + (zs-topo_ndfd(i,j))*gam(i,j)
 
       if (tnew(i,j) .gt. t2(i,j))  tnew(i,j) = min(tnew(i,j),tsfc)
 !        if (I .eq. 534 .and. J .eq. 826) then
 !        write(0,*) 'tnew RDdefined(b): ', tnew(i,j)
 !        endif
+
+! lapse rate suggestion from Guoqing
+        if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+!         print*,'before i,j,tnew,tsfc,t2,gam=',i,j,tnew(i,j),tsfc,t2(i,j),gam
+          tnew(i,j)=tsfc
+          if (tnew(i,j) .gt. t2(i,j)) then
+           tnew(i,j) = t2(i,j)
+          endif
+!         print*,'after i,j,tnew,tsfc,t2,gam=',i,j,tnew(i,j),tsfc,t2(i,j),gam
+        endif
 
     if (i.eq.251.and. j.eq.100)print *,'**tnew(b)',validpt(i,j),tnew(i,j), &
      topo_ndfd(i,j),zs
@@ -358,7 +374,15 @@
       DWPT = (243.5*ENL-440.8)/(19.48-ENL)
       td = dwpt + 273.15
 ! --- dewpoint temperature
-      dewnew(i,j) = min(td,tnew(i,j))
+! --- used in NAM & HIRESW Smartinit for all grids and RAP Smartinit for PR and HI
+          dewnew(i,j) = min(td,tnew(i,j))
+! --- used in HRRR Smartinit and RAP Smartinit for CONUS and AK
+! --- lapserateTD plots
+!     if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+!       dewnew(i,j) = tnew(i,j) - tddep
+!     else
+!       dewnew(i,j) = min(td,tnew(i,j))
+!     endif
       if (k .eq. 1) then
         uc = u10(i,j)+frac * (uwnd(i,j,k)-u10(i,j))
         vc = v10(i,j)+frac * (vwnd(i,j,k)-v10(i,j))

@@ -1613,7 +1613,6 @@ C
 !!!
 !!! skip section for now
 !!!
-!	goto 221
 
       DO 220 L=2,LM
 C

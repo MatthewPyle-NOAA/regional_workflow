@@ -308,7 +308,6 @@ subroutine getVariableBikj(fileName,DateStr,dh,VarName,VarBuff,IM,JSTA_2L,JEND_2
       enddo
     enddo 
    else if(ndim .eq. 3)then
-!    goto 27 avoiding this loop avoided failure
        print*, 'js, je for define: ', js, je
     do l=1,lm1
      ll=lm1-l+1  ! flip the z axis not sure about soil

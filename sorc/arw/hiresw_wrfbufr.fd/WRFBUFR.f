@@ -151,24 +151,29 @@ c20080707	filename=filename(1:len-19)//DateStr
 	
 	if (ioform(1:6) .eq. 'binary') then 
 
-	if (model(1:4) .eq. 'NCEP') then
-        write(0,*) 'call PROF_NMM'
-        CALL PROF_NMM(fileName,prefileName,DateStr,IHR,INCR)
-	elseif (model(1:4) .eq. 'NCAR') then
+!	if (model(1:4) .eq. 'NCEP') then
+!        write(0,*) 'call PROF_NMM'
+!        CALL PROF_NMM(fileName,prefileName,DateStr,IHR,INCR)
+
+        if (model(1:4) .eq. 'NCAR') then
         write(0,*) 'call PROF_EM'
 	CALL PROF_EM(fileName,prefileName,DateStr,IHR,INCR)
         write(0,*) 'return PROF_EM'
-        elseif (model(1:4) .eq. 'nmmb') then
-	CALL PROF_NMMB_SERIAL(fileName,IHR,INCR)
+        else
+        write(0,*) 'this code only for NCAR ARW model'
+        STOP 99
+        endif
+
+
+!        elseif (model(1:4) .eq. 'nmmb') then
+!	CALL PROF_NMMB_SERIAL(fileName,IHR,INCR)
 	endif
 
 	endif
 
 	if (ioform(1:6) .eq. 'netcdf') then 
 
-	if (model(1:4) .eq. 'NCEP') then
-        CALL PROF_NMM_NET(fileName,DateStr,IHR,INCR)
-	elseif (model(1:4) .eq. 'NCAR') then
+	if (model(1:4) .eq. 'NCAR') then
 	CALL PROF_EM_NET(fileName,DateStr,IHR,INCR)
 	endif
 

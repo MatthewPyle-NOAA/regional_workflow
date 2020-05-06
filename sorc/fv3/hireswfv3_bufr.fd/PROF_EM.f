@@ -244,7 +244,6 @@ C
 
       FRST=.TRUE.
 
-!good        goto 979
         write(0,*) 'IDSTN(1) here(aa): ', IDSTN(1)
 
 !--------------------------------------------------------------------
@@ -458,7 +457,6 @@ c20080701        print*,'MP_PHYSICS= ',imp_physics
 
         imp_physics=3
 
-!goodhere        goto 979
 
 
         call ext_int_get_dom_ti_real(DataHandle,'CEN_LAT',tmp
@@ -3485,7 +3483,6 @@ C---------------------------------------------------------------------
       CLOSE(LCLAS1)
         
         write(0,*) 'to deallocates'
-!        goto 979
 	DEALLOCATE(T,Q,U,V,Q2,OMGALF,CWM,TRAIN,TCUCN)
 	DEALLOCATE(RSWTT,RLWTT,CCR,RTOP,HTM,OMGA,p_hold)
 	DEALLOCATE(t_hold,PINT)

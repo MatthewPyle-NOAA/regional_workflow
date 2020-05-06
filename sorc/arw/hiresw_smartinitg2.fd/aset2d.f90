@@ -7,7 +7,8 @@
    REAL,    ALLOCATABLE :: RH850(:,:),RH700(:,:),U10(:,:),V10(:,:)
    REAL,    ALLOCATABLE :: T2(:,:),Q2(:,:),BLI(:,:),REFC(:,:),GUST(:,:)
    REAL,    ALLOCATABLE :: T1(:,:),D2(:,:),WX(:,:),VIS(:,:)
-   REAL,    ALLOCATABLE :: LCLD(:,:),MCLD(:,:),HCLD(:,:),TCLD(:,:)
+   REAL,    ALLOCATABLE :: LCLD(:,:),MCLD(:,:),HCLD(:,:),TCLD(:,:),SFCR(:,:),SST(:,:)
+   REAL,    ALLOCATABLE :: GAM(:,:)
 
   END MODULE aset2d
 
