@@ -71,5 +71,5 @@
 
   <!ENTITY BUFR_EXTRA "<envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:59:00</walltime>">
 
-  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>03:00:00</walltime>">
+  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>06:00:00</walltime>">
   <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>00:10:00</walltime>">

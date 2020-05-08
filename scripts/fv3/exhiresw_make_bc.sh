@@ -52,6 +52,24 @@ fi
 
 while (test "$hour" -le "$end_hour")
   do
+
+  gfs_hour=`expr $hour + 6`
+
+  rem=$((gfs_hour%6))
+  if [ $rem -ne 0  ]; then
+    gfs_hour_t=`expr $gfs_hour + 3`
+  else
+    gfs_hour_t=$gfs_hour
+  fi
+
+  if [ $gfs_hour -lt 10 ]; then
+    gfs_hour='0'$gfs_hour
+  fi
+
+  if [ $gfs_hour_t -lt 10 ]; then
+    gfs_hour_t='0'$gfs_hour_t
+  fi
+
   if [ $hour -lt 10 ]; then
     hour_name='00'$hour
   elif [ $hour -lt 100 ]; then
@@ -69,7 +87,7 @@ cd ${hour_name}
 rm ./*
 
 export SDATE=`$NDATE ${hour_name} $CDATE`
-python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $SDATE -t 72 -o tmp.atm --exact=yes --gfs_nemsio=yes --filetype=atm
+python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $SDATE -t ${gfs_hour_t} -s ${gfs_hour} -o tmp.atm --exact=yes --gfs_nemsio=yes --filetype=atm
 ATMDIR=`head -n1 tmp.atm`
 ATMFILE=`tail -n1 tmp.atm`
 
