@@ -15,8 +15,8 @@
 #define USE_NETCDF3
 //#define USE_NETCDF4
 //#define USE_MYSQL
-#define CC "icc (ICC) 15.0.3 20150407"
-#define FORTRAN "ifort (IFORT) 15.0.3 20150407"
+#define CC ""
+#define FORTRAN ""
 #define BUILD_COMMENTS "stock build"
 #define USE_PNG
 //#define WMO_VALIDATION
