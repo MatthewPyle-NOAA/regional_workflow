@@ -169,7 +169,7 @@ c20080707	filename=filename(1:len-19)//DateStr
 !	CALL PROF_NMMB_SERIAL(fileName,IHR,INCR)
 	endif
 
-	endif
+!	endif
 
 	if (ioform(1:6) .eq. 'netcdf') then 
 

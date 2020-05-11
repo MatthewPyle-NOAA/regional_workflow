@@ -71,11 +71,11 @@ OBJST= module_internal_header_util.o getIVariableB.o getIVariable.o getVariableB
 # fixed-format object files
 #
 OBJS=	VRBLS2D_mod.o VRBLS3D_mod.o MASKS_mod.o SOIL_mod.o \
- WRFBUFR.o PROF_EM.o PROF_NMM.o  PROF_NMM_NET.o PROF_EM_NET.o PROF_NMMB_SERIAL.o \
+ WRFBUFR.o PROF_EM.o  PROF_EM_NET.o \
 iw3jdn.o w3fs26.o w3movdat.o w3reddat.o gdswiz.o gdswiz01.o \
 gdswiz03.o gdswiz05.o
 #
-SRCS=	PROF_EM.f PROF_NMMB_SERIAL.f WRFBUFR.f
+SRCS=	PROF_EM.f  WRFBUFR.f
 #
 # Includes
 #
