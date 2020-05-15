@@ -31,9 +31,9 @@ module load prod_util
 module load grib_util/1.0.3
 
 
-# cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/launch_info/
+cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/launch_info/
 
-cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_hiresw_mergecont/launch_info
+# cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/regional_hiresw_mergecont/launch_info
 
 
 which bsub
