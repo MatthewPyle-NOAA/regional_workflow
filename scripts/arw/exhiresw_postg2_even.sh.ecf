@@ -1,4 +1,4 @@
-#! /bin/ksh
+! /bin/ksh
 
 ################################################################################
 ####  UNIX Script Documentation Block
@@ -32,6 +32,8 @@
 # 2014-02-27  Pyle          - Modified to loop through forecast hours (reverting to old style)
 # 2014-12-09  Pyle          - Modified so can start from non-zero time if postdone?? files
 #                             exist
+# 2020-05-18  Pyle          - Separated out f00 and non-f00 .xml cntrl files to prevent writing hourly max/min fields at f00.
+#
 
 set -x
 
@@ -39,7 +41,6 @@ msg="JOB $job FOR WRF NEST=${NEST}${MODEL} HAS BEGUN"
 postmsg "$jlogfile" "$msg"
 
 RUNLOC=${NEST}${MODEL}
-
 
 ######
 export INCR=02
@@ -170,13 +171,15 @@ if [ $NEST = pr -o $NEST = guam -o $NEST = hi -o $NEST = prmem2 -o $NEST = himem
  if [ $MODEL = nmmb ] ; then
     cp $PARMhiresw/hiresw_nmmb_cntrl.parm.xml_small postcntrl.xml
  else
-    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml_small postcntrl.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml_small postcntrl_nonf00.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm_f00.xml_small postcntrl_f00.xml
  fi
 else
  if [ $MODEL = nmmb ] ; then
     cp $PARMhiresw/hiresw_nmmb_cntrl.parm.xml postcntrl.xml
  else
-    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml postcntrl.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml postcntrl_nonf00.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm_f00.xml postcntrl_f00.xml
  fi
 fi
 
@@ -236,9 +239,6 @@ rm -f fort.*
 cp ${PARMhiresw}/hiresw_post_avblflds.xml       post_avblflds.xml
 cp ${PARMhiresw}/hiresw_params_grib2_tbl_new    params_grib2_tbl_new
 
-
-
-                                                                                                                   
 ### assume that ready to process based on postmgr jobhj
 
 if [ $MODEL = nmm ] ; then 
@@ -256,6 +256,15 @@ export POSTMOD=NCAR
 
 looplim=45
 loop=1
+
+
+if [ $fhr = "00" ]
+then
+cp postcntrl_f00.xml postcntrl.xml
+else
+cp postcntrl_nonf00.xml postcntrl.xml
+fi
+
 while [ $loop -le $looplim ]
 do
  echo in while

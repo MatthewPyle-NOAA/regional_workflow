@@ -170,13 +170,15 @@ if [ $NEST = pr -o $NEST = guam -o $NEST = hi -o $NEST = prmem2 -o $NEST = himem
  if [ $MODEL = nmmb ] ; then
     cp $PARMhiresw/hiresw_nmmb_cntrl.parm.xml_small postcntrl.xml
  else
-    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml_small postcntrl.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml_small postcntrl_nonf00.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm_f00.xml_small postcntrl_f00.xml
  fi
 else
  if [ $MODEL = nmmb ] ; then
     cp $PARMhiresw/hiresw_nmmb_cntrl.parm.xml postcntrl.xml
  else
-    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml postcntrl.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm.xml postcntrl_nonf00.xml
+    cp $PARMhiresw/hiresw_arw_cntrl.parm_f00.xml postcntrl_f00.xml
  fi
 fi
 
@@ -251,6 +253,14 @@ $model
 EOF
 
 elif [ $MODEL = arw ] ; then
+
+if [ $fhr = "00" ]
+then
+cp postcntrl_f00.xml postcntrl.xml
+else
+cp postcntrl_nonf00.xml postcntrl.xml
+fi
+
 
 export POSTMOD=NCAR
 
