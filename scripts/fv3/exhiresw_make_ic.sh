@@ -94,14 +94,48 @@ cat <<EOF >fort.41
 EOF
 
 time ${APRUNC} ./hireswfv3_chgres_cube.x
+err=$?; err_chk
 
 #
 # move output files to save directory
 #
 mv gfs_ctrl.nc $INPdir/.
+err=$?
+
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem in make_ic generating gfs_ctrl.nc file"
+err_exit $msg
+fi
+
+
 mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.000.nc
+err=$?
+
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem in make_ic generating gfs.bndy.nc"
+err_exit $msg
+fi
+
+
 mv out.atm.tile1.nc $INPdir/gfs_data.tile7.nc
+err=$?
+
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem in make_ic generating out.atm.tile1.nc"
+err_exit $msg
+fi
+
 mv out.sfc.tile1.nc $INPdir/sfc_data.tile7.nc
+err=$?
+
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem in make_ic generating out.sfc.tile1.nc"
+err_exit $msg
+fi
 
 
 exit 0
