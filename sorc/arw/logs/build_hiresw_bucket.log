@@ -1,7 +1,0 @@
-+ cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/sorc/hiresw_bucket.fd
-+ make
-ftn -I/gpfs/hps/nco/ops/nwprod/lib/g2/v3.1.0/intel/include/g2_v3.1.0_4 -I/gpfs/hps/nco/ops/nwprod/lib/g2tmpl/v1.3.0/intel/include -c -O    WRFBUCKETG2.f
-ftn -I/gpfs/hps/nco/ops/nwprod/lib/g2/v3.1.0/intel/include/g2_v3.1.0_4 -I/gpfs/hps/nco/ops/nwprod/lib/g2tmpl/v1.3.0/intel/include -o hiresw_bucket WRFBUCKETG2.o  /gpfs/hps/nco/ops/nwprod/lib/g2tmpl/v1.3.0/intel/libg2tmpl_v1.3.0.a /gpfs/hps/nco/ops/nwprod/lib/g2/v3.1.0/intel/libg2_v3.1.0_4.a /usrx/local/prod//jasper/1.900.1/gnu/sandybridge/lib/libjasper.a /usrx/local/prod//png/1.2.44/intel/sandybridge/lib/libpng.a /usrx/local/prod/zlib/1.2.7/intel/sandybridge/lib/libz.a /gpfs/hps/nco/ops/nwprod/lib/w3nco/v2.0.6/intel/libw3nco_v2.0.6_4.a /gpfs/hps/nco/ops/nwprod/lib/w3emc/v2.2.0/intel/libw3emc_v2.2.0_4.a /gpfs/hps/nco/ops/nwprod/lib/bacio/v2.0.1/intel/libbacio_v2.0.1_4.a 
-/usrx/local/prod//jasper/1.900.1/gnu/sandybridge/lib/libjasper.a(jas_stream.o): In function `jas_stream_tmpfile':
-/usrx/local/prod/jasper/1.900.1/gnu/sandybridge/sorc/jasper-1.900.1/src/libjasper/base/jas_stream.c:368: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
-+ cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/sorc
