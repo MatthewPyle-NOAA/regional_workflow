@@ -85,8 +85,14 @@ do
   then
     setpdy.sh
     . ./PDY
+  else
+
+# define PDYm1 for rocoto FV3 case
+    export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
   fi
 done
+
+
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}

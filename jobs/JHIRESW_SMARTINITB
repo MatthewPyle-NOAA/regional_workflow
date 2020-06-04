@@ -83,8 +83,12 @@ fi
 
 if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
 then
-setpdy.sh
-. ./PDY
+  setpdy.sh
+  . ./PDY
+
+else
+# define PDYm1 for rocoto FV3 case
+  export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
 fi
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
