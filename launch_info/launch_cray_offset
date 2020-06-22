@@ -28,7 +28,8 @@ module load -a /gpfs/hps/nco/ops/nwprod/modulefiles
 module load prod_envir
 module load prod_util
 # module use /gpfs/hps/nco/ops/nwtest/modulefiles
-module load grib_util/1.0.3
+module load gcc
+module load grib_util/1.1.0
 
 
 cd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/launch_info/
