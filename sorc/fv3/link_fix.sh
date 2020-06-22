@@ -27,5 +27,6 @@ done
 ${LINK} $FIX_DIR/fix_am .
 ${LINK} $FIX_DIR/fix_sar .
 ${LINK} $FIX_DIR/wrflibs  ${pwd}/hireswfv3_bufr.fd/
+${LINK} $FIX_DIR/wgrib2 ${pwd}/hireswfv3_utils.fd/
 
 exit
