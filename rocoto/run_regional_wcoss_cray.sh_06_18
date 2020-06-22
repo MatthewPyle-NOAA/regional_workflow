@@ -3,7 +3,8 @@
 set -x
 
 # Home directory of the regional_workflow package
-HOMEfv3=/gpfs/hps3/emc/meso/noscrub/${USER}/regional_workflow_hiresw
+# HOMEfv3=/gpfs/hps3/emc/meso/noscrub/${USER}/regional_workflow_hiresw
+HOMEfv3=/gpfs/hps3/emc/meso/noscrub/${USER}/hiresw.v8.0.0
 
 module load xt-lsfhpc/9.1.3
 module load NetCDF-intel-haswell/4.2
@@ -12,7 +13,7 @@ module load rocoto/1.2.4
 
 
 # if want a non-CONUS domain, export DOMAIN here
-doms="pr ak"
+doms="ak"
 
 
 for DOMAIN in $doms
@@ -31,7 +32,11 @@ SITE_FILE="sites/${machine}.ent"
 CPU_ACCOUNT=HREF-T2O
 
 # Experiment name
-EXPT=hiresw
+EXPT=merge
+
+export RUN_ENVIR=dev
+export NWROOT=nwprod
+
 # First, last, and interval of the workflow cycles
 CYCLE_YMDH_BEG="2019083018"
 CYCLE_YMDH_END="2020103118"
@@ -39,15 +44,17 @@ CYCLE_INT_HH="12"
 
 GET_INPUT=NO
 COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
-STMP=/gpfs/hps2/stmp/${USER}/${EXPT}
-PTMP=/gpfs/hps2/ptmp/${USER}/${EXPT}
 
-if [ ! -e ${PTMP} ] ; then
-  mkdir -p $PTMP
+DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd
+MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com
+
+
+if [ ! -e ${MYCOMROOT} ] ; then
+  mkdir -p $MYCOMROOT
 fi
 
-if [ ! -e ${STMP} ] ; then
-  mkdir -p $STMP
+if [ ! -e ${DATAROOT} ] ; then
+  mkdir -p $DATAROOT
 fi
 
 # The workflow files of the experiment
@@ -79,8 +86,8 @@ sed -e "s|@\[EXPT.*\]|${EXPT}|g" \
     -e "s|@\[CPU_ACCOUNT.*\]|${CPU_ACCOUNT}|g" \
     -e "s|@\[SITE_FILE.*\]|${SITE_FILE}|g" \
     -e "s|@\[HOMEfv3.*\]|${HOMEfv3}|g" \
-    -e "s|@\[PTMP.*\]|${PTMP}|g" \
-    -e "s|@\[STMP.*\]|${STMP}|g" \
+    -e "s|@\[MYCOMROOT.*\]|${MYCOMROOT}|g" \
+    -e "s|@\[DATAROOT.*\]|${DATAROOT}|g" \
     -e "s|@\[MAKE_GRID_OROG.*\]|${MAKE_GRID_OROG}|g" \
     -e "s|@\[MAKE_SFC_CLIMO.*\]|${MAKE_SFC_CLIMO}|g" \
     -e "s|@\[GET_INPUT.*\]|${GET_INPUT}|g" \

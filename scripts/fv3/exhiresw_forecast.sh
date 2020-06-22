@@ -142,14 +142,14 @@ cp $FIXam/seaice_newland.grb .
 cp $FIXam/global_shdmin.0.144x0.144.grb .
 cp $FIXam/global_shdmax.0.144x0.144.grb .
 
-ln -sf $FIXsar/C768.maximum_snow_albedo.tile7.nc C768.maximum_snow_albedo.tile1.nc
-ln -sf $FIXsar/C768.snowfree_albedo.tile7.nc C768.snowfree_albedo.tile1.nc
-ln -sf $FIXsar/C768.slope_type.tile7.nc C768.slope_type.tile1.nc
-ln -sf $FIXsar/C768.soil_type.tile7.nc C768.soil_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_type.tile7.nc C768.vegetation_type.tile1.nc
-ln -sf $FIXsar/C768.vegetation_greenness.tile7.nc C768.vegetation_greenness.tile1.nc
-ln -sf $FIXsar/C768.substrate_temperature.tile7.nc C768.substrate_temperature.tile1.nc
-ln -sf $FIXsar/C768.facsf.tile7.nc C768.facsf.tile1.nc
+ln -sf $FIXsar/C768.maximum_snow_albedo.tile7.halo0.nc C768.maximum_snow_albedo.tile1.nc
+ln -sf $FIXsar/C768.snowfree_albedo.tile7.halo0.nc C768.snowfree_albedo.tile1.nc
+ln -sf $FIXsar/C768.slope_type.tile7.halo0.nc C768.slope_type.tile1.nc
+ln -sf $FIXsar/C768.soil_type.tile7.halo0.nc C768.soil_type.tile1.nc
+ln -sf $FIXsar/C768.vegetation_type.tile7.halo0.nc C768.vegetation_type.tile1.nc
+ln -sf $FIXsar/C768.vegetation_greenness.tile7.halo0.nc C768.vegetation_greenness.tile1.nc
+ln -sf $FIXsar/C768.substrate_temperature.tile7.halo0.nc C768.substrate_temperature.tile1.nc
+ln -sf $FIXsar/C768.facsf.tile7.halo0.nc C768.facsf.tile1.nc
 
 
 for file in `ls $FIXco2/global_co2historicaldata* ` ; do

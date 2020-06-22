@@ -18,6 +18,7 @@ cd ./hireswfv3_wgrib2.cd/grib2
 
 make deep-clean
 make
+make lib
 
 # make clean
 
