@@ -176,6 +176,7 @@ ln -sf ${CASE}_mosaic.nc grid_spec.nc
 ln -sf ${CASE}_grid.tile7.halo3.nc ${CASE}_grid.tile7.nc
 ln -sf ${CASE}_grid.tile7.halo4.nc grid.tile7.halo4.nc
 ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.nc
+ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.tile7.nc
 ln -sf ${CASE}_oro_data.tile7.halo4.nc oro_data.tile7.halo4.nc
 # Initial Conditions are needed for SAR but not SAR-DA
 if [ $model = fv3sar ] ; then

@@ -915,6 +915,7 @@ cp ${freq}snow ${freq}snow.${fhr}_interp
 
   if [ $rg = "guam" ];then
     cat  $FIXsar/hiresw_smartsfcr${rg}_${MODEL}.grib2 >> meso${rg}.NDFDf${fhr} 
+	export err=$?; err_chk
   fi
   $GRB2INDEX meso${rg}.NDFDf${fhr} meso${rg}.NDFDif${fhr}
   export err=$?; err_chk

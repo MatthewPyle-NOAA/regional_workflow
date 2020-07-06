@@ -55,9 +55,6 @@ mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
-# if [ $tmmark = tm12 ] ; then	# SAR-DA
-#   export INPdir=$NWGES/gfsanl.$tmmark
-
 if [ $tmmark = tm00 ] ; then	# SAR without DA
   export INPdir=$NWGES/anl.${dom}.$tmmark
 fi

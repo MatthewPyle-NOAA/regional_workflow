@@ -49,12 +49,14 @@ export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
 if [ ${MODEL} = 'arw' ]
 then
 export GEMPAKhiresw=${GEMPAKhiresw:-$HOMEhiresw/gempak}
+export fend=48
 else
 export GEMPAKhiresw=${GEMPAKhiresw:-$HOMEfv3/gempak}
+export fend=60
 fi
 
 export finc=1
-export fend=48
+export finc3=3
 
 export fstart=00
 export model=${NEST}${MODEL}

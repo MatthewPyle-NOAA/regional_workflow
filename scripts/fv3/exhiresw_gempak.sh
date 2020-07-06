@@ -127,7 +127,12 @@ EOF
     fi
   fi
 
-  let fhcnt=fhcnt+finc
+  if [ $fhcnt -le 47 ]
+  then
+    let fhcnt=fhcnt+finc
+  else
+    let fhcnt=fhcnt+finc3
+  fi
 done
 
 #####################################################################
