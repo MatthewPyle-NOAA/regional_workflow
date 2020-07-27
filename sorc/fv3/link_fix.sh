@@ -26,6 +26,40 @@ done
 
 ${LINK} $FIX_DIR/fix_am .
 ${LINK} $FIX_DIR/fix_sar .
+
+
+
+domains="ak conus guam hi pr"
+
+types="facsf maximum_snow_albedo slope_type snowfree_albedo soil_type \
+substrate_temperature vegetation_greenness  vegetation_type"
+
+types_under="oro_data grid"
+
+
+cd fix_sar
+
+for dom in $domains
+do
+
+cd $dom
+
+for typ in $types
+do
+ln -sf C768.${typ}.tile7.halo4.nc C768.${typ}.tile7.nc
+done
+
+for typ in $types_under
+do
+ln -sf C768_${typ}.tile7.halo4.nc C768_${typ}.tile7.nc
+done
+
+cd ..
+
+done
+
+cd ../
+
 ${LINK} $FIX_DIR/wrflibs  ${pwd}/hireswfv3_bufr.fd/
 ${LINK} $FIX_DIR/wgrib2 ${pwd}/hireswfv3_utils.fd/
 

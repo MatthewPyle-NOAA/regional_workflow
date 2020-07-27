@@ -10,6 +10,9 @@
 #   3) 2019-05-02	Ben Blake
 #			Created exfv3cam_sar_chgres.sh script
 #			from global_chgres_driver.sh
+#   4) 2020-07-27       Matthew Pyle
+#                       Error checking on normal completion.  Eliminates 
+#                       linking to FIXsar directory within script
 ############################################################################
 set -ax
 
@@ -21,17 +24,6 @@ export TILE_NUM=7
 #
 # set the links to use the 4 halo grid and orog files
 # these are necessary for creating the boundary data
-#
-ln -sf $FIXsar/${CASE}_grid.tile7.halo4.nc $FIXsar/${CASE}_grid.tile7.nc 
-ln -sf $FIXsar/${CASE}_oro_data.tile7.halo4.nc $FIXsar/${CASE}_oro_data.tile7.nc 
-ln -sf $FIXsar/${CASE}.vegetation_greenness.tile7.halo4.nc $FIXsar/${CASE}.vegetation_greenness.tile7.nc
-ln -sf $FIXsar/${CASE}.soil_type.tile7.halo4.nc $FIXsar/${CASE}.soil_type.tile7.nc
-ln -sf $FIXsar/${CASE}.slope_type.tile7.halo4.nc $FIXsar/${CASE}.slope_type.tile7.nc
-ln -sf $FIXsar/${CASE}.substrate_temperature.tile7.halo4.nc $FIXsar/${CASE}.substrate_temperature.tile7.nc
-ln -sf $FIXsar/${CASE}.facsf.tile7.halo4.nc $FIXsar/${CASE}.facsf.tile7.nc
-ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc
-ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
-ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
 
 #
 # create namelist and run chgres cube
@@ -139,7 +131,6 @@ echo "cp ../hireswfv3_chgres_cube.x ." >> poe.${hour_name}
 
 echo "${APRUNC} ./hireswfv3_chgres_cube.x" >> poe.${hour_name}
 
-# echo "mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hour_name}.nc " >> poe.${hour_name}
 echo "cd ../" >> poe.${hour_name}
 
 chmod u+x poe.${hour_name}
