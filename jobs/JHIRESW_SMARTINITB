@@ -30,7 +30,7 @@ export pid=$$
 if [ $MODEL = 'fv3' ]
 then
 export DATA=${DATA:-${DATAROOT}/${job}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hireswfv3_smartinit_${NEST}_${PDY}${cyc}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${PDY}${cyc}}
 
 else
 

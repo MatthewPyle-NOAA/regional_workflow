@@ -72,9 +72,9 @@ cd $DATA
 
 hrs_save="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
 
-if [ -e ${dom} ]
+if [ -e ${NEST} ]
 then
-rm ./${dom}
+rm ./${NEST}
 rm ./therest
 fi
 
@@ -82,27 +82,27 @@ for hr in $hrs_save
 do
 
 
-if [ ${dom} = "conus" ]
+if [ ${NEST} = "conus" ]
 then
 ls -1 $dir | grep ${rhcycle} | grep f${hr} | awk '
             /conus.grib2/ { print "./"$0 >> "conus" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "pr" ]
+elif [ ${NEST} = "pr" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
             /pr.grib2/ { print "./"$0 >> "pr" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "ak" ]
+elif [ ${NEST} = "ak" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
             /ak.grib2/ { print "./"$0 >> "ak" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "hi" ]
+elif [ ${NEST} = "hi" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
             /hi.grib2/ { print "./"$0 >> "hi" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "guam" ]
+elif [ ${NEST} = "guam" ]
 then
 ls -1 $dir | grep ${rhcycle} |  grep f${hr} | awk '
             /guam.grib2/ { print "./"$0 >> "guam" ; next }
@@ -111,27 +111,27 @@ fi
 
 done
 
-if [ ${dom} = "conus" ]
+if [ ${NEST} = "conus" ]
 then
 ls -1 $dir | grep ${rhcycle} | awk '
             /conusfv3.class1.bufr/ { print "./"$0 >> "conus" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "pr" ]
+elif [ ${NEST} = "pr" ]
 then
 ls -1 $dir | grep ${rhcycle} | awk '
             /prfv3.class1.bufr/ { print "./"$0 >> "pr" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "ak" ]
+elif [ ${NEST} = "ak" ]
 then
 ls -1 $dir | grep ${rhcycle} |  awk '
             /akfv3.class1.bufr/ { print "./"$0 >> "ak" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "hi" ]
+elif [ ${NEST} = "hi" ]
 then
 ls -1 $dir | grep ${rhcycle} | awk '
             /hifv3.class1.bufr/ { print "./"$0 >> "hi" ; next }
             { print "./"$0 >> "therest" ; next } '
-elif [ ${dom} = "guam" ]
+elif [ ${NEST} = "guam" ]
 then
 ls -1 $dir | grep ${rhcycle} | awk '
             /guamfv3.class1.bufr/ { print "./"$0 >> "guam" ; next }
@@ -143,7 +143,7 @@ cd $dir
 
 #  Now create a tar file for each group of files
 
-for file in ${dom}
+for file in ${NEST}
 do
 
    # 

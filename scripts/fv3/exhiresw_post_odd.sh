@@ -116,7 +116,6 @@ ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2> err
 export err=$?; err_chk
 
 # Run wgrib2
-domain=${dom}
 
 # echo done > postdone${fhr}
 

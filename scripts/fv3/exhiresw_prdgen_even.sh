@@ -106,7 +106,7 @@ done
 
 
 ################################################
-if [ $dom = "conus" ]
+if [ $NEST = "conus" ]
 then
 ################################################
 
@@ -114,18 +114,18 @@ then
 # put USH calls in here
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $dom $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_3km_grid_g2.sh     $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $NEST $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $NEST $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $NEST $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $NEST $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $NEST $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_3km_grid_g2.sh     $fhr $NEST $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 12 $DATA/poescript_${fhr} "
@@ -176,8 +176,8 @@ rm  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_1 $DATA/${RUN}.t${cyc
 
 # reassemble the ndfd output grid
 
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_1  $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2_3 > $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${dom}.grib2
+cat $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${NEST}.grib2_1  $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${NEST}.grib2_2 \
+    $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${NEST}.grib2_3 > $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.${NEST}.grib2
 
 
 
@@ -209,16 +209,16 @@ $WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -s > $COMOU
 
 
 ################################################
-elif [ $dom = "ak" ]
+elif [ $NEST = "ak" ]
 then
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $NEST $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 2 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 3 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 5 $DATA/poescript_${fhr} "
@@ -230,33 +230,33 @@ export err=$?; err_chk
   if test $SENDCOM = 'YES'
   then
 
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
-    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4 > \
-  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
+cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_2 \
+    $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_4 > \
+  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
 
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
+$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
 
 
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_2 \
-   $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_4
+rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_2 \
+   $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_3 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_4
 
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2.idx
 
 
 
     if [ $SENDDBN = YES ]; then
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
+       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2.idx
     fi
 
 
 cp $PARMfv3/hiresw_subset.txt .
 
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 |  grep -F -f hiresw_subset.txt | \
-$WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2 |  grep -F -f hiresw_subset.txt | \
+$WGRIB2  -i -grib $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.subset.grib2  $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
 
 
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.subset.grib2.idx
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.subset.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.subset.grib2.idx
 
   fi
 
@@ -265,8 +265,8 @@ else
 ################################################
 
 echo "#!/bin/bash" > $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $dom $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_big_grid_g2.sh $fhr $NEST $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
 command="aprun -n 1 -N 1 -d 2 $DATA/poescript_${fhr} "
@@ -280,16 +280,16 @@ export err=$?; err_chk
 
 echo here with DATA $DATA
 
-ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+ls -l  $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_0
+$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_0 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2.idx
 
 
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2_0
+rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2_0
 
     if [ $SENDDBN = YES ]; then
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2
-       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${dom}.grib2.idx
+       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}      $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2
+       $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE_WIDX} $job $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.${NEST}.grib2.idx
     fi
 
   fi
@@ -302,11 +302,11 @@ if [ $SENDCOM = YES ]
 then
 
   if [ $tmmark = tm00 ] ; then
-#    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.grib2
-    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.grib2
+#    mv ${NEST}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.f${fhr}.grib2
+    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.natprs.f${fhr}.grib2
   else
-#    mv ${dom}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.f${fhr}.${tmmark}.grib2
-    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${dom}.natprs.f${fhr}.${tmmark}.grib2
+#    mv ${NEST}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.f${fhr}.${tmmark}.grib2
+    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.natprs.f${fhr}.${tmmark}.grib2
   fi
 
 fi

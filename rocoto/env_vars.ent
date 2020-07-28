@@ -1,7 +1,4 @@
  <envar>
-   <name>dom</name><value>&DOMAIN;</value>
- </envar>
- <envar>
    <name>NEST</name><value>&DOMAIN;</value>
  </envar>
  <envar>

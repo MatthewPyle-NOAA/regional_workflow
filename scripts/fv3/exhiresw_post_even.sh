@@ -124,31 +124,30 @@ startmsg
 ${APRUNC} ${POSTGPEXEC} < itag > $pgmout 2> err
 export err=$?; err_chk
 
-domain=${dom}
 
 ## compute snow by differencing WEASD on native grid
 
-if [ $domain = "conus" ]
+if [ $NEST = "conus" ]
 then
 dim1=2001
 dim2=1201
 
-elif [ $domain = "ak" ]
+elif [ $NEST = "ak" ]
 then
 dim1=1441
 dim2=1185
 
-elif [ $domain = "hi" ]
+elif [ $NEST = "hi" ]
 then
 dim1=433
 dim2=345
 
-elif [ $domain = "pr" ]
+elif [ $NEST = "pr" ]
 then
 dim1=625
 dim2=416
 
-elif [ $domain = "guam" ]
+elif [ $NEST = "guam" ]
 then
 dim1=449
 dim2=385
@@ -194,6 +193,9 @@ fi
 curpath=`pwd`
 
 altpath=`echo $curpath | sed s:even:odd:g`
+
+echo curpath $curpath
+echo altpath $altpath
 
 echo working fhr $fhr
 

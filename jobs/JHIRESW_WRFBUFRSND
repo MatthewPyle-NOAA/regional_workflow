@@ -60,7 +60,7 @@ fi
 if [ $MODEL = 'fv3' ]
 then
 export DATA=${DATA:-${DATAROOT}/${job}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hireswfv3_forecast_tm00_${tmmark}_${dom}_${PDY}${cyc}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL:?}_${PDY}${cyc}}
 
 else
 

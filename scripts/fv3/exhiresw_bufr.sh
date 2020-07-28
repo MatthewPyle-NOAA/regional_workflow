@@ -21,7 +21,6 @@
 
 set -x
 
-NEST=${dom}
 MODEL=fv3
 
 mkdir -p $DATA/bufrpost

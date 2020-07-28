@@ -1,37 +1,83 @@
-#!/bin/ksh -l
-set -x
+#!/bin/sh
 
+set -x 
+
+echo `date` $0 `date -u` begin
+export PS4='$SECONDS + '
+
+if [ $MODEL = 'fv3' ]
+then
 . $HOMEfv3/jobs/JHIRESW_ENVIR
+fi
 
+
+###########################################################
+# obtain unique process id (pid) and make temp directories
+###########################################################
 export pid=$$
+export DATA_IN=${DATA_IN:-${DATAROOT:?}}
+
+if [  $MODEL = 'arw' ]
+then
+export DATA=$DATA_IN/${jobid:?}
+else
+export DATA=$DATA_IN/${job:?}
+fi
+
+rm -rf $DATA
+mkdir -p $DATA
+
+cd $DATA
+
+####################################
+# Determine Job Output Name on System
+####################################
+export outid="LL$job"
 export pgmout="OUTPUT.${pid}"
-export pgmerr=errfile
 
-####################################
+export cycle=t${cyc}z
+
+###############################
+# Specify NET and RUN name
+##############################
+export NET=hiresw
+export RUN=hiresw
+
 # Run setpdy and initialize PDY variables
-####################################
-# PDY is passed in through Rocoto xml
-#setpdy.sh
-#. ./PDY
 
-#####################################
-# Working directories
-#####################################
-export PTMP=${PTMP:-""}
-export STMP=${STMP:-""}
-
-#####################################
-# Execute the script.
-${HOMEfv3}/scripts/fv3/exhiresw_cleanup.sh
-export err=$?
-#####################################
-
-if [ -e $pgmerr ] ; then
-cat $pgmerr
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+setpdy.sh
+. ./PDY
 fi
 
-if [ -e $pgmout ] ; then
-cat $pgmout
-fi
+env
 
-exit $err
+########################################################
+# Start remove the directories
+########################################################
+cd $DATAROOT
+for mod in fv3 arw
+do
+  if [ $cyc -eq 00 -o $cyc -eq 12 ]; then
+    for nest in hi guam conus himem2 conusmem2
+    do
+      for step in ungrib metgrid forecast post postodd posteven prdgen smartinit smartinitb bufrpost
+      do
+        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}
+      done
+    done
+  else
+    for nest in pr ak prmem2 akmem2
+    do
+      for step in ungrib metgrid forecast post prdgen smartinit smartinitb bufrpost
+      do
+        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}
+      done
+    done
+  fi
+done
+
+date

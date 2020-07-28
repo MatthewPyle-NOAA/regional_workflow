@@ -17,15 +17,15 @@ elif [ $RUN = fv3nest ]; then
 fi
 
 
-jobtypes="bufrpost forecast_tm00 make_bc make_ic posteven postodd smartinit smartinitb"
+jobtypes="bufrpost forecast make_bc make_ic posteven postodd smartinit smartinitb"
 # jobtypes="bufrpost make_bc make_ic postodd posteven smartinit smartinitb"
 
 for job in $jobtypes
 do
-rm -rf regional_${job}_${dom}_${CDATE}
+rm -rf regional_${job}_${NEST}_${CDATE}
 done
 
-if [ $dom = ak -o $dom = conus ]
+if [ $NEST = ak -o $NEST = conus ]
 then
  jobtypesb="prdgeneven prdgenodd"
 else
@@ -34,7 +34,7 @@ fi
 
 for job in $jobtypesb
 do
-rm -rf regional_${job}_${dom}_${CDATE}
+rm -rf regional_${job}_${NEST}_${CDATE}
 done
 
 

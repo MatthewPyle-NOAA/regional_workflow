@@ -104,7 +104,7 @@ echo skip this nonsense
 
 # export GUESSdir=$COMOUT/guess.${tmmark_next}
 # mkdir -p $GUESSdir
-# export ANLdir=$NWGES/anl.${dom}.${tmmark_next}
+# export ANLdir=$NWGES/anl.${NEST}.${tmmark_next}
 # mkdir -p $ANLdir
 
 fi

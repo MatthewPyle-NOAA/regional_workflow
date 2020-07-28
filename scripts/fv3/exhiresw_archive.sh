@@ -49,13 +49,13 @@ echo PDY is $PDY
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 00
       ;;
 
-   hireswfv3_archive_pr|hireswfv3_archive_ak|hireswfv3_archive_hi|hireswfv3_archive_guam)
+   hiresw.archive_pr_fv3_${cyc}|hiresw.archive_ak_fv3_${cyc}|hiresw.archive_hi_fv3_${cyc}|hiresw.archive_guam_fv3_${cyc})
       
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}
       ;;
 
-   hireswfv3_archive_conus)
+   hiresw.archive_conus_fv3_${cyc})
       
       $USHfv3/rhist_save${model}.sh ${COMOUT} ${PDY}${cyc}
       export err=$?;let errsum=errsum+err;$USHfv3/rhist_errchk.sh fv3 ${cyc}

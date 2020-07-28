@@ -58,20 +58,15 @@ export gtype=regional    # grid type = uniform, stretch, nest, or regional
 export PARMfv3=$HOMEfv3/parm/fv3
 export EXECfv3=$HOMEfv3/exec/fv3
 export USHfv3=$HOMEfv3/ush/fv3
-export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+# export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 export FIXfv3=$HOMEfv3/fix/fv3
-export FIXsar=$FIXfv3/fix_sar/${dom}
+export FIXsar=$FIXfv3/fix_sar/${NEST}
 export FIXam=$FIXfv3/fix_am
 export FIXco2=$FIXam/fix_co2_proj
 
 export COMROOT=${MYCOMROOT}
 export GESROOT=${MYCOMROOT}/../nwges
-# export GESROOT_HOLD=${PTMP}/nwges/${RUN}.hold
-# mkdir -p $GESROOT_HOLD
-
-# export NHRSguess=06	#-- Forecast length for 1st guess generation
-# export NHRSda=01	#-- Forecast length for cycled DA
 
 export NHRS=60          #-- Forecast length for free fcst
 

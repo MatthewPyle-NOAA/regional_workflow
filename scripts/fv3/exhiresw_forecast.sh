@@ -100,7 +100,7 @@ cp $DATA/INPUT/sfc_data.nc $DATA/INPUT/sfc_data.tile7.nc
 
 else
 echo "not restart"
-cp ${NWGES}/anl.${dom}.${tmmark}/*.nc INPUT
+cp ${NWGES}/anl.${NEST}.${tmmark}/*.nc INPUT
 RESTART=0
 fi
 
@@ -197,11 +197,11 @@ CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
 if [ $tmmark = tm00 ] ; then
 # Free forecast with DA (warm start)
   if [ $model = fv3sar_da ] ; then
-    cp ${PARMfv3}/input_sar_da.nml input.nml 
+    cp ${PARMfv3}/input_fv3_da.nml input.nml 
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
     if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
-      cp ${PARMfv3}/input_sar_${dom}_ccpp.nml input.nml.tmp
+      cp ${PARMfv3}/input_fv3_${NEST}_ccpp.nml input.nml.tmp
       cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
       cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
     else
@@ -209,7 +209,7 @@ if [ $tmmark = tm00 ] ; then
       if [ $RESTART -eq 1 ]
       then
 
-       cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
+       cat ${PARMfv3}/input_fv3_${NEST}.nml_inp | \
        sed s:_MAKENH_:.F.: | \
        sed s:_NAINIT_:0: | \
        sed s:_NGGPSIC_:.F.: | \
@@ -218,7 +218,7 @@ if [ $tmmark = tm00 ] ; then
        sed s:_MOUNTAIN_:.T.: | \
        sed s:_WARMSTART_:.T.:  > input.nml
       else
-       cat ${PARMfv3}/input_sar_${dom}.nml_inp | \
+       cat ${PARMfv3}/input_fv3_${NEST}.nml_inp | \
        sed s:_MAKENH_:.T.: | \
        sed s:_NAINIT_:1: | \
        sed s:_NGGPSIC_:.T.: | \
@@ -228,10 +228,11 @@ if [ $tmmark = tm00 ] ; then
        sed s:_WARMSTART_:.F.:  > input.nml
        fi
 
-#      cp ${PARMfv3}/input_sar_${dom}.nml input.nml
+#      cp ${PARMfv3}/input_fv3_${NEST}.nml input.nml
 
       if [ ! -e input.nml ] ; then
-         echo "FATAL ERROR: no input_sar_${dom}.nml in PARMfv3 directory.  Create one!"
+         echo "FATAL ERROR: no input_fv3_${NEST}.nml in PARMfv3 directory.  Create one!"
+         exit
       else
         mv input.nml input.nml.tmp
         cat input.nml.tmp | \
@@ -239,11 +240,12 @@ if [ $tmmark = tm00 ] ; then
       fi
     fi
   fi
-  cp ${PARMfv3}/model_configure_sar.tmp_${dom} model_configure.tmp
-
+  cp ${PARMfv3}/model_configure_fv3.tmp_${NEST} model_configure.tmp
 else
-  cp ${PARMfv3}/input_sar_da_hourly.nml input.nml
-  cp ${PARMfv3}/model_configure_sar_da_hourly.tmp model_configure.tmp
+
+echo "FATAL ERROR: tmmark not set as tm00 - this version of script requires tmmark=tm00"
+exit
+
 fi
 
 cp ${PARMfv3}/d* .
@@ -278,7 +280,8 @@ cat temp diag_table.tmp > diag_table
 
 cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
-    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+#tmp    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
+    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_THREADS/ | \
     sed s/NCNODE/$NCNODE/ | sed s/NRESTART/$NRST/ | \
     sed s/_WG_/${WG}/ | sed s/_WTPG_/${WTPG}/  >  model_configure
 
@@ -289,6 +292,9 @@ export pgm=hireswfv3_forecast.x
 . prep_step
 
 startmsg
+
+export MKL_CBWR=AVX2
+
 ${APRUNC} $EXECfv3/hireswfv3_forecast.x >$pgmout 2>err
 export err=$?;err_chk
 

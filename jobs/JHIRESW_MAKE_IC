@@ -56,7 +56,7 @@ export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
 
 if [ $tmmark = tm00 ] ; then	# SAR without DA
-  export INPdir=$NWGES/anl.${dom}.$tmmark
+  export INPdir=$NWGES/anl.${NEST}.$tmmark
 fi
 mkdir -p $INPdir
 

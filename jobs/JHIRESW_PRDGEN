@@ -57,8 +57,8 @@ export pid=$$
 
 if [ $MODEL = 'fv3' ]
 then
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hireswfv3_posteven_${dom}_${PDY}${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hireswfv3_postodd_${dom}_${PDY}${cyc}}
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${PDY}${cyc}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${PDY}${cyc}}
 export DATA=${DATA:-${DATAROOT}/${job}}
 
 else
