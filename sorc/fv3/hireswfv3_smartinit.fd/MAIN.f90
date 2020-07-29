@@ -568,7 +568,8 @@
 
 ! ----------------------------------------
 
-       DEC=3.0
+!      DEC=3.0
+       DEC=6.0
 
        CALL FILL_FLD(GFLD,NUMV,IM,JM,PSFC)
 
@@ -578,9 +579,9 @@
        GFLD%ipdtmpl(12)=0
 
        CALL set_scale(gfld, DEC)
-       if (TRIM(REGION).ne.'GUAM')then
+!      if (TRIM(REGION).ne.'GUAM')then
          CALL PUTGB2(51,GFLD,IRET) ! PSFC
-       endif
+!      endif
 
 
 
@@ -1355,21 +1356,21 @@
       print*,'maxval(GAM),minval(GAM): ', maxval(GAM),minval(GAM)
 
 ! Write model surface pressure to grib2
-      DEC=6.0
+!     DEC=6.0
 
-      CALL FILL_FLD(GFLD,NUMV,IM,JM,PSFC)
+!     CALL FILL_FLD(GFLD,NUMV,IM,JM,PSFC)
 
-      GFLD%ipdtmpl(1)=3
-      GFLD%ipdtmpl(2)=0
-      GFLD%ipdtmpl(10)=103
-      GFLD%ipdtmpl(12)=0
-      GFLD%idrtmpl(2)=DEC
+!     GFLD%ipdtmpl(1)=3
+!     GFLD%ipdtmpl(2)=0
+!     GFLD%ipdtmpl(10)=103
+!     GFLD%ipdtmpl(12)=0
+!     GFLD%idrtmpl(2)=DEC
 
-      CALL set_scale(gfld,DEC)
-      CALL PUTGB2(51,GFLD,IRET)
-      write(0,*) 'IRET for PSFC ', IRET
-      write(0,*) 'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
-      print*,'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
+!     CALL set_scale(gfld,DEC)
+!     CALL PUTGB2(51,GFLD,IRET)
+!     write(0,*) 'IRET for PSFC ', IRET
+!     write(0,*) 'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
+!     print*,'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
 
       endif
       endif
@@ -2500,7 +2501,27 @@
        CALL set_scale(gfld, DEC)
        CALL PUTGB2(IUNIT,GFLD,IRET) ! DOWNV
 
-       DEC=3.0
+      if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+! Write model surface pressure to grib2
+      DEC=6.0
+
+      CALL FILL_FLD(GFLD,NUMV,IM,JM,PSFC)
+
+      GFLD%ipdtmpl(1)=3
+      GFLD%ipdtmpl(2)=0
+      GFLD%ipdtmpl(10)=1
+      GFLD%ipdtmpl(12)=0
+      GFLD%idrtmpl(2)=DEC
+
+      CALL set_scale(gfld,DEC)
+      CALL PUTGB2(IUNIT,GFLD,IRET)
+      write(0,*) 'IRET for PSFC ', IRET
+      write(0,*) 'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
+      print*,'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
+      endif
+
+!      DEC=3.0
+       DEC=6.0
 
        CALL FILL_FLD(GFLD,NUMV,IM,JM,DOWNP)
 
@@ -2879,23 +2900,6 @@
       write(0,*) 'maxval(GAM),minval(GAM): ', maxval(GAM),minval(GAM)
       print*,'maxval(GAM),minval(GAM): ', maxval(GAM),minval(GAM)
  
-! Write model surface pressure to grib2
-      DEC=6.0
-
-      CALL FILL_FLD(GFLD,NUMV,IM,JM,PSFC)
-
-      GFLD%ipdtmpl(1)=3
-      GFLD%ipdtmpl(2)=0
-      GFLD%ipdtmpl(10)=103
-      GFLD%ipdtmpl(12)=0
-      GFLD%idrtmpl(2)=DEC
-
-      CALL set_scale(gfld,DEC)
-      CALL PUTGB2(IUNIT,GFLD,IRET)
-      write(0,*) 'IRET for PSFC ', IRET
-      write(0,*) 'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
-      print*,'maxval(PSFC),minval(PSFC): ', maxval(PSFC),minval(PSFC)
-
       endif
 
 

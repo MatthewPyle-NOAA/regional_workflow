@@ -647,7 +647,6 @@
       CALL SETVAR_g2(LUGB,LUGI,NUMVAL,J,JDISC,JIDS,JPDTN,JPDT,JGDTN,JGDT,KF,K,& 
                      KPDS,KGDS,MASK,GRID,U10,GFLD,ISSREF,IRET,ISTAT)
 
-        write(0,*) 'IRET for U10m: ', IRET
 ! 10-m V
 
        JPDT(1) = 2
@@ -659,7 +658,6 @@
       CALL SETVAR_g2(LUGB,LUGI,NUMVAL,J,JDISC,JIDS,JPDTN,JPDT,JGDTN,JGDT,KF,K,& 
                      KPDS,KGDS,MASK,GRID,V10,GFLD,ISSREF,IRET,ISTAT)
 
-        write(0,*) 'IRET for V10m: ', IRET
         write(0,*) 'U10(1,1),V10(1,1): ', U10(1,1),V10(1,1)
 
 ! SFCR (Surface Roughness)
@@ -674,7 +672,6 @@
 
          CALL SETVAR_g2(LUGB,LUGI,NUMVAL,J,JDISC,JIDS,JPDTN,JPDT,JGDTN,JGDT,KF,K,&
                         KPDS,KGDS,MASK,GRID,SFCR,GFLD,ISSREF,IRET,ISTAT)
-        write(0,*) 'IRET for SFCR: ', IRET
 
          write(0,*) 'SFCR(1,1): ', SFCR(1,1)
          print*,'minval(sfcr),maxval(sfcr):',minval(sfcr),maxval(sfcr)

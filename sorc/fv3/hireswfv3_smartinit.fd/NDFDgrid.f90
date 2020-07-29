@@ -375,14 +375,14 @@
       td = dwpt + 273.15
 ! --- dewpoint temperature
 ! --- used in NAM & HIRESW Smartinit for all grids and RAP Smartinit for PR and HI
-!         dewnew(i,j) = min(td,tnew(i,j))
+          dewnew(i,j) = min(td,tnew(i,j))
 ! --- used in HRRR Smartinit and RAP Smartinit for CONUS and AK
 ! --- lapserateTD plots
-      if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
-        dewnew(i,j) = tnew(i,j) - tddep
-      else
-        dewnew(i,j) = min(td,tnew(i,j))
-      endif
+!     if  (GDIN%REGION .eq. 'GUAM' .or.  GDIN%REGION .eq. 'guam') then
+!       dewnew(i,j) = tnew(i,j) - tddep
+!     else
+!       dewnew(i,j) = min(td,tnew(i,j))
+!     endif
       if (k .eq. 1) then
         uc = u10(i,j)+frac * (uwnd(i,j,k)-u10(i,j))
         vc = v10(i,j)+frac * (vwnd(i,j,k)-v10(i,j))

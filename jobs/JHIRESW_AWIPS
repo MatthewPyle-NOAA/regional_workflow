@@ -9,7 +9,7 @@ date
 
 if [ $MODEL = 'fv3' ]
 then
-. $HOMEfv3/jobs/JHIRESW_ENVIR
+. $HOMEfv3/ush/fv3/hireswfv3_envir.sh
 fi
 
 

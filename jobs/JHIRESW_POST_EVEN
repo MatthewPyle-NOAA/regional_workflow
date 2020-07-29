@@ -9,7 +9,7 @@ export PS4='$SECONDS + '
 
 if [ $MODEL = 'fv3' ]
 then
-. $HOMEfv3/jobs/JHIRESW_ENVIR
+. $HOMEfv3/ush/fv3/hireswfv3_envir.sh
 . $USHfv3/run_commands_forecast.sh
 fi
 
@@ -52,8 +52,8 @@ fi
 #####################################
 if [ $MODEL = 'fv3' ]
 then
-  export INPUT_DATA=${INPUT_DATA:-${DATAROOT}/hiresw.forecast_${NEST}_${MODEL}_${PDY}${cyc}}
   export DATA=${DATA:-${DATAROOT}/${job}}
+  export INPUT_DATA=${INPUT_DATA:-${DATAROOT}/hiresw.forecast_${NEST}_${MODEL}_${PDY}${cyc}}
 else
   export DATA=${DATA:-${DATAROOT:?}/hiresw.posteven_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
   export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}

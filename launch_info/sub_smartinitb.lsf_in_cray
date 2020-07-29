@@ -26,8 +26,8 @@ module load grib_util/1.1.0
 vers=`cat /u/Matthew.Pyle/hiresw_version_test`
 export HOMEhiresw=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.${vers}
 
-export RUN_ENVIR=test
-export envir=test
+export RUN_ENVIR=para
+export envir=para
 export NET=hiresw
 export RUN=hiresw
 
