@@ -58,7 +58,6 @@ export gtype=regional    # grid type = uniform, stretch, nest, or regional
 export PARMfv3=$HOMEfv3/parm/fv3
 export EXECfv3=$HOMEfv3/exec/fv3
 export USHfv3=$HOMEfv3/ush/fv3
-# export LD_LIBRARY_PATH="${HOMEfv3}/sorc/regional_forecast.fd/ccpp/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 export FIXfv3=$HOMEfv3/fix/fv3
 export FIXsar=$FIXfv3/fix_sar/${NEST}
