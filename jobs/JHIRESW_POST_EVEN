@@ -53,11 +53,12 @@ fi
 if [ $MODEL = 'fv3' ]
 then
   export DATA=${DATA:-${DATAROOT}/${job}}
-  export INPUT_DATA=${INPUT_DATA:-${DATAROOT}/hiresw.forecast_${NEST}_${MODEL}_${PDY}${cyc}}
 else
   export DATA=${DATA:-${DATAROOT:?}/hiresw.posteven_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-  export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
 fi
+
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
+
 
 if [ ! -e $DATA ]
 then

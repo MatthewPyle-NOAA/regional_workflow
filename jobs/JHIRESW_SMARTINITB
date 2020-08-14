@@ -30,14 +30,11 @@ export pid=$$
 if [ $MODEL = 'fv3' ]
 then
 export DATA=${DATA:-${DATAROOT}/${job}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${PDY}${cyc}}
-
 else
-
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
-
 fi
+
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
 
 mkdir -p $DATA
 cd $DATA

@@ -24,7 +24,6 @@ VGRD:10 m above ground:
 LFTX:500-1000 mb:
 CAPE:surface:
 CIN:surface:
-TCDC:entire atmosphere (considered as a single layer):
 PWAT:entire atmosphere (considered as a single layer):
 HLCY:3000-0 m above ground:
 USTM:6000-0 m above ground:

@@ -44,6 +44,7 @@
 
   <!ENTITY POST_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:20:00</walltime>">
   <!ENTITY ALTPOST_EXTRA "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:45:00</walltime>">
+  <!ENTITY ALTPOST_SHORT "<envar><name>NCTSK</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:59:00</walltime>">
   <!ENTITY POST_RESOURCES_conus "<nodes>4:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>96</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_ak "<nodes>2:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>48</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_hi "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>24</value></envar>&POST_EXTRA;">
@@ -59,8 +60,11 @@
   <!ENTITY PRDGEN_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
 
   <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
-  <!ENTITY GEMAWIPS_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
 
+  <!ENTITY GEMPAK_RESOURCES       "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY GEMPAK_RESOURCES_SHORT "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SHORT;">
+  <!ENTITY AWIPS_RESOURCES        "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SHORT;">
+  <!ENTITY AWIPS_RESOURCES_SHORT  "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SHORT;">
 
   <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>2:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>16</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES_ak "<nodes>1:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>8</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
