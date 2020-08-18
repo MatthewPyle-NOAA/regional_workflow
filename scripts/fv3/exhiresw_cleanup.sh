@@ -18,11 +18,13 @@ fi
 
 
 jobtypes="bufrpost forecast make_bc make_ic posteven postodd smartinit smartinitb"
-# jobtypes="bufrpost make_bc make_ic postodd posteven smartinit smartinitb"
 
 for job in $jobtypes
 do
-rm -rf regional_${job}_${NEST}_${CDATE}
+echo cyc is $cyc
+echo envir is $envir
+
+rm -rf hiresw.${job}_${NEST}_fv3_${cyc}_${envir}
 done
 
 if [ $NEST = ak -o $NEST = conus ]
@@ -34,7 +36,7 @@ fi
 
 for job in $jobtypesb
 do
-rm -rf regional_${job}_${NEST}_${CDATE}
+rm -rf hiresw.${job}_${NEST}_fv3_${cyc}_${envir}
 done
 
 

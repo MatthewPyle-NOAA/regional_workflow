@@ -307,9 +307,14 @@
     <envar><name>job</name><value>hiresw.gempak_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
-      <and>
-        <taskdep task="prdgen"/>
-      </and>
+       <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast" state="RUNNING"/>
+           <taskdep task="forecast"/>
+          </or>
+          <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf001</datadep>
+       </and>
     </dependency>
   </task>
 
@@ -329,9 +334,14 @@
     <envar><name>job</name><value>hiresw.awips_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
-      <and>
-        <taskdep task="prdgen"/>
-      </and>
+       <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast" state="RUNNING"/>
+           <taskdep task="forecast"/>
+          </or>
+          <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf001</datadep>
+       </and>
     </dependency>
   </task>
 <!-- *********************************************************************** -->

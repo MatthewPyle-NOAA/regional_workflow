@@ -307,11 +307,9 @@ if [ $SENDCOM = YES ]
 then
 
   if [ $tmmark = tm00 ] ; then
-#    mv ${NEST}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.f${fhr}.grib2
-    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.natprs.f${fhr}.grib2
+    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}fv3.natprs.f${fhr}.grib2
   else
-#    mv ${NEST}${RUN}.f${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.f${fhr}.${tmmark}.grib2
-    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}.natprs.f${fhr}.${tmmark}.grib2
+    cp $INPUT_DATA/BGDAWP${fhr}.${tmmark} ${COMOUT}/${RUN}.t${cyc}z.${NEST}fv3.natprs.f${fhr}.${tmmark}.grib2
   fi
 
 fi

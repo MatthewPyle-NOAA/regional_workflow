@@ -42,7 +42,7 @@ export COMINgfs=$COMROOTp3/gfs/prod/gfs.${DATEgfs}
 export COMINnam=$COMROOTp3/nam/prod/nam.${DATE}
 export COMINnamold=$COMROOTp3/nam/prod/nam.${DATEgfs}
 
-export DATAROOT=/gpfs/hps2/ptmp/Matthew.Pyle/tmpnwprd
+export DATAROOT=/gpfs/hps2/stmp/Matthew.Pyle/tmpnwprd
 export MYCOMROOT=/gpfs/hps2/ptmp/Matthew.Pyle/com
 export COMROOT=/gpfs/hps/nco/ops/com
 

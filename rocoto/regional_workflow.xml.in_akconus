@@ -323,10 +323,12 @@
     <envar><name>job</name><value>hiresw.gempak_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
-      <and>
-        <taskdep task="prdgenodd"/>
-        <taskdep task="prdgeneven"/>
-      </and>
+        <and>
+          <!-- Start if model and post jobs are going  -->
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf000</datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.postodd_&DOMAIN;_fv3_@H</cyclestr>_&envir;/BGDAWP01.tm00</datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.posteven_&DOMAIN;_fv3_@H</cyclestr>_&envir;/BGDAWP02.tm00</datadep>
+        </and>
     </dependency>
   </task>
 
@@ -347,10 +349,12 @@
     <envar><name>job</name><value>hiresw.awips_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
-      <and>
-        <taskdep task="prdgenodd"/>
-        <taskdep task="prdgeneven"/>
-      </and>
+        <and>
+          <!-- Start if model and post jobs are going  -->
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf000</datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.postodd_&DOMAIN;_fv3_@H</cyclestr>_&envir;/BGDAWP01.tm00</datadep>
+           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.posteven_&DOMAIN;_fv3_@H</cyclestr>_&envir;/BGDAWP02.tm00</datadep>
+        </and>
     </dependency>
   </task>
 
