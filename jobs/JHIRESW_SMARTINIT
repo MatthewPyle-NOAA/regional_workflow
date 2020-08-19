@@ -25,15 +25,19 @@ export SENDCOM=${SENDCOM:-YES}
 
 export pid=$$
 
-if [ $MODEL = 'fv3' ]
-then
-export DATA=${DATA:-${DATAROOT}/${job}}
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${PDY}${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${PDY}${cyc}}
-else
+# if [ $MODEL = 'fv3' ]
+# then
+# export DATA=${DATA:-${DATAROOT}/${job}}
+# export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${PDY}${cyc}}
+# export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${PDY}${cyc}}
+# else
+
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
-fi
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${PDY}${cyc}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${PDY}${cyc}}
+
+# fi
 
 mkdir -p $DATA
 cd $DATA
@@ -46,6 +50,7 @@ export pgmout="OUTPUT.${pid}"
 
 export cycle=${cycle:-t${cyc}z}
 
+# why is this block here but not elsewhere?
 if [ $MODEL = 'fv3' ]
 then
 export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
@@ -128,7 +133,7 @@ if [ $srefcyc2 -lt 10 ];then srefcyc2="0"${srefcyc2};fi
 if [ $gefscyc2 -lt 10 ];then gefscyc2="0"${gefscyc2};fi
 
 export COMINsref=${COMINsref:-$COMsref/sref.${SREF_PDY}/${srefcyc2}/ensprod}
-export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
+# export COMINgefs=${COMINgefs:-$COMsref/sref.${GEFS_PDY}/ensprod_gefs}
 
 ########################################################
 # Execute the script.

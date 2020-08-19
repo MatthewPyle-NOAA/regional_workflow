@@ -7,7 +7,6 @@ set -xa
 export PS4='$SECONDS + '
 date
 
-
 if [ $MODEL = 'fv3' ]
 then
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
@@ -55,20 +54,20 @@ fi
 
 export pid=$$
 
-if [ $MODEL = 'fv3' ]
-then
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${PDY}${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${PDY}${cyc}}
-export DATA=${DATA:-${DATAROOT}/${job}}
+# if [ $MODEL = 'fv3' ]
+# then
+# export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${cyc}}
+# export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${cyc}}
+# export DATA=${DATA:-${DATAROOT}/${job}}
 
-else
+# else
 
 export DATA=${DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.post_${NEST}_${MODEL}_${cyc}_${envir}}
 export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${cyc}_${envir}}
 export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${cyc}_${envir}}
 
-fi
+# fi
 
 mkdir -p $DATA
 cd $DATA
@@ -78,17 +77,20 @@ export DBN_ALERT_TYPE_WIDX=${DBN_ALERT_TYPE_WIDX:-HIRESW_${DBN_NEST}_GB2_WIDX}
 export DBN_ALERT_TYPE_SMART=${DBN_ALERT_TYPE_SMART:-HIRESW_${DBN_NEST}_NDFD_GB2}
 export DBN_ALERT_TYPE_SMART_WIDX=${DBN_ALERT_TYPE_SMART_WIDX:-HIRESW_${DBN_NEST}_NDFD_GB2_WIDX}
 
-
 export outid="LL$job"
 export pgmout="OUTPUT.${pid}"
 export pgmerr=errfile
 
+if [ $MODEL = 'arw' ]
+then
 
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
 export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
 export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
 export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
 export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+
+fi
 
 
 #####################################

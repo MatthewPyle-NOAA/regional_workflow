@@ -49,7 +49,7 @@ modelout="arw"
 reflag=0
 fi
 
-if [ $DOMIN_SMALL = "conus" ]
+if [ $DOMIN_SMALL = "conus" -o $DOMIN_SMALL = "conusmem2" ]
 then
   filenamthree="wrf.EMCONUS05"
 else

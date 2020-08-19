@@ -74,14 +74,14 @@ export mdl=$RUNTYP
 outreg=$rg
 case $RUNTYP in
   conusmem2arw) rg=conus; outreg=conusmem2; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  conusarw|conusnmmb|conusfv3) rg=conus; outreg=conus; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  hiarw|hinmmb|hifv3) rg=hi; compress="jpeg";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
+  conusarw|conusfv3) rg=conus; outreg=conus; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
+  hiarw|hifv3) rg=hi; compress="jpeg";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
   himem2arw) rg=hi; compress="jpeg"; outreg=himem2; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
-  prarw|prnmmb|prfv3) rg=pr; compress="jpeg"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
+  prarw|prfv3) rg=pr; compress="jpeg"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   prmem2arw) rg=pr;  compress="jpeg"; outreg=prmem2; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   akmem2arw) rg=ak; outreg=akmem2; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  akarw|aknmmb|akfv3) rg=ak; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  guamarw|guamnmmb|guamfv3) rg=guam; compress="jpeg"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
+  akarw|akfv3) rg=ak; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
+  guamarw|guamfv3) rg=guam; compress="jpeg"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
 esac
 
 cycon=0
@@ -358,7 +358,7 @@ fi
 
 # do in 13 pieces (conus only??)
 
-INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
+INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr}.grib2
 
 loop=1
 looplim=90
@@ -667,7 +667,7 @@ fi
       esac
 
 
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -676,7 +676,7 @@ fi
    
 
 	echo here with FHRFRQ $FHRFRQ
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${FHRFRQ}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${FHRFRQ}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${FHRFRQ}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -708,7 +708,7 @@ fi
 
       if [ $MKPCP -eq $mk12p ];then
 
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr9}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr9}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr9}.tm00.g2 $INF
         export err=$?; err_chk
 
@@ -720,19 +720,14 @@ fi
 
 #          cp $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3} WRFPRS${fhr3}.tm00
 
-	   if [ -e $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 ] 
-           then
-	    cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
-	   else
 
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
 	$FSYNC WRFPRS${fhr3}.tm00.g2
 	mv  WRFPRS${fhr3}.tm00.g2 WRFPRS${fhr3}.tm00
 
-           fi
 #####
 
 	ls -l  WRFPRS${fhr3}.tm00
@@ -742,17 +737,12 @@ fi
 	$FSYNC WRFPRS${fhr3}i.tm00.temp
 	mv WRFPRS${fhr3}i.tm00.temp WRFPRS${fhr3}i.tm00
 
-	   if [ -e $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 ] 
-           then
-	     cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
-           else
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 
 	$FSYNC WRFPRS${fhr6}.tm00.g2
        mv WRFPRS${fhr6}.tm00.g2 WRFPRS${fhr6}.tm00
-           fi
 
 #####
         $GRB2INDEX WRFPRS${fhr6}.tm00 WRFPRS${fhr6}i.tm00.temp
@@ -767,21 +757,16 @@ fi
         lnsf "WRFPRS${fhr}.tm00"       fort.19
         lnsf "WRFPRS${fhr}i.tm00"      fort.20
 
-	else  ## arw?
+	else  ## arw/fv3
 
 #          cp $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3} WRFPRS${fhr3}.tm00
 
-	   if [ -e $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 ] 
-           then
-            cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr3}.g1 WRFPRS${fhr3}.tm00
-	   else
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr3}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr3}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr3}.tm00.g2 $INF
         export err=$?; err_chk
 
 	$FSYNC WRFPRS${fhr3}.tm00.g2
 	mv  WRFPRS${fhr3}.tm00.g2 WRFPRS${fhr3}.tm00
-           fi
 
 #####
         $GRB2INDEX WRFPRS${fhr3}.tm00 WRFPRS${fhr3}i.tm00.temp
@@ -792,17 +777,12 @@ fi
 
 #          cp $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6} WRFPRS${fhr6}.tm00
 
-	   if [ -e $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 ] 
-           then
-            cpfs $COMIN/${mdl}.t${cyc}z.${natgrd}${fhr6}.g1 WRFPRS${fhr6}.tm00
-           else
-        INF=${COMIN}/${RUN}.t${cyc}z.${rg}.${natgrd}.f${fhr6}.grib2
+        INF=${COMIN}/${RUN}.t${cyc}z.${rg}fv3.${natgrd}.f${fhr6}.grib2
         $WGRIB2 $INF | grep -F -f $PARMfv3/hiresw_smartinit.g2_rainsnow | $WGRIB2 -i -grib  WRFPRS${fhr6}.tm00.g2 $INF
         export err=$?; err_chk
 
 	$FSYNC WRFPRS${fhr6}.tm00.g2
 	mv WRFPRS${fhr6}.tm00.g2 WRFPRS${fhr6}.tm00
-           fi
 
 #####
         $GRB2INDEX WRFPRS${fhr6}.tm00 WRFPRS${fhr6}i.tm00.temp

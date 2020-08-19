@@ -29,12 +29,14 @@ export CYCLEanl=`$NDATE -${offset} $CDATE`
 #####################################
 # Working directories
 #####################################
-if [ $MODEL = 'fv3' ]
-then
-export DATA=${DATA:-${DATAROOT:?}/${job}}
-else
+# if [ $MODEL = 'fv3' ]
+# then
+# export DATA=${DATA:-${DATAROOT:?}/${job}}
+# else
+
 export DATA=${DATA:-${DATAROOT:?}/hiresw.forecast_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-fi
+
+# fi
 
 mkdir -p $DATA
 cd $DATA
@@ -54,11 +56,14 @@ export cycle=${cycle:-t${cyc}z}
 export MP_LABELIO=YES
 export MP_USE_BULK_XFER=yes
 
+if [ $MODEL = 'arw' ]
+then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
 export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
 export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
 export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
 export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+fi
 
 # Run setpdy and initialize PDY variables
 
@@ -90,24 +95,6 @@ export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}
 mkdir -p $COMOUT
 export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
 mkdir -p $NWGES
-
-if [ $MODEL = 'fv3' ]
-then
-# get valid time of forecast
-
-echo skip this nonsense
-
-# offset_fcst=`echo $tmmark_next | cut -c 3-4`
-# export CYCLEfcst=`$NDATE -${offset_fcst} $CDATE`
-# export PDYfcst=`echo $CYCLEfcst | cut -c 1-8`
-# export CYCfcst=`echo $CYCLEfcst | cut -c 9-10`
-
-# export GUESSdir=$COMOUT/guess.${tmmark_next}
-# mkdir -p $GUESSdir
-# export ANLdir=$NWGES/anl.${NEST}.${tmmark_next}
-# mkdir -p $ANLdir
-
-fi
 
 #####################################
 # wcoss environment settings

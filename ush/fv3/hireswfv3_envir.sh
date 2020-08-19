@@ -29,6 +29,7 @@ then
 
 
 export NWROOT=/gpfs/hps/nco/ops/nwprod
+export SENDECF=NO
 export hiresw_ver=v8.0.0
 export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
 export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
@@ -38,9 +39,9 @@ export MYCOMROOT=${MYCOMROOT:-/gpfs/hps3/ptmp/${USER}/com}
 export DATAROOT=${DATAROOT:-/gpfs/hps3/stmp/${USER}/tmpnwprd}
 export rzdmuser=mpyle
 
-export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/noscrub/$USER/regional_workflow_hiresw}
-export NDATE=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/ndate
-export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
+export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/noscrub/$USER/hiresw.${hiresw_ver}}
+# export NDATE=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/ndate
+# export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
 
 
 else

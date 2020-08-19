@@ -57,17 +57,17 @@ fi
 # Working directories
 #####################################
 
-if [ $MODEL = 'fv3' ]
-then
-export DATA=${DATA:-${DATAROOT}/${job}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL:?}_${PDY}${cyc}}
+# if [ $MODEL = 'fv3' ]
+# then
+# export DATA=${DATA:-${DATAROOT}/${job}}
+# export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL:?}_${PDY}${cyc}}
 
-else
+# else
 
 export DATA=${DATA:-${DATAROOT:?}/hiresw.bufrpost_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
 
-fi
+# fi
 
 mkdir -p $DATA
 cd $DATA
