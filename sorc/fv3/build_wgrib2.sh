@@ -16,9 +16,10 @@ module list
 
 cd ./hireswfv3_wgrib2.cd/grib2
 
-make deep-clean
+make clean
 make
-make lib
+
+# make lib
 
 # make clean
 
