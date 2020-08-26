@@ -104,7 +104,13 @@ rm -f fort.*
 
 # copy flat files
 cp ${PARMfv3}/nam_micro_lookup.dat      ./eta_micro_lookup.dat
+
+if [ ${fhr}  == "01" ]
+then
+cp ${PARMfv3}/postxconfig-NT-fv3sar_f01.txt ./postxconfig-NT.txt
+else
 cp ${PARMfv3}/postxconfig-NT-fv3sar.txt ./postxconfig-NT.txt
+fi
 cp ${PARMfv3}/params_grib2_tbl_new      ./params_grib2_tbl_new
 
 # Run the post processor
