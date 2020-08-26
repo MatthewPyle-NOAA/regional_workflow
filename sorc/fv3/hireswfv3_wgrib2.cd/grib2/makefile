@@ -101,8 +101,8 @@ export FC=ifort
 export COMP_SYS=intel_linux
 #
 # can uncomment following two lines to use gcc/gfortran
-# export CC=gcc
-# export FC=gfortran
+#export CC=gcc
+#export FC=gfortran
 #
 # for OS-X: uncomment line for makefile -f scripts/makefile.darwin
 #
