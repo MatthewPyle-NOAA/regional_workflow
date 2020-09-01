@@ -30,7 +30,8 @@ export day=`echo $CDATE | cut -c 7-8`
 #####################################
 # Obtain unique process id (pid) and make temp directory
 #####################################
-export DATA=${DATA:-${DATAROOT}/${job}}
+export DATA=${DATA:-${DATAROOT:?}/hiresw.makebc_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+
 mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA

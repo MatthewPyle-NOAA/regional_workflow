@@ -94,14 +94,14 @@ case $cyc in
   * )    set -A A6HR 18 30 42 999;;
 esac
 
-# srefcyc and gefscyc set in parent job (JNAM_SMINIT)
+# srefcyc and set in parent job (JHIRESW_SMARTINIT)
 
 # set the variables again here (typeset sometimes does not work correctly for imported variables)
 srefcyc=$srefcyc
-gefscyc=$gefscyc
+# gefscyc=$gefscyc
 pcphrl=$pcphrl
 
-typeset -Z2 srefcyc gefscyc pcphrl
+typeset -Z2 srefcyc pcphrl
 
 #======================================================================
 #  Configure input met grib, land-sea mask and topo file names
@@ -223,9 +223,9 @@ if [ $ffhr -gt 0 -a $sgrb -ne 999 ]; then
 echo srefcyc_3= $srefcyc
   cpfs $COMINsref/sref.t${srefcyc}z.pgrb${sgrb}.prob_3hrly.grib2 SREFPROB
 
-  if [ ! -s SREFPROB ]; then
-    cpfs $COMINgefs/${gefscyc}/sref.t${gefscyc}z.pgrb${sgrb}.prob_3hrly.grib2 SREFPROB
-  fi
+#  if [ ! -s SREFPROB ]; then
+#    cpfs $COMINgefs/${gefscyc}/sref.t${gefscyc}z.pgrb${sgrb}.prob_3hrly.grib2 SREFPROB
+#  fi
 
   $GRB2INDEX SREFPROB SREFPROBI
   # check for missing sref data

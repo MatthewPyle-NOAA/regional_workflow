@@ -26,14 +26,6 @@ export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
 #
 export pid=$$
 
-
-# if [ $MODEL = 'fv3' ]
-# then
-# export DATA=${DATA:-${DATAROOT}/${job}}
-# else
-# export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-# fi
-
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
 

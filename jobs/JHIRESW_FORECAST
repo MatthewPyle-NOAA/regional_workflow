@@ -29,15 +29,8 @@ export CYCLEanl=`$NDATE -${offset} $CDATE`
 #####################################
 # Working directories
 #####################################
-# if [ $MODEL = 'fv3' ]
-# then
-# export DATA=${DATA:-${DATAROOT:?}/${job}}
-# else
 
 export DATA=${DATA:-${DATAROOT:?}/hiresw.forecast_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-
-# fi
-
 mkdir -p $DATA
 cd $DATA
 
