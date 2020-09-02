@@ -359,34 +359,6 @@
   </task>
 
 
-
-<!-- *********************************************************************** -->
-<!-- ***************************** Archive job ***************************** -->
-
-  <task name="archive" maxtries="&MAX_TRIES_TRANSFER;">
-    <command>&PRE; &JOBS;/JHIRESW_ARCHIVE</command>
-    <jobname><cyclestr>hiresw_archive_&DOMAIN;_fv3_@H</cyclestr></jobname>
-    <join><cyclestr>&LOGDIR;/hiresw_archive_&DOMAIN;_fv3_@Y@m@d@H.log</cyclestr></join>
-    <account>&ACCOUNT;</account>
-    <queue>&QUEUE_SERVICE;</queue>
-    &SERVICE_EXTRA;
-    &RESERVATION;
-    &ARCHIVE_RESOURCES;
-    &ENV_VARS;
-    <envar><name>job</name><value>hiresw.archive_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
-
-    <dependency>
-      <and>
-        <taskdep task="prdgenodd"/>
-        <taskdep task="smartinit_b"/>
-        <taskdep task="prdgeneven"/>
-        <taskdep task="bufrpost"/>
-        <taskdep task="awips"/>
-        <taskdep task="gempak"/>
-      </and>
-    </dependency>
-  </task>
-
 <!--  **********************************************************************  -->
 <!--  ******************************* Cleanup ******************************  -->
 
@@ -404,7 +376,9 @@
 
     <dependency>
       <and>
-        <taskdep task="archive"/>
+        <taskdep task="gempak"/>
+        <taskdep task="awips"/>
+        <taskdep task="smartinit_b"/>
       </and>
     </dependency>
   </task>

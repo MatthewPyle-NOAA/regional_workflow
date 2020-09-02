@@ -123,15 +123,12 @@ echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 3 &" >> $D
 echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 4 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 5 &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/hiresw_prdgen_5km_grid_g2.sh     $fhr $NEST $cyc $MODEL 6 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh $fhr $NEST $cyc $MODEL 0 &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_eastwest $fhr $NEST $cyc $MODEL 1 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_eastwest $fhr $NEST $cyc $MODEL 2 east &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_eastwest $fhr $NEST $cyc $MODEL 1 west &" >> $DATA/poescript_${fhr}
-echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_eastwest $fhr $NEST $cyc $MODEL 2 west &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 1 conus &" >> $DATA/poescript_${fhr}
+echo "$USHfv3/hiresw_prdgen_oldgrid_g2.sh_5km $fhr $dom $cyc $MODEL 2 conus &" >> $DATA/poescript_${fhr}
 echo "$USHfv3/hiresw_prdgen_3km_grid_g2.sh     $fhr $NEST $cyc $MODEL 1 &" >> $DATA/poescript_${fhr}
 echo "wait" >> $DATA/poescript_${fhr}
 chmod 775 $DATA/poescript_${fhr}
-command="aprun -n 1 -N 1 -d 15 $DATA/poescript_${fhr} "
+command="aprun -n 1 -N 1 -d 12 $DATA/poescript_${fhr} "
 
 time $command
 export err=$?; err_chk
@@ -198,23 +195,14 @@ rm $DATA/${RUN}.t${cyc}z.${MODEL}_2p5km.f${fhr}.conus.grib2_3
 
   if test $SENDCOM = 'YES'
   then
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
+cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_2 > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
 
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2
+$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
+$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx
 
-cat $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2 \
- > $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-
-$WGRIB2 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -ncep_uv $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2
-
-
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2.idx
-$WGRIB2 $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2 -s > $COMOUT/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2.idx
   fi
 
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuseast.grib2_2
-rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conuswest.grib2_2
+rm $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_1 $DATA/${RUN}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_conus_2
 
 ################################################
 elif [ $NEST = "ak" ]
