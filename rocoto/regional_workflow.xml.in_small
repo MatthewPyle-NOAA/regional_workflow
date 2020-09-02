@@ -88,7 +88,7 @@
         <and>
           <datadep age="10:00" minsize="15779010324"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf006.nemsio</cyclestr></datadep>
           <datadep age="10:00" minsize="1170221688"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.sfcf006.nemsio</cyclestr></datadep>
-          <timedep> <cyclestr offset="01:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task> 
@@ -114,7 +114,7 @@
         <!-- Only need to make_bc for regional configuration -->
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf063.nemsio</cyclestr></datadep>
           <datadep age="05:00" minsize="16986972692"><cyclestr offset="&TIMEOFFSET;">&COMINgfs;/gfs.@Y@m@d/@H/gfs.t@Hz.atmf066.nemsio</cyclestr></datadep> 
-          <timedep> <cyclestr offset="00:40:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task>
@@ -261,7 +261,7 @@
       <dependency>
         <and>
            <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_fv3_@H</cyclestr>_&envir;/prdgendone30</datadep>
-           <timedep> <cyclestr offset="02:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+           <timedep> <cyclestr offset="01:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>
    </task>
@@ -284,7 +284,7 @@
       <dependency>
         <and>
            <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_fv3_@H</cyclestr>_&envir;/prdgendone30</datadep>
-           <timedep> <cyclestr offset="02:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+           <timedep> <cyclestr offset="01:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
       </dependency>
    </task>
