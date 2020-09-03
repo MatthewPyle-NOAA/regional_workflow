@@ -296,7 +296,7 @@
       <envar><name>POST_DATA_ODD</name><value><cyclestr>&DATAROOT;/hiresw.postodd_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
       <envar><name>POST_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hiresw.posteven_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
       <envar><name>PRDGEN_DATA_ODD</name><value><cyclestr>&DATAROOT;/hiresw.prdgenodd_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
-      <envar><name>PRDGEN_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hiresw.prdgeneven_&DOMAIN;_fv3_@H/</cyclestr>_&envir;</value></envar>
+      <envar><name>PRDGEN_DATA_EVEN</name><value><cyclestr>&DATAROOT;/hiresw.prdgeneven_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
       <dependency>
          <and>
            <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgenodd_&DOMAIN;_fv3_@H</cyclestr>_&envir;/prdgendone31</datadep>
