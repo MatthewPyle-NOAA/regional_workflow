@@ -156,7 +156,7 @@ $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TSOIL:0-0.1 m below ground:" -gri
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":SOILW:0-0.1 m below ground:" -grib nn.grb_3
 export err=$?; err_chk
-$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TCDC:" -match "hour fcst:"  -grib nn.grb_4
+$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TCDC:entire" -match "hour fcst:"  -grib nn.grb_4
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "HGT:cloud ceiling:" -grib ceiling.grb
 export err=$?; err_chk

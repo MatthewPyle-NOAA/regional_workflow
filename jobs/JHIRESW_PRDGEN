@@ -31,7 +31,7 @@ export SENDDBN=${SENDDBN:-NO}
 ####################################
 # Specify Execution Areas
 ####################################
-export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
 
 echo here with WGRIB2 as $WGRIB2
 

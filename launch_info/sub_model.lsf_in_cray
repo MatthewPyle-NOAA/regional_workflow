@@ -3,7 +3,7 @@
 #BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_fore.err__DOM__CORE__CYC_
 #BSUB -q "devhigh"
 #BSUB -J HIRESW_FORECAST__DOM___CORE___CYC_
-#BSUB -P HRW-T2O
+#BSUB -P HREF-T2O
 #BSUB -W 1:25
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
 #BSUB -M 1800

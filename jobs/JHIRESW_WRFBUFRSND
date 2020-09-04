@@ -29,7 +29,7 @@ export SENDCOM=${SENDCOM:-YES}
 # Specify Execution Areas
 ####################################
 export POSTGPEXEC=${EXECfv3}/hireswfv3_bufr.x
-export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
 
 ####################################
 # Run setpdy and initialize PDY variables

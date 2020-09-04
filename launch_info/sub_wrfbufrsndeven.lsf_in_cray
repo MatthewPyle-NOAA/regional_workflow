@@ -2,7 +2,7 @@
 #BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_wrfbufrsndeven.err__DOM___CYC___CORE_
 #BSUB -q "devhigh"
 #BSUB -J HIRESW_BUFR_EVEN
-#BSUB -P HRW-T2O
+#BSUB -P HREF-T2O
 #BSUB -M 2000
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
 #BSUB -W 1:59

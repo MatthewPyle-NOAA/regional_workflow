@@ -3,7 +3,7 @@
 ####BSUB -q "devhigh_shared"
 #BSUB -q "devhigh"
 #BSUB -J HIRESW_GEMPAK
-#BSUB -P HRW-T2O
+#BSUB -P HREF-T2O
 #BSUB -W 2:39
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
 ###BSUB -M 5000

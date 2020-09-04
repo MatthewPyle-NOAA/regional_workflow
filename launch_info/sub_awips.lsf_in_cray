@@ -2,7 +2,7 @@
 #BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_awip.err__DOM__CORE__CYC_
 #BSUB -q "devhigh"
 #BSUB -J HIRESW_AWIP
-#BSUB -P HRW-T2O
+#BSUB -P HREF-T2O
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
 #BSUB -W 1:29
 #BSUB -M 3000

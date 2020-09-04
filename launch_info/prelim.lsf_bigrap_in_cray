@@ -5,7 +5,7 @@
 #BSUB -J HIRESW_PREP_RAP
 #BSUB -W 0:39
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
-#BSUB -P HRW-T2O
+#BSUB -P HREF-T2O
 #BSUB -M 3000
 #BSUB -extsched 'CRAYLINUX[]' -R '1*{select[craylinux && !vnode]} + 9*{select[craylinux && vnode]span[ptile=3] cu[type=cabinet]}' rusage[mem=3000]
 

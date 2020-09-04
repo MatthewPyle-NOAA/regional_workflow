@@ -62,7 +62,7 @@ do
   if [ $cyc -eq 00 -o $cyc -eq 12 ]; then
     for nest in hi guam conus himem2 conusmem2
     do
-      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen smartinit smartinitb bufrpost awips gempak
+      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
       do
         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
         rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}
@@ -71,7 +71,7 @@ do
   else
     for nest in pr ak prmem2 akmem2
     do
-      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen smartinit smartinitb bufrpost awips gempak
+      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
       do
         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
         rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}

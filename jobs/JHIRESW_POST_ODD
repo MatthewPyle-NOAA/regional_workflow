@@ -33,7 +33,7 @@ export SENDDBN=${SENDDBN:-NO}
 if [ $MODEL = 'fv3' ]
 then
 export POSTGPEXEC=${EXECfv3}/hireswfv3_post.x
-export WGRIB2=${WGRIB2:-${EXECfv3}/wgrib2new}
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
 fi
 
 ####################################
