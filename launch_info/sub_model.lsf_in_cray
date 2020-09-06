@@ -71,4 +71,4 @@ do
 rm -rf ${DATAROOT}/hiresw.${typ}_${NEST}_${MODEL}_${cyc}_${envir}
 done
 
-$HOMEhiresw/jobs/JHIRESW_FORECAST
+$HOMEhiresw/jobs/JHIRESW_FORECAST_sub

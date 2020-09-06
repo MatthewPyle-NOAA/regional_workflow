@@ -4,7 +4,7 @@ SHTFL:surface:
 POT:30-0 mb above ground:
 DPT:30-0 mb above ground:
 SPFH:30-0 mb above ground:
-MDIV:30-0 mb above ground:
+MCONV:30-0 mb above ground:
 VVEL:30-0 mb above ground:
 PWAT:30-0 mb above ground:
 UGRD:1524 m above mean sea level:
@@ -24,6 +24,8 @@ MXUPHL:5000-2000 m above ground:
 MXUPHL:3000-0 m above ground:
 MNUPHL:5000-2000 m above ground:
 MNUPHL:3000-0 m above ground:
+:var discipline=0 center=7 local_table=1 parmcat=7 parm=200:5000-2000 m above ground:
+:var discipline=0 center=7 local_table=1 parmcat=7 parm=200:3000-0 m above ground:
 MAXUVV:100-1000 mb:
 MAXDVV:100-1000 mb:
 MAXUW:10 m above ground:
