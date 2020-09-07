@@ -26,10 +26,10 @@ cd ${BASE}/hiresw_wrfarwfcst.fd
 cp configure.wrf_wcoss configure.wrf
 
 # build model
-./compile -j4 em_real 
+./compile  em_real 
 
 # build real
-./compile -j4 em_real 
+./compile  em_real 
 
 
 # switch this to install script
