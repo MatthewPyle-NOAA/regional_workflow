@@ -23,12 +23,8 @@ export RUN=${RUN:-hiresw}
 # obtain unique process id (pid) and make temp directories
 ############################################################# 
 export pid=$$
-if [ $MODEL = 'arw' ] 
-then
-export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
-else
-export DATA=${DATA:-${DATAROOT:?}/${job:?}}
-fi
+
+export DATA=${DATA:-${DATAROOT:?}/hiresw.awips_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 
 mkdir $DATA
 cd $DATA 

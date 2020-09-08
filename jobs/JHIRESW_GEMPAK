@@ -27,12 +27,7 @@ export RUN=${RUN:-hiresw}
 ###########################################################
 export pid=$$
 
-if [ $MODEL = 'fv3' ]
-then
-export DATA=${DATA:-${DATAROOT:?}/${job:?}}
-else
-export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
-fi
+export DATA=${DATA:-${DATAROOT:?}/hiresw.gempak_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 
 mkdir $DATA
 cd $DATA 

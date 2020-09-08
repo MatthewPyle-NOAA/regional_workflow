@@ -16,13 +16,7 @@ fi
 ###########################################################
 export pid=$$
 export DATA_IN=${DATA_IN:-${DATAROOT:?}}
-
-if [  $MODEL = 'arw' ]
-then
 export DATA=$DATA_IN/${jobid:?}
-else
-export DATA=$DATA_IN/${job:?}
-fi
 
 rm -rf $DATA
 mkdir -p $DATA
@@ -65,7 +59,6 @@ do
       for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
       do
         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
-        rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}
       done
     done
   else
@@ -74,7 +67,6 @@ do
       for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
       do
         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
-        rm -rf hiresw.${step}_${nest}_${mod}_${PDY}${cyc}
       done
     done
   fi
