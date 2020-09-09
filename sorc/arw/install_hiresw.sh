@@ -4,7 +4,7 @@ module purge
 module load ncep
 module load craype-sandybridge
 module use -a /opt/cray/modulefiles
-module load ../modulefiles/HIRESW/v7.0.13
+module load ../modulefiles/HIRESW/v8.0.0
 module list
 
 
@@ -89,9 +89,6 @@ fi
 if [ $INSTALL_hiresw_wrfbufr -eq 1 ]
 then
 
-# echo "executing install_hiresw_wrfbufr"
-# ./install_hiresw_wrfbufr.sh >& ${logs_dir}/install_hiresw_wrfbufr.log
-# echo hiresw_wrfbufr.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} hiresw_wrfbufr.fd/hiresw_wrfbufr $EXEdir/
 
@@ -106,9 +103,6 @@ fi
 if [ $INSTALL_hiresw_wps -eq 1 ]
 then
 
-# echo "executing install_hiresw_wps"
-# ./install_hiresw_wps.sh >& ${logs_dir}/install_hiresw_wps.log
-# echo hiresw_wps.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} hiresw_wps.fd/ungrib/src/ungrib.exe $EXEdir/hiresw_wps_ungrib
 ${CP} hiresw_wps.fd/metgrid/src/metgrid.exe $EXEdir/hiresw_wps_metgrid
@@ -123,9 +117,6 @@ fi
 if [ $INSTALL_hiresw_post -eq 1 ]
 then
 
-# echo "executing install_hiresw_post"
-# ./install_hiresw_post.sh >& ${logs_dir}/install_hiresw_post.log
-# echo hiresw_post.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} hiresw_post.fd/hiresw_post $EXEdir/
 
@@ -140,9 +131,6 @@ fi
 if [ $INSTALL_hiresw_smartinitg2 -eq 1 ]
 then
 
-# echo "executing install_hiresw_smartinitg2"
-# ./install_hiresw_smartinitg2.sh >& ${logs_dir}/install_hiresw_smartinitg2.log
-# echo hiresw_smartinitg2.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} hiresw_smartinitg2.fd/hiresw_smartinitg2 $EXEdir/
 
@@ -157,9 +145,6 @@ fi
 if [ $INSTALL_hiresw_smartprecipg2 -eq 1 ]
 then
 
-# echo "executing install_hiresw_smartprecipg2"
-# ./install_hiresw_smartprecipg2.sh >& ${logs_dir}/install_hiresw_smartprecipg2.log
-# echo hiresw_smartprecipg2.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} hiresw_smartprecipg2.fd/hiresw_smartprecipg2 $EXEdir/
 
@@ -175,10 +160,6 @@ fi
 if [ $INSTALL_hiresw_sndp -eq 1 ]
 then
 
-# echo "executing install_hiresw_sndp"
-# ./install_hiresw_sndp.sh >& ${logs_dir}/install_hiresw_sndp.log
-# echo hiresw_sndp.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 ${CP} ./hiresw_sndp.fd/hiresw_sndp $EXEdir/
 
 else
@@ -191,10 +172,6 @@ fi
 
 if [ $INSTALL_hiresw_stnmlist -eq 1 ]
 then
-
-# echo "executing install_hiresw_stnmlist"
-# ./install_hiresw_stnmlist.sh >& ${logs_dir}/install_hiresw_stnmlist.log
-# echo hiresw_stnmlist.fd done XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ${CP} ./hiresw_stnmlist.fd/hiresw_stnmlist $EXEdir
 
