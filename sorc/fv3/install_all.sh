@@ -85,11 +85,6 @@ fi
 
 
 #------------------------------------
-# install orog
-#------------------------------------
- ${CP} hireswfv3_utils.fd/exec/orog.x                   $EXEdir/hireswfv3_orog.x
-
-#------------------------------------
 # install sfc_climo_gen
 #------------------------------------
  ${CP} hireswfv3_utils.fd/exec/sfc_climo_gen            $EXEdir/hireswfv3_sfc_climo_gen.x
