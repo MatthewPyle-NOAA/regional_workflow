@@ -24,6 +24,7 @@ resterr=1
 
 restart_interval=6
 FHMAX=60
+model=fv3sar
 
 cd $DATA
 
@@ -179,10 +180,8 @@ ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.nc
 ln -sf ${CASE}_oro_data.tile7.halo0.nc oro_data.tile7.nc
 ln -sf ${CASE}_oro_data.tile7.halo4.nc oro_data.tile7.halo4.nc
 # Initial Conditions are needed for SAR but not SAR-DA
-if [ $model = fv3sar ] ; then
-  ln -sf sfc_data.tile7.nc sfc_data.nc
-  ln -sf gfs_data.tile7.nc gfs_data.nc
-fi
+ln -sf sfc_data.tile7.nc sfc_data.nc
+ln -sf gfs_data.tile7.nc gfs_data.nc
 
 cd ..
 fi

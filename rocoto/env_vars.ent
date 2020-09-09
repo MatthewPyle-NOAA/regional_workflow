@@ -38,7 +38,7 @@
    <name>FIXfv3</name><value>&HOMEfv3;/fix/fv3</value>
  </envar>
  <envar>
-   <name>FIXsar</name><value>&HOMEfv3;/fix/fv3/fix_sar/${NEST}</value>
+   <name>FIXsar</name><value>&HOMEfv3;/fix/fv3/fix_sar/&DOMAIN;</value>
  </envar>
  <envar>
    <name>FIXam</name><value>&HOMEfv3;/fix/fv3/fix_am</value>
@@ -87,5 +87,8 @@
  </envar>
  <envar>
    <name>GESROOT</name><value>&GESROOT;</value>
+ </envar>
+ <envar>
+   <name>MYGESROOT</name><value>&GESROOT;</value>
  </envar>
 

@@ -25,6 +25,10 @@ module list
 
 export WGRIB2=${HOMEfv3}/exec/fv3/hireswfv3_wgrib2
 
+export COMROOT=${MYCOMROOT}
+export RUN_ENVIR=dev
+export GESROOT=${MYGESROOT}
+
 echo here in rocoto_pre_job with WGRIB2 as $WGRIB2
 
 exec "$@"

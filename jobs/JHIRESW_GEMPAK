@@ -7,7 +7,7 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
-if [ $MODEL = 'fv3' ]
+if [ $MODEL = 'fv3' -a ${RUN_ENVIR} = 'dev' ]
 then
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
 fi

@@ -1,7 +1,12 @@
 #!/bin/ksh
 set -xe
 
+
+if [ ${RUN_ENVIR} = 'dev' ]
+then
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
+fi
+
 . $HOMEfv3/ush/fv3/run_commands_bc.sh
 
 ####################################
