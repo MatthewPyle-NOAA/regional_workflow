@@ -2,10 +2,49 @@
    <name>NEST</name><value>&DOMAIN;</value>
  </envar>
  <envar>
+   <name>envir</name><value>&envir;</value>
+ </envar>
+ <envar>
+   <name>RUN_ENVIR</name><value>&RUN_ENVIR;</value>
+ </envar>
+ <envar>
    <name>MODEL</name><value>fv3</value>
  </envar>
  <envar>
+   <name>hiresw_ver</name><value>v8.0.0</value>
+ </envar>
+ <envar>
+   <name>NET</name><value>&NET;</value>
+ </envar>
+ <envar>
+   <name>RUN</name><value>&RUN;</value>
+ </envar>
+ <envar>
+   <name>CCPP</name><value>false</value>
+ </envar>
+ <envar>
    <name>HOMEfv3</name><value>&HOMEfv3;</value>
+ </envar>
+ <envar>
+   <name>PARMfv3</name><value>&HOMEfv3;/parm/fv3</value>
+ </envar>
+ <envar>
+   <name>EXECfv3</name><value>&HOMEfv3;/exec/fv3</value>
+ </envar>
+ <envar>
+   <name>USHfv3</name><value>&HOMEfv3;/ush/fv3</value>
+ </envar>
+ <envar>
+   <name>FIXfv3</name><value>&HOMEfv3;/fix/fv3</value>
+ </envar>
+ <envar>
+   <name>FIXsar</name><value>&HOMEfv3;/fix/fv3/fix_sar/${NEST}</value>
+ </envar>
+ <envar>
+   <name>FIXam</name><value>&HOMEfv3;/fix/fv3/fix_am</value>
+ </envar>
+ <envar>
+   <name>FIXco2</name><value>&HOMEfv3;/fix/fv3/fix_am/fix_co2_proj</value>
  </envar>
  <envar>
    <name>UTILush</name><value>&HOMEfv3;/util/ush</value>
@@ -23,6 +62,9 @@
    <name>MYCOMROOT</name><value>&MYCOMROOT;</value>
  </envar>
  <envar>
+   <name>COMROOT</name><value>&MYCOMROOT;</value>
+ </envar>
+ <envar>
    <name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value>
  </envar>
  <envar>
@@ -31,3 +73,19 @@
  <envar>
    <name>cyc</name><value><cyclestr>@H</cyclestr></value>
  </envar>
+ <envar>
+   <name>rzdmuser</name><value>mpyle</value>
+ </envar>
+ <envar>
+   <name>SENDECF</name><value>NO</value>
+ </envar>
+ <envar>
+   <name>CASE</name><value>C768</value>
+ </envar>
+ <envar>
+   <name>NHRS</name><value>60</value>
+ </envar>
+ <envar>
+   <name>GESROOT</name><value>&GESROOT;</value>
+ </envar>
+

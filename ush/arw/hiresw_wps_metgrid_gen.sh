@@ -135,7 +135,7 @@ export err=$?
 
 if [ $err -ne 0 ]
 then
-echo "MISSING UNGRIB FILE - ABORT"
+echo "FATAL ERROR: MISSING UNGRIB FILE - ABORT"
 fi
 
 err_chk

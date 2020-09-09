@@ -2,7 +2,7 @@
 set -xe
 
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-. $USHfv3/run_commands_bc.sh
+. $HOMEfv3/ush/fv3/run_commands_bc.sh
 
 ####################################
 # Specify Execution Areas
@@ -27,6 +27,15 @@ export day=`echo $CDATE | cut -c 7-8`
 #####################################
 # Working directories
 #####################################
+
+echo DATA is $DATA
+echo DATAROOT is $DATAROOT
+
+echo NEST is $NEST
+echo MODEL is $MODEL
+echo cyc is $cyc
+echo envir is $envir
+
 
 export DATA=${DATA:-${DATAROOT:?}/hiresw.makeic_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 mkdir -p $DATA

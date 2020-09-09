@@ -2,7 +2,7 @@
 set -x
 
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-. $USHfv3/run_commands_forecast.sh
+. $HOMEfv3/ush/fv3/run_commands_forecast.sh
 
 ####################################
 # SENDCOM - Copy files to /com directory
@@ -25,13 +25,9 @@ export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
 #####################################
 # Working directories
 #####################################
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${cyc}}
-export DATA=${DATA:-${DATAROOT}/hiresw.prdgeneven_${NEST}_fv3_${cyc}}
-
-# if [ -d $DATA ]; then
-#   rm -rf $DATA
-# fi
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${cyc}_${envir}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${cyc}_${envir}}
+export DATA=${DATA:-${DATAROOT}/hiresw.prdgeneven_${NEST}_fv3_${cyc}_${envir}}
 
 if [ ! -e $DATA ]; then
 mkdir -p $DATA

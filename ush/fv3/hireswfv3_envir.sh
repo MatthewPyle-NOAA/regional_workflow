@@ -9,22 +9,7 @@ export model=fv3sar	# fv3sar (cold start) or fv3sar_da (with DA)
 export CCPP=false
 export CCPP_SUITE=FV3_GFS_2017_gfdlmp_regional
 
-if [ ${machine} = "wcoss_dell_p3" ]
-then
-
-export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-
-export PTMP=${PTMP:-/gpfs/dell1/ptmp/${USER}}
-export STMP=${STMP:-/gpfs/dell1/stmp/${USER}}
-export rzdmuser=bblake
-
-export NDATE=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/ndate
-export NHOUR=/gpfs/dell1/nco/ops/nwprod/prod_util.v1.1.0/exec/ips/nhour
-export HOMEfv3=${HOMEfv3:-/gpfs/dell2/emc/modeling/noscrub/$USER/regional_workflow}
-
-elif [ ${machine} = "wcoss_cray" ]
+if [ ${machine} = "wcoss_cray" ]
 then
 
 
@@ -40,9 +25,6 @@ export DATAROOT=${DATAROOT:-/gpfs/hps3/stmp/${USER}/tmpnwprd}
 export rzdmuser=mpyle
 
 export HOMEfv3=${HOMEfv3:-/gpfs/hps3/emc/meso/noscrub/$USER/hiresw.${hiresw_ver}}
-# export NDATE=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/ndate
-# export NHOUR=/gpfs/hps/nco/ops/nwprod/prod_util.v1.1.0/exec/nhour
-
 
 else
 

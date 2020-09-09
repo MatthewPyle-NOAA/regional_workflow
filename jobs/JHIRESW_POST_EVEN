@@ -10,7 +10,7 @@ export PS4='$SECONDS + '
 if [ $MODEL = 'fv3' ]
 then
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-. $USHfv3/run_commands_forecast.sh
+. $HOMEfv3/ush/fv3/run_commands_forecast.sh
 fi
 
 ###############################

@@ -2,7 +2,7 @@
 set -xe
 
 . $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-. $USHfv3/run_commands_bc.sh
+. $HOMEfv3/ush/fv3/run_commands_bc.sh
 
 ####################################
 # Specify Execution Areas

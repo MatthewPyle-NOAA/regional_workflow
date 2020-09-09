@@ -46,8 +46,6 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 # Set up the UTILITIES
 ###################################
 
-#module load prod_util
-
 
 # Run setpdy and initialize PDY variables
 setpdy.sh

@@ -11,12 +11,14 @@ elif [ "$machine" = "wcoss_cray" ] ; then
   . /opt/modules/default/init/sh
 fi
 
-module use ${HOMEfv3}/sorc/modulefiles_fv3/${machine}
+module use ${HOMEfv3}/sorc/modulefiles_fv3/
 jobpre=$(echo ${job} | cut -c1-17)
-if [ "${jobpre}" = "regional_forecast" ]; then
+if [ "${jobpre}" = "forecast" ]; then
   module load fv3
+  echo loaded fv3
 else
   module load regional
+  echo loaded regional
 fi
 module list
 

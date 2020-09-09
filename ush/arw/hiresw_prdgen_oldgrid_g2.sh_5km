@@ -53,8 +53,9 @@ if [ $DOMIN_SMALL = "conus" -o $DOMIN_SMALL = "conusmem2" ]
 then
   filenamthree="wrf.EMCONUS05"
 else
-echo "Improperly used for " $DOMIN " domain"
-err_exit "hiresw_prdgen_oldgrid.sh_5km only for CONUS DOMAIN"
+  echo "Improperly used for " $DOMIN " domain"
+  msg="FATAL ERROR: hiresw_prdgen_oldgrid.sh_5km incorrectly used for a non-CONUS DOMAIN"
+  err_exit $msg
 fi
 
 echo HERE region $region
@@ -70,7 +71,7 @@ then
 # wgrib2def="lambert:262.5:38.5:38.5 237.280:1799:3000 21.138:1059:3000"
 wgrib2def="lambert:262.5:38.5:38.5 237.280:1079:5000 21.138:635:5000"
 else
-err_exit "No proper definition for variable region provided to regional_prdgen_oldgrid.sh_5km"
+err_exit "FATAL ERROR: No proper definition for variable region provided to regional_prdgen_oldgrid.sh_5km"
 fi
 
 echo wgrib2def $wgrib2def
