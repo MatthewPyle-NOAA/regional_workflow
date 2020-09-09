@@ -94,9 +94,9 @@ env
 # Execute the script
 if [ $MODEL = 'arw' ]
 then
-$HOMEhiresw/scripts/arw/exnawips_hiresw.sh.ecf
+$HOMEhiresw/scripts/arw/exhiresw_gempak.sh.ecf
 else
-$HOMEfv3/scripts/fv3/exhiresw_gempak.sh
+$HOMEfv3/scripts/fv3/exhiresw_gempak.sh.ecf
 fi
 #################################################################
 

@@ -80,7 +80,7 @@ if [ $MODEL = 'arw' ]
 then
 $HOMEhiresw/scripts/arw/exhiresw_awips.sh.ecf
 else
-$HOMEfv3/scripts/fv3/exhiresw_awips.sh
+$HOMEfv3/scripts/fv3/exhiresw_awips.sh.ecf
 fi
 #
 ########################################################

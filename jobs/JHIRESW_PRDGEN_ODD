@@ -59,7 +59,7 @@ env
 
 #####################################
 # Execute the script.
-${HOMEfv3}/scripts/fv3/exhiresw_prdgen_odd.sh
+${HOMEfv3}/scripts/fv3/exhiresw_prdgen_odd.sh.ecf
 export err=$?
 #####################################
 

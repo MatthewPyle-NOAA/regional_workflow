@@ -119,7 +119,7 @@ export COMINsref=${COMINsref:-$COMsref/sref.${SREF_PDY}/${srefcyc2}/ensprod}
 
 if [ $MODEL = 'fv3' ]
 then
-$HOMEfv3/scripts/fv3/exhiresw_smartinit.sh
+$HOMEfv3/scripts/fv3/exhiresw_smartinit.sh.ecf
 else
 $HOMEhiresw/scripts/arw/exhiresw_smartinit.sh.ecf
 fi

@@ -114,7 +114,7 @@ env
 # Execute the script.
 if [ $MODEL = 'fv3' ]
 then
-${HOMEfv3}/scripts/fv3/exhiresw_post_odd.sh
+${HOMEfv3}/scripts/fv3/exhiresw_post_odd.sh.ecf
 else
 ${HOMEhiresw}/scripts/arw/exhiresw_postg2_odd.sh.ecf
 fi
