@@ -31,7 +31,7 @@ export SENDCOM=${SENDCOM:-YES}
 ####################################
 # Specify Execution Areas
 ####################################
-export POSTGPEXEC=${EXECfv3}/hireswfv3_bufr.x
+export POSTGPEXEC=${EXECfv3}/hireswfv3_bufr
 export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
 
 ####################################

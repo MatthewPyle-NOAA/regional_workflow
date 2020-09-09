@@ -114,7 +114,7 @@ fi
 cp ${PARMfv3}/params_grib2_tbl_new      ./params_grib2_tbl_new
 
 # Run the post processor
-export pgm=hireswfv3_post.x
+export pgm=hireswfv3_post
 . prep_step
 
 startmsg

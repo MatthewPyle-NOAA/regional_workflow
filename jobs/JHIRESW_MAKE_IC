@@ -12,7 +12,7 @@ fi
 ####################################
 # Specify Execution Areas
 ####################################
-export CHGRESEXEC=$EXECfv3/hireswfv3_chgres_cube.x
+export CHGRESEXEC=$EXECfv3/hireswfv3_chgres_cube
 
 ####################################
 # Run setpdy and initialize PDY variables

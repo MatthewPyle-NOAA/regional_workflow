@@ -22,61 +22,54 @@ fi
 #------------------------------------
 # install forecast
 #------------------------------------
- ${CP} hireswfv3_forecast.fd/NEMS/exe/NEMS.x            $EXEdir/hireswfv3_forecast.x
+ ${CP} hireswfv3_forecast.fd/NEMS/exe/NEMS.x            $EXEdir/hireswfv3_forecast
 
 #------------------------------------
 # install post
 #------------------------------------
- ${CP} hireswfv3_post.fd/exec/ncep_post                 $EXEdir/hireswfv3_post.x
+ ${CP} hireswfv3_post.fd/exec/ncep_post                 $EXEdir/hireswfv3_post
 
 #------------------------------------
 # install bufrpost
 #------------------------------------
- ${CP} hireswfv3_bufr.fd/hireswfv3_bufr.x                 $EXEdir/hireswfv3_bufr.x
+ ${CP} hireswfv3_bufr.fd/hireswfv3_bufr.x                 $EXEdir/hireswfv3_bufr
 
 #------------------------------------
 # install sndp
 #------------------------------------
- ${CP} hireswfv3_sndp.fd/hireswfv3_sndp.x                 $EXEdir/hireswfv3_sndp.x
+ ${CP} hireswfv3_sndp.fd/hireswfv3_sndp.x                 $EXEdir/hireswfv3_sndp
 
 #------------------------------------
 # install stnmlist
 #------------------------------------
- ${CP} hireswfv3_stnmlist.fd/hireswfv3_stnmlist.x                 $EXEdir/hireswfv3_stnmlist.x
+ ${CP} hireswfv3_stnmlist.fd/hireswfv3_stnmlist.x                 $EXEdir/hireswfv3_stnmlist
 
 #------------------------------------
 # install smartinit
 #------------------------------------
- ${CP} hireswfv3_smartinit.fd/hireswfv3_smartinit                 $EXEdir/hireswfv3_smartinit.x
+ ${CP} hireswfv3_smartinit.fd/hireswfv3_smartinit                 $EXEdir/hireswfv3_smartinit
 
 #------------------------------------
 # install smartprecip
 #------------------------------------
- ${CP} hireswfv3_smartprecip.fd/hireswfv3_smartprecip                 $EXEdir/hireswfv3_smartprecip.x
+ ${CP} hireswfv3_smartprecip.fd/hireswfv3_smartprecip                 $EXEdir/hireswfv3_smartprecip
 
 #------------------------------------
 # install fv3snowbucket
 #------------------------------------
- ${CP} hireswfv3_fv3snowbucket.fd/hireswfv3_fv3bucket                 $EXEdir/hireswfv3_fv3snowbucket.x
+ ${CP} hireswfv3_fv3snowbucket.fd/hireswfv3_fv3bucket                 $EXEdir/hireswfv3_fv3snowbucket
 
 #------------------------------------
 # install bucket
 #------------------------------------
- ${CP} hireswfv3_bucket.fd/hireswfv3_bucket                 $EXEdir/hireswfv3_bucket.x
+ ${CP} hireswfv3_bucket.fd/hireswfv3_bucket                 $EXEdir/hireswfv3_bucket
 
 
-
-#------------------------------------
-#------------------------------------
-#------------------------------------
-# install chgres
-#------------------------------------
-#  ${CP} hireswfv3_utils.fd/exec/global_chgres            $EXEdir/hireswfv3_chgres.x
 
 #------------------------------------
 # install chgres_cube
 #------------------------------------
- ${CP} hireswfv3_utils.fd/exec/chgres_cube.exe          $EXEdir/hireswfv3_chgres_cube.x
+ ${CP} hireswfv3_utils.fd/exec/chgres_cube.exe          $EXEdir/hireswfv3_chgres_cube
 
 #------------------------------------
 # install wgrib2
@@ -87,23 +80,7 @@ fi
 #------------------------------------
 # install sfc_climo_gen
 #------------------------------------
- ${CP} hireswfv3_utils.fd/exec/sfc_climo_gen            $EXEdir/hireswfv3_sfc_climo_gen.x
-
-#------------------------------------
-# install hireswfv3_grid
-#------------------------------------
-#  ${CP} hireswfv3_utils.fd/exec/hireswfv3_grid            $EXEdir/hireswfv3_grid.x
-
-#------------------------------------
-# install fre-nctools
-#------------------------------------
-# ${CP} hireswfv3_utils.fd/exec/make_hgrid               $EXEdir/hireswfv3_make_hgrid.x
-#${CP} hireswfv3_utils.fd/exec/make_hgrid_parallel      $EXEdir/hireswfv3_make_hgrid_parallel.x
-# ${CP} hireswfv3_utils.fd/exec/make_solo_mosaic         $EXEdir/hireswfv3_make_solo_mosaic.x
-# ${CP} hireswfv3_utils.fd/exec/fregrid                  $EXEdir/hireswfv3_fregrid.x
-#${CP} hireswfv3_utils.fd/exec/fregrid_parallel         $EXEdir/hireswfv3_fregrid_parallel.x
-# ${CP} hireswfv3_utils.fd/exec/filter_topo              $EXEdir/hireswfv3_filter_topo.x
-# ${CP} hireswfv3_utils.fd/exec/shave.x                  $EXEdir/hireswfv3_shave.x
+ ${CP} hireswfv3_utils.fd/exec/sfc_climo_gen            $EXEdir/hireswfv3_sfc_climo_gen
 
 
 echo;echo " .... Install system finished .... "

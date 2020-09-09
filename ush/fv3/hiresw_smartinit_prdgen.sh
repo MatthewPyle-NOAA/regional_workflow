@@ -269,7 +269,6 @@ done
 ### need an offset here to account for the 3 h offset in the SREF data????
 
 #   prob of pcp > 0.01
-#    $EXECutil/wgrib -PDS10 SREFPROB |grep "${grbpre} 64 64 0 0"|grep "0 1 $PHR $pcphr 4"|$EXECutil/wgrib -i -grib -o dump SREFPROB
 
 	echo "get PCP>0.01 over: " ${PHR} ${pcphr}
 
@@ -279,28 +278,24 @@ done
     mv dump srefpcp$IP
 
 #   prob of pcp > 0.05
-#    $EXECutil/wgrib -PDS10 SREFPROB |grep "${grbpre} 65 20 81 236"| grep "0 1 $PHR $pcphr 4"|$EXECutil/wgrib -i -grib -o dump SREFPROB
     $WGRIB2 SREFPROB | grep APCP | grep "prob >1.27" | grep ":${PHR}-${pcphr} hour" | $WGRIB2 -i SREFPROB  -grib  dump
     export err=$?; err_chk
     let IP=IP+1
     mv dump srefpcp$IP
 
 #   prob of pcp > 0.10
-#    $EXECutil/wgrib -PDS10 SREFPROB |grep "${grbpre} 65 40 163 215"| grep "0 1 $PHR $pcphr 4"|$EXECutil/wgrib -i -grib -o dump SREFPROB
     $WGRIB2 SREFPROB | grep APCP |  grep "prob >2.54" | grep ":${PHR}-${pcphr} hour"  | $WGRIB2 -i SREFPROB -grib dump
     export err=$?; err_chk
     let IP=IP+1
     mv dump srefpcp$IP
 
 #   prob of pcp > 0.25
-#    $EXECutil/wgrib -PDS10 SREFPROB |grep "${grbpre} 65 101 153 154"| grep "0 1 $PHR $pcphr 4"|$EXECutil/wgrib -i -grib -o dump SREFPROB
     $WGRIB2 SREFPROB | grep APCP |  grep "prob >6.35" | grep ":${PHR}-${pcphr} hour"  | $WGRIB2 -i SREFPROB -grib dump
     export err=$?; err_chk
     let IP=IP+1
     mv dump srefpcp$IP
 
 #   prob of pcp > 0.50
-#    $EXECutil/wgrib -PDS10 SREFPROB |grep "${grbpre} 65 203 51 51"| grep "0 1 $PHR $pcphr 4"|$EXECutil/wgrib -i -grib -o dump SREFPROB
     $WGRIB2 SREFPROB | grep APCP |  grep "prob >12.7" | grep ":${PHR}-${pcphr} hour" | $WGRIB2 -i SREFPROB -grib dump
     export err=$?; err_chk
     let IP=IP+1
@@ -818,7 +813,7 @@ fi
 	sleep 2
 
 
-     $EXECfv3/hireswfv3_smartprecip.x <<EOF > ${ppgm}precip${freq}${fhr}.out 2>&1 
+     $EXECfv3/hireswfv3_smartprecip <<EOF > ${ppgm}precip${freq}${fhr}.out 2>&1 
 $pfhr1 $pfhr2 $pfhr3 $pfhr4 $IARW
 EOF
 export err=$?; err_chk
