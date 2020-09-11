@@ -388,6 +388,7 @@
       <and>
         <taskdep task="gempak"/>
         <taskdep task="awips"/>
+        <taskdep task="bufrpost"/>
         <taskdep task="smartinit_b"/>
       </and>
     </dependency>

@@ -5,12 +5,6 @@ set -x
 echo `date` $0 `date -u` begin
 export PS4='$SECONDS + '
 
-if [ $MODEL = 'fv3' -a  ${RUN_ENVIR} = 'dev' ]
-then
-. $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-fi
-
-
 ###########################################################
 # obtain unique process id (pid) and make temp directories
 ###########################################################

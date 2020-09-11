@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if [ $MODEL = 'fv3' -a  ${RUN_ENVIR} = 'dev' ]
-then
-. $HOMEfv3/ush/fv3/hireswfv3_envir.sh
-fi
-
 ########################################
 # Runs HIRESW WRFBUFR and SNDP programs
 ########################################
