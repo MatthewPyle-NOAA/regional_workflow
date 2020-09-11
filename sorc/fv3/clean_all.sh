@@ -51,5 +51,6 @@ make clean
 
 cd ${BASE}/hireswfv3_wgrib2.cd/grib2
 make clean
+make deep-clean
 
 ##############################

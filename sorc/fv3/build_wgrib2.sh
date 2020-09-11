@@ -1,6 +1,8 @@
 #! /bin/sh
 
 
+module purge
+
 source ./machine-setup.sh > /dev/null 2>&1
 
 module load ncep
