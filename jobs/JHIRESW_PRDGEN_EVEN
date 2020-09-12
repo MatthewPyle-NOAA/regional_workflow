@@ -1,7 +1,7 @@
 #!/bin/ksh
 set -x
 
-. $HOMEfv3/ush/fv3/run_commands_forecast.sh
+. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
 
 ####################################
 # SENDCOM - Copy files to /com directory
