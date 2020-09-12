@@ -43,6 +43,10 @@ setpdy.sh
 . ./PDY
 fi
 
+export HOMEobsproc_shared_bufr_cword=${HOMEobsproc_shared_bufr_cword:-${NWROOT:?}/obsproc_shared/bufr_cword.${obsproc_shared_bufr_cword_ver:?}}
+export USHobsproc_shared_bufr_cword=${USHobsproc_shared_bufr_cword:-$HOMEobsproc_shared_bufr_cword/ush}
+export EXECobsproc_shared_bufr_cword=${EXECobsproc_shared_bufr_cword:-$HOMEobsproc_shared_bufr_cword/exec}
+
 if [ $MODEL = 'arw' ]
 then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}

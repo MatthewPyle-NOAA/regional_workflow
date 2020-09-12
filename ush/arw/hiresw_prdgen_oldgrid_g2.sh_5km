@@ -68,7 +68,6 @@ then
 wgrib2def="lambert:271:38.0:38.0 250.200:884:5000 22.100:614:5000"
 elif [ $region = "conus" ]
 then
-# wgrib2def="lambert:262.5:38.5:38.5 237.280:1799:3000 21.138:1059:3000"
 wgrib2def="lambert:262.5:38.5:38.5 237.280:1079:5000 21.138:635:5000"
 else
 err_exit "FATAL ERROR: No proper definition for variable region provided to regional_prdgen_oldgrid.sh_5km"
@@ -110,9 +109,7 @@ fi
 
 # INPUT_DATA=${DATA}
 
-
 fi
-
 
 looplim=90
 loop=1
@@ -194,7 +191,5 @@ fi
 ###############################################################
 ###############################################################
 
-  cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.conus.grib2_${region}_${subpiece}
+  cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${region}_${subpiece}
 
-
-# fi

@@ -28,6 +28,7 @@ export WGRIB2=${HOMEfv3}/exec/fv3/hireswfv3_wgrib2
 export COMROOT=${MYCOMROOT}
 export RUN_ENVIR=dev
 export GESROOT=${MYGESROOT}
+export HOMEobsproc_shared_bufr_cword=$NWROOT/obsproc_shared/bufr_cword.v1.0.0
 
 echo here in rocoto_pre_job with WGRIB2 as $WGRIB2
 
