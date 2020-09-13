@@ -42,7 +42,7 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 
 # Run setpdy and initialize PDY variables
 setpdy.sh
-. PDY
+. ./PDY
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 

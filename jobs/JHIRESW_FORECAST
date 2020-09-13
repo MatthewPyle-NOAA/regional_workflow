@@ -62,7 +62,7 @@ fi
 if [ $MODEL = 'arw' -o $RUN_ENVIR = "prod" ]
 then
 setpdy.sh
-. PDY
+. ./PDY
 fi
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}

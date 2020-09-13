@@ -46,7 +46,7 @@ export EXECobsproc_shared_bufr_cword=${EXECobsproc_shared_bufr_cword:-$HOMEobspr
 
 # Run setpdy and initialize PDY variables
 setpdy.sh
-. PDY
+. ./PDY
 
 ecflow_client --event release_bufrsnd_even
 
