@@ -15,4 +15,3 @@
   export APRUNC=${APRUNC:-"aprun -b -j1 -n${TOTAL_TASKS} -N${NCTSK} -d${OMP_NUM_THREADS} -cc depth"}
   export APRUNO="time"
   export BACKGROUND=""
-fi

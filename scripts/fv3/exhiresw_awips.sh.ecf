@@ -32,7 +32,7 @@ then
   maxtries=100
   while [ $icnt -lt $maxtries ]
   do
-    if [ -f $COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn.idx ] ; then
+    if [ -f $COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conussbn.grib2.idx ] ; then
       break
     else
       let "icnt=icnt+1"
@@ -44,7 +44,7 @@ then
      err_exit $msg
   fi
 
-    export FORT11=$COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conus.grib2_sbn
+    export FORT11=$COMIN/${NET}.t${cyc}z.${MODEL}_5km.f${fhr}.conussbn.grib2
     export FORT31=""
     export FORT51=grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
     $TOCGRIB2 < $PARMutil/grib2_${NEST}_hiresw.awpreg_f${fhr}
