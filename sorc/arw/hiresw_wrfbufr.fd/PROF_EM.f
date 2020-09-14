@@ -168,6 +168,7 @@ C	new stuff
 	character(len=256) :: prefilename       !new added by Jun Du
       integer :: Status, DataHandle, hor_size, hor_size_u, hor_size_v
       character(len=19):: startdate,datestr,datestrold
+      character(len=256):: startdateget
 
 	real:: rinc(5)
 	integer:: IDATE(8),JDATE(8), IDATENEW(8)
@@ -280,8 +281,10 @@ c20080701	write(6,*) 'js, je, jev: ', js,je,jev
 
 C Getting start time
       CALL ext_int_get_dom_ti_char(DataHandle
-     1 ,'START_DATE',startdate, status )
-        print*,'startdate= ',startdate
+     1 ,'START_DATE',startdateget, status )
+
+        startdate=startdateget(1:19)
+        print*,'startdate= ',startdateget
 
       jdate=0
       idate=0
@@ -2072,7 +2075,9 @@ cDu.Jun   filename=filename(1:len-2)//cfhr
          
 C Getting start time
       CALL ext_int_get_dom_ti_char(DataHandle
-     1 ,'START_DATE',startdate, status )
+     1 ,'START_DATE',startdateget, status )
+
+        startdate=startdateget(1:19)
         print*,'startdate= ',startdate
         
 c20080701        call ext_int_get_dom_ti_integer(DataHandle,'MP_PHYSICS'
@@ -2640,9 +2645,8 @@ c
 !!     +  IM,1,JM,1,IM,JS,JE,1)
 
       VarName='REFL_10CM'
-      call getVariableB(fileName,DateStr,DataHandle,VarName,DUMMY,      &
+      call getVariableBikj(fileName,DateStr,DataHandle,VarName,DUM3D,      &
      +  IM,1,JM,1,IM,JS,JE,1)
-
 
       VarName='CLDFRA'
       call getVariableBikj(fileName,DateStr,DataHandle,VarName,DUM3D,      &
