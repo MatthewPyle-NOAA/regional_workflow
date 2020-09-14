@@ -1,0 +1,124 @@
+#!/bin/ksh
+
+########################################
+# RUNS HIRESW_PRDGEN JOB
+########################################
+set -xa
+export PS4='$SECONDS + '
+date
+
+if [ $MODEL = 'fv3' ]
+then
+. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+fi
+
+###############################
+# Specify NET and RUN name
+###############################
+export NET=${NET:-hiresw}
+export RUN=${RUN:-hiresw}
+
+export DBN_NEST=`echo ${NEST}_${MODEL} | sed -e s/mem2//g | tr '[a-z]' '[A-Z]'`
+
+
+####################################
+# SENDCOM - Copy files to /com directory
+####################################
+export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
+
+####################################
+# Specify Execution Areas
+####################################
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
+
+echo here with WGRIB2 as $WGRIB2
+
+####################################
+# Run setpdy and initialize PDY variables
+####################################
+# PDY and CDATE are passed in through Rocoto xml
+
+export cycle=${cycle:-t${cyc}z}
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+setpdy.sh
+. ./PDY
+fi
+
+#####################################
+# Working directories
+#####################################
+
+export pid=$$
+
+export DATA=${DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.post_${NEST}_${MODEL}_${cyc}_${envir}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${cyc}_${envir}}
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${cyc}_${envir}}
+
+mkdir -p $DATA
+cd $DATA
+
+export DBN_ALERT_TYPE=${DBN_ALERT_TYPE:-HIRESW_${DBN_NEST}_GB2}
+export DBN_ALERT_TYPE_WIDX=${DBN_ALERT_TYPE_WIDX:-HIRESW_${DBN_NEST}_GB2_WIDX}
+export DBN_ALERT_TYPE_SMART=${DBN_ALERT_TYPE_SMART:-HIRESW_${DBN_NEST}_NDFD_GB2}
+export DBN_ALERT_TYPE_SMART_WIDX=${DBN_ALERT_TYPE_SMART_WIDX:-HIRESW_${DBN_NEST}_NDFD_GB2_WIDX}
+
+export outid="LL$job"
+export pgmout="OUTPUT.${pid}"
+export pgmerr=errfile
+
+if [ $MODEL = 'arw' ]
+then
+
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+
+fi
+
+
+#####################################
+# Define COM directories
+#####################################
+export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+mkdir -p $COMOUT
+export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $NWGES
+
+#####################################
+# wcoss environment settings
+#####################################
+export OMP_NUM_THREADS=1
+
+env
+
+#####################################
+# Execute the script.
+
+if [ $MODEL = 'fv3' ]
+then
+${HOMEfv3}/scripts/fv3/exhiresw_prdgen.sh.ecf
+else
+${HOMEhiresw}/scripts/arw/exhiresw_prdgeng2.sh.ecf
+fi
+
+export err=$?
+#####################################
+
+if [ -e $pgmerr ] ; then
+cat $pgmerr
+fi
+
+if [ -e $pgmout ] ; then
+cat $pgmout
+fi
+
+postmsg "$jlogfile" "$job FOR NEST=${NEST}${MODEL} IS COMPLETE"
+
+exit $err

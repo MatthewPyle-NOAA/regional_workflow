@@ -1,0 +1,69 @@
+#!/bin/sh
+
+set -x 
+
+echo `date` $0 `date -u` begin
+export PS4='$SECONDS + '
+
+###########################################################
+# obtain unique process id (pid) and make temp directories
+###########################################################
+export pid=$$
+export DATA_IN=${DATA_IN:-${DATAROOT:?}}
+export DATA=$DATA_IN/${jobid:?}
+
+rm -rf $DATA
+mkdir -p $DATA
+
+cd $DATA
+
+####################################
+# Determine Job Output Name on System
+####################################
+export outid="LL$job"
+export pgmout="OUTPUT.${pid}"
+
+export cycle=t${cyc}z
+
+###############################
+# Specify NET and RUN name
+##############################
+export NET=hiresw
+export RUN=hiresw
+
+# Run setpdy and initialize PDY variables
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+setpdy.sh
+. ./PDY
+fi
+
+env
+
+########################################################
+# Start remove the directories
+########################################################
+cd $DATAROOT
+for mod in fv3 arw
+do
+  if [ $cyc -eq 00 -o $cyc -eq 12 ]; then
+    for nest in hi guam conus himem2 conusmem2
+    do
+      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
+      do
+        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+      done
+    done
+  else
+    for nest in pr ak prmem2 akmem2
+    do
+      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
+      do
+        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+      done
+    done
+  fi
+done
+
+date

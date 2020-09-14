@@ -1,0 +1,67 @@
+#BSUB -oo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_ungrib.out__DOM___CORE_
+#BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_ungrib.err__DOM___CORE_
+#BSUB -q "devhigh"
+#BSUB -J HIRESW_UNGRIB
+#BSUB -W 0:13
+#BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/
+#BSUB -P HREF-T2O
+#BSUB -M 3000
+#BSUB -extsched 'CRAYLINUX[]' -R '1*{select[craylinux && !vnode]} + 4*{select[craylinux && vnode]span[ptile=4] cu[type=cabinet]}' rusage[mem=3000]
+
+export NTASK=4
+export PTILE=4
+
+export MP_LABELIO=yes
+
+export KMP_AFFINITY=disabled
+export OMP_NUM_THREADS=1
+
+vers=`cat /u/Matthew.Pyle/hiresw_version_test`
+
+export HOMEhiresw=/gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.${vers}
+export RUN_ENVIR=para
+export envir=para
+export NET=hiresw
+export RUN=hiresw
+
+export NEST=_DOM_
+export cyc=_CYC_
+export MODEL=_CORE_
+
+export DATEroot=/gpfs/hps/nco/ops/com/date
+DATE=`cat $DATEroot/t${cyc}z | cut -c7-14`
+
+DATEgfs=`$NDATE -6 ${DATE}${cyc} | cut -c1-8`
+CYCgfs=`$NDATE -6 ${DATE}${cyc} | cut -c9-10`
+
+echo DATEgfs $DATEgfs
+echo CYCgfs $CYCgfs
+export COMINgfs=$COMROOTp3/gfs/prod/gfs.${DATEgfs}
+
+# export COMINgfs=/gpfs/dell3/ptmp/emc.glopara/ROTDIRS/v16rt2c
+
+
+export COMINnam=$COMROOTp3/nam/prod/nam.${DATE}
+export COMINnamold=$COMROOTp3/nam/prod/nam.${DATEgfs}
+
+export DATAROOT=/gpfs/hps2/stmp/Matthew.Pyle/tmpnwprd
+export MYCOMROOT=/gpfs/hps2/ptmp/Matthew.Pyle/com
+export COMROOT=/gpfs/hps/nco/ops/com
+
+export COMOUT=${MYCOMROOT}/${NET}/$envir/${RUN}.${DATE}
+export DATA=${DATAROOT}/hiresw.ungrib_${NEST}_${MODEL}_${cyc}_${envir}
+
+# purge
+
+types="bufrpost forecast gempak posteven post postodd prdgen smartinit smartinitb"
+
+for typ in $types
+do
+rm -rf ${DATAROOT}/hiresw.${typ}_${NEST}_${MODEL}_${cyc}_${envir}
+done
+
+export cycold=$CYCgfs
+
+$HOMEhiresw/jobs/JHIRESW_UNGRIB
+
+bsub < ${HOMEhiresw}/launch_info/sub_metgrid.lsf__DOM___CORE___CYC_

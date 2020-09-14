@@ -9,19 +9,27 @@ if [ "$machine" = "wcoss_dell_p3" ] ; then
   . /usrx/local/prod/lmod/lmod/init/sh
 elif [ "$machine" = "wcoss_cray" ] ; then
   . /opt/modules/default/init/sh
-elif [ "$machine" = "hera" ] ; then
-  . /apps/lmod/lmod/init/sh
-elif [ "$machine" = "jet" ] ; then
-  . /apps/lmod/lmod/init/sh
 fi
 
-module use ${HOMEfv3}/modulefiles/${machine}
+module use ${HOMEfv3}/sorc/modulefiles_fv3/
 jobpre=$(echo ${job} | cut -c1-17)
-if [ "${jobpre}" = "regional_forecast" ]; then
+if [ "${jobpre}" = "forecast" ]; then
   module load fv3
+  echo loaded fv3
 else
   module load regional
+  echo loaded regional
 fi
 module list
+
+
+export WGRIB2=${HOMEfv3}/exec/fv3/hireswfv3_wgrib2
+
+export COMROOT=${MYCOMROOT}
+export RUN_ENVIR=dev
+export GESROOT=${MYGESROOT}
+export HOMEobsproc_shared_bufr_cword=$NWROOT/obsproc_shared/bufr_cword.v1.0.0
+
+echo here in rocoto_pre_job with WGRIB2 as $WGRIB2
 
 exec "$@"

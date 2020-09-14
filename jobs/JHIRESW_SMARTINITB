@@ -1,0 +1,114 @@
+#!/bin/sh
+
+########################################
+# Runs HIRESW WRFBUFR and SNDP programs
+########################################
+set -xa
+export PS4='$SECONDS + ' 
+date
+
+###############################
+# Specify NET and RUN name
+###############################
+export NET=${NET:-hiresw}
+export RUN=${RUN:-hiresw}
+export SENDCOM=${SENDCOM:-YES}
+
+export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
+
+# 
+# obtain unique process id (pid) and make temp directories
+#
+export pid=$$
+
+export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
+
+mkdir -p $DATA
+cd $DATA
+
+####################################
+# Determine Job Output Name on System
+####################################
+export outid="LL$job"
+export pgmout="OUTPUT.${pid}"
+
+export cycle=${cycle:-t${cyc}z}
+
+###############################
+
+export DBN_ALERT_TYPE_SMART=${DBN_ALERT_TYPE_SMART:-HIRESW_${DBN_NEST}_NDFD_GB2}
+export DBN_ALERT_TYPE_SMART_WIDX=${DBN_ALERT_TYPE_SMART_WIDX:-HIRESW_${DBN_NEST}_NDFD_GB2_WIDX}
+
+# also have FV3 block defined here.
+if [ $MODEL = 'fv3' ]
+then
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+
+else
+
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+
+fi
+
+
+###################################
+# Set up the UTILITIES
+###################################
+#module load grib_util
+
+# Run setpdy and initialize PDY variables
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+  setpdy.sh
+  . ./PDY
+
+else
+# define PDYm1 for rocoto FV3 case
+  export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
+fi
+
+export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+export COMsref=${COMsref:-$(compath.py sref/prod)}
+
+mkdir -p $COMOUT
+
+let srefcyc=$cyc-3
+if [ $srefcyc -lt 0 ] ; then
+  let srefcyc=$srefcyc+24
+  export SREF_PDY=$PDYm1
+else
+  export SREF_PDY=$PDY
+fi
+
+export srefcyc
+let srefcyc2=$srefcyc
+
+if [ $srefcyc2 -lt 10 ];then srefcyc2="0"${srefcyc2};fi
+
+export COMINsref=${COMINsref:-$COMsref/sref.${SREF_PDY}/${srefcyc2}/ensprod}
+
+#export IOBUF_PARAMS='*:verbose'
+export IOBUF_PARAMS='fort.11:size=64M:count=16:verbose'
+########################################################
+# Execute the script.
+
+if [ $MODEL = 'fv3' ]
+then
+$HOMEfv3/scripts/fv3/exhiresw_smartinitb.sh.ecf
+else
+$HOMEhiresw/scripts/arw/exhiresw_smartinitb.sh.ecf
+fi
+########################################################
+
+date

@@ -1,0 +1,110 @@
+#!/bin/sh
+
+########################################
+# Runs HIRESW WRFBUFR and SNDP programs
+########################################
+set -xa
+export PS4='$SECONDS + '
+date
+
+if [ $MODEL = 'fv3' ]
+then
+. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+fi
+
+###############################
+# Specify NET and RUN name
+###############################
+export NET=${NET:-hiresw}
+export RUN=${RUN:-hiresw}
+
+
+####################################
+# SENDCOM - Copy files to /com directory
+####################################
+export SENDCOM=${SENDCOM:-YES}
+
+####################################
+# Specify Execution Areas
+####################################
+export POSTGPEXEC=${EXECfv3}/hireswfv3_bufr
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
+
+####################################
+# Run setpdy and initialize PDY variables
+####################################
+# PDY and CDATE are passed in through Rocoto xml
+
+export cycle=${cycle:-t${cyc}z}
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+setpdy.sh
+. ./PDY
+fi
+
+export HOMEobsproc_shared_bufr_cword=${HOMEobsproc_shared_bufr_cword:-${NWROOT:?}/obsproc_shared/bufr_cword.${obsproc_shared_bufr_cword_ver:?}}
+export USHobsproc_shared_bufr_cword=${USHobsproc_shared_bufr_cword:-$HOMEobsproc_shared_bufr_cword/ush}
+export EXECobsproc_shared_bufr_cword=${EXECobsproc_shared_bufr_cword:-$HOMEobsproc_shared_bufr_cword/exec}
+
+if [ $MODEL = 'arw' ]
+then
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+fi
+
+#####################################
+# Working directories
+#####################################
+
+
+export DATA=${DATA:-${DATAROOT:?}/hiresw.bufrpost_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
+
+mkdir -p $DATA
+cd $DATA
+
+export pid=$$
+export pgmout="OUTPUT.${pid}"
+export pgmerr=errfile
+
+#####################################
+# Define COM directories
+#####################################
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+mkdir -p $COMOUT
+export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $NWGES
+
+#####################################
+# wcoss environment settings
+#####################################
+export OMP_NUM_THREADS=1
+
+env
+
+#####################################
+# Execute the script.
+
+if [ $MODEL = 'fv3' ]
+then
+${HOMEfv3}/scripts/fv3/exhiresw_bufr.sh.ecf
+else
+${HOMEhiresw}/scripts/arw/exhiresw_wrfbufr.sh.ecf
+fi
+
+export err=$?
+#####################################
+
+if [ -e $pgmerr ] ; then
+cat $pgmerr
+fi
+
+if [ -e $pgmout ] ; then
+cat $pgmout
+fi
+
+exit $err

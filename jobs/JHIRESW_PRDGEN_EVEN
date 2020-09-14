@@ -1,0 +1,71 @@
+#!/bin/ksh
+set -x
+
+. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+
+####################################
+# SENDCOM - Copy files to /com directory
+####################################
+export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
+
+####################################
+# Specify Execution Areas
+####################################
+export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
+
+####################################
+# Run setpdy and initialize PDY variables
+####################################
+# PDY and CDATE are passed in through Rocoto xml
+#setpdy.sh
+#. ./PDY
+
+#####################################
+# Working directories
+#####################################
+export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT}/hiresw.posteven_${NEST}_fv3_${cyc}_${envir}}
+export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT}/hiresw.postodd_${NEST}_fv3_${cyc}_${envir}}
+export DATA=${DATA:-${DATAROOT}/hiresw.prdgeneven_${NEST}_fv3_${cyc}_${envir}}
+
+if [ ! -e $DATA ]; then
+mkdir -p $DATA
+fi
+
+cd $DATA
+
+export pid=$$
+export pgmout="OUTPUT.${pid}"
+export pgmerr=errfile
+
+#####################################
+# Define COM directories
+#####################################
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+
+mkdir -p $COMOUT
+export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
+mkdir -p $NWGES
+
+#####################################
+# wcoss environment settings
+#####################################
+export OMP_NUM_THREADS=1
+
+env
+
+#####################################
+# Execute the script.
+${HOMEfv3}/scripts/fv3/exhiresw_prdgen_even.sh.ecf
+export err=$?
+#####################################
+
+if [ -e $pgmerr ] ; then
+cat $pgmerr
+fi
+
+if [ -e $pgmout ] ; then
+cat $pgmout
+fi
+
+exit $err
