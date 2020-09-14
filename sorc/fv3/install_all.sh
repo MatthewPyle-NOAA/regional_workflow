@@ -80,7 +80,7 @@ fi
 #------------------------------------
 # install sfc_climo_gen
 #------------------------------------
- ${CP} hireswfv3_utils.fd/exec/sfc_climo_gen            $EXEdir/hireswfv3_sfc_climo_gen
+#  ${CP} hireswfv3_utils.fd/exec/sfc_climo_gen            $EXEdir/hireswfv3_sfc_climo_gen
 
 
 echo;echo " .... Install system finished .... "

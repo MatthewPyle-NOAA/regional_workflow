@@ -30,7 +30,7 @@
   <!ENTITY MAKE_BC_RESOURCES "<nodes>20:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>4</value></envar><envar><name>NCTSK</name><value>4</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
 
 <!-- some of these are domain specific -->
-  <!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>02:29:00</walltime>">
+  <!ENTITY FORECAST_EXTRA "<envar><name>NCTSK</name><value>12</value></envar><envar><name>OMP_THREADS</name><value>2</value></envar><walltime>02:24:00</walltime>">
 
   <!ENTITY FORECAST_TM00_RESOURCES_hi "<nodes>7:ppn=12:tpp=2</nodes><envar><name>TOTAL_TASKS</name><value>84</value></envar><envar><name>TASK_X</name><value>6</value></envar><envar><name>TASK_Y</name><value>12</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>12</value></envar>&FORECAST_EXTRA;">
 
@@ -66,7 +66,7 @@
   <!ENTITY AWIPS_RESOURCES        "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
   <!ENTITY AWIPS_RESOURCES_SHORT  "<nodes>1:ppn=24</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
 
-  <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>2:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>16</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
+  <!ENTITY BUFRPOST_RESOURCES_conus "<nodes>3:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>24</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES_ak "<nodes>1:ppn=8:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>8</value></envar><envar><name>NCTSK</name><value>8</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES_hi "<nodes>1:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
   <!ENTITY BUFRPOST_RESOURCES_pr "<nodes>1:ppn=1:tpp=1</nodes><envar><name>TOTAL_TASKS</name><value>1</value></envar><envar><name>NCTSK</name><value>1</value></envar>&BUFR_EXTRA;">
