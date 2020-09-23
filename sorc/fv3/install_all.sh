@@ -69,7 +69,7 @@ fi
 #------------------------------------
 # install chgres_cube
 #------------------------------------
- ${CP} hireswfv3_utils.fd/exec/chgres_cube.exe          $EXEdir/hireswfv3_chgres_cube
+ ${CP} hireswfv3_utils.fd/exec/chgres_cube          $EXEdir/hireswfv3_chgres_cube
 
 #------------------------------------
 # install wgrib2
