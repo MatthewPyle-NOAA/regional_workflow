@@ -26,7 +26,7 @@ Obtaining and building the package
 Clone it with this command (but change hiresw.v8.0.0 to whatever you want to call it in the directory that it is cloned into):
 
 
-git clone -b v8.0 https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
+git clone -b v8.0_beta https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
 
 
 Installation directions:
