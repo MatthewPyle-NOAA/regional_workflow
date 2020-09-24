@@ -2129,6 +2129,7 @@ end subroutine retrieve_field
 !tryelim         CALL nl_set_mminlu ( grid%id, 'USGS')
          CALL nl_set_iswater (grid%id, 16 )
 !wasadded         CALL nl_set_islake (grid%id, 17 )
+         CALL nl_set_islake (grid%id, -1 )
          CALL nl_set_isice (grid%id, 24 )
 
 
