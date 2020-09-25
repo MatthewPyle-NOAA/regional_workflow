@@ -68,7 +68,7 @@ def write_filelist(fname,comgfs,fsave,svdate,retro,path,suf,o3fname,filetype,get
             sys.exit("Unable to locate INPUT in your environment!\n" \
                      "Therefore cannot find where EnKF members reside for Retro. Exit.")
     else:
-        path=comgfs+'.'+svPDY+'/'+svCYC
+        path=comgfs+'.'+svPDY+'/'+svCYC+'/atmos'
         print 'set path here to : ', path
     f=open(fname,'w')
     havefile=True   
@@ -265,7 +265,7 @@ def main():
                         sys.exit("Unable to locate INPUT in your environment!\n" \
                                  "Therefore cannot find where EnKF members reside for Retro. Exit.")
                 else:
-                    path=comgfs+'.'+PDY+'/'+CYC
+                    path=comgfs+'.'+PDY+'/'+CYC+'/atmos'
 
                 if gfs_nemsio:
                     en=path+'/gfs.t'+CYC+'z.'+filetype+'f'+str(f).zfill(3)+'.nemsio'
@@ -286,14 +286,14 @@ def main():
                         diff = abs( (tdelt.days * 24. ) + (tdelt.seconds/(3600.)) )
                         if exact:
                             if diff <= 0.0001 and f<=fsave:
-                                nens=checkfile(path,f,cdate,suf,gfs_nemsio)
+                                nens=checkfile(path,f,cdate,suf,gfs_nemsio,gfs_netcdf)
                                 if nens>=0:
                                     hdiff=diff
                                     svdate=dateobj
                                     fsave=f
                         else:
                             if diff <= hdiff or (diff <= hdiff and f<fsave):
-                                nens=checkfile(path,f,cdate,suf,gfs_nemsio)
+                                nens=checkfile(path,f,cdate,suf,gfs_nemsio,gfs_netcdf)
                                 if nens>=0:
                                     hdiff=diff
                                     svdate=dateobj
