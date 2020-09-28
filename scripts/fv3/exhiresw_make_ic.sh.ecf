@@ -51,16 +51,56 @@ fi
 # set the links to use the 4 halo grid and orog files
 # these are necessary for creating the boundary data
 #
+
+if [ ! -e $FIXsar/${CASE}_grid.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}_grid.tile7.halo4.nc $FIXsar/${CASE}_grid.tile7.nc 
+fi
+
+if [ ! -e $FIXsar/${CASE}_oro_data.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}_oro_data.tile7.halo4.nc $FIXsar/${CASE}_oro_data.tile7.nc 
+fi
+
+if [ ! -e $FIXsar/${CASE}.vegetation_greenness.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.vegetation_greenness.tile7.halo4.nc $FIXsar/${CASE}.vegetation_greenness.tile7.nc
+fi
+
+if [ ! -e $FIXsar/${CASE}.soil_type.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.soil_type.tile7.halo4.nc $FIXsar/${CASE}.soil_type.tile7.nc
+fi
+
+if [ ! -e $FIXsar/${CASE}.slope_type.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.slope_type.tile7.halo4.nc $FIXsar/${CASE}.slope_type.tile7.nc
+fi
+
+if [ ! -e $FIXsar/${CASE}.substrate_temperature.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.substrate_temperature.tile7.halo4.nc $FIXsar/${CASE}.substrate_temperature.tile7.nc
+fi
+
+if [ ! -e $FIXsar/${CASE}.facsf.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.facsf.tile7.halo4.nc $FIXsar/${CASE}.facsf.tile7.nc
+fi
+
+if [ ! -e  $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.maximum_snow_albedo.tile7.halo4.nc $FIXsar/${CASE}.maximum_snow_albedo.tile7.nc
+fi
+
+if [ ! -e $FIXsar/${CASE}.snowfree_albedo.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.snowfree_albedo.tile7.halo4.nc $FIXsar/${CASE}.snowfree_albedo.tile7.nc
+fi
+
+if [ ! -e  $FIXsar/${CASE}.vegetation_type.tile7.nc ]
+then
 ln -sf $FIXsar/${CASE}.vegetation_type.tile7.halo4.nc $FIXsar/${CASE}.vegetation_type.tile7.nc
+fi
 
 #
 # create namelist and run chgres cube
