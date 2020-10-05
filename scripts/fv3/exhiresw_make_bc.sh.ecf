@@ -10,9 +10,13 @@
 #   3) 2019-05-02	Ben Blake
 #			Created exfv3cam_sar_chgres.sh script
 #			from global_chgres_driver.sh
+#
 #   4) 2020-07-27       Matthew Pyle
 #                       Error checking on normal completion.  Eliminates 
 #                       linking to FIXsar directory within script
+#
+#   5) 2020-10-05       Matthew Pyle
+#                       Changes for GFSv16 and processing netCDF files
 ############################################################################
 set -ax
 
@@ -34,7 +38,8 @@ cp ${CHGRESEXEC} .
 # NHRSda = length of DA cyce forecast (always 1-h)
 if [ $tmmark = tm00 ]; then
   hour=3
-  end_hour=$NHRS
+  end_hour_a=30
+  end_hour_b=$NHRS
   hour_inc=3
 else
   hour=0
@@ -42,7 +47,116 @@ else
   hour_inc=1
 fi
 
-while (test "$hour" -le "$end_hour")
+while (test "$hour" -le "$end_hour_a")
+  do
+
+  gfs_hour=`expr $hour + 6`
+
+  rem=$((gfs_hour%6))
+  if [ $rem -ne 0  ]; then
+    gfs_hour_t=`expr $gfs_hour + 3`
+  else
+    gfs_hour_t=$gfs_hour
+  fi
+
+  if [ $gfs_hour -lt 10 ]; then
+    gfs_hour='0'$gfs_hour
+  fi
+
+  if [ $gfs_hour_t -lt 10 ]; then
+    gfs_hour_t='0'$gfs_hour_t
+  fi
+
+  if [ $hour -lt 10 ]; then
+    hour_name='00'$hour
+  elif [ $hour -lt 100 ]; then
+    hour_name='0'$hour
+  else
+    hour_name=$hour
+  fi
+
+
+rm poe.${hour_name}
+
+mkdir -p ${hour_name}
+cd ${hour_name}
+
+rm ./*
+
+export SDATE=`$NDATE ${hour_name} $CDATE`
+python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $SDATE -t ${gfs_hour_t} -s ${gfs_hour} -o tmp.atm --exact=yes --gfs_nemsio=no --gfs_netcdf=yes  --filetype=atm
+ATMDIR=`head -n1 tmp.atm`
+ATMFILE=`tail -n1 tmp.atm`
+
+python $UTILush/getbest_FV3GFS.py  -d $COMINgfs/gfs -v $CDATE -t 72 -o tmp.sfc --exact=yes --gfs_nemsio=no --gfs_netcdf=yes  --filetype=sfc
+SFCFILE=`tail -n1 tmp.sfc`
+
+echo "&config" > fort.41
+echo ' mosaic_file_target_grid="_FIXsar_/_CASE__mosaic.nc"' >> fort.41
+echo ' fix_dir_target_grid="_FIXsar_"' >> fort.41
+echo ' orog_dir_target_grid="_FIXsar_"' >> fort.41
+echo ' orog_files_target_grid="_CASE__oro_data.tile7.halo4.nc"' >> fort.41 
+echo ' vcoord_file_target_grid="_FIXam_/global_hyblev.l_LEVS_.txt"' >> fort.41 
+echo ' mosaic_file_input_grid="NULL"' >> fort.41
+echo ' orog_dir_input_grid="NULL"' >> fort.41
+echo ' orog_files_input_grid="NULL"' >> fort.41
+echo ' data_dir_input_grid="_ATMDIR_"' >> fort.41
+echo ' atm_files_input_grid="_ATMFILE_"' >> fort.41
+echo ' sfc_files_input_grid="_SFCFILE_"' >> fort.41
+echo " cycle_mon=$month" >> fort.41
+echo " cycle_day=$day" >> fort.41
+echo " cycle_hour=$cyc" >> fort.41
+echo " convert_atm=.true." >> fort.41
+echo " convert_sfc=.false." >> fort.41
+echo " convert_nst=.false." >> fort.41
+echo ' input_type="gaussian_netcdf"' >> fort.41
+echo ' tracers="sphum","liq_wat","o3mr","ice_wat","rainwat","snowwat","graupel"' >> fort.41
+echo ' tracers_input="spfh","clwmr","o3mr","icmr","rwmr","snmr","grle"' >> fort.41
+echo " regional=${REGIONAL}" >> fort.41
+echo " halo_bndy=${HALO}" >> fort.41
+echo "/" >>  fort.41
+
+cat fort.41 | sed s:_FIXsar_:${FIXsar}:g \
+            | sed s:_CASE_:${CASE}:g \
+            | sed s:_FIXam_:${FIXam}:g  \
+            | sed s:_LEVS_:${LEVS}:g \
+            | sed s:_ATMDIR_:${ATMDIR}:g \
+            | sed s:_ATMFILE_:${ATMFILE}:g \
+            | sed s:_SFCFILE_:${SFCFILE}:g \
+            | sed s:_INIDIR_:${INIDIR}:g > fort.41.new
+
+mv fort.41 fort.41.old
+mv fort.41.new fort.41
+
+cd ../
+
+echo "cd ${hour_name}" >  poe.${hour_name}
+
+echo "cp ../hireswfv3_chgres_cube ." >> poe.${hour_name}
+
+echo "${APRUNC} ./hireswfv3_chgres_cube" >> poe.${hour_name}
+
+echo "cd ../" >> poe.${hour_name}
+
+chmod u+x poe.${hour_name}
+./poe.${hour_name} &
+
+## err checking?
+err=$?
+if [ $err -ne 0 ]
+then
+msg="FATAL ERROR: problem generating BC file"
+err_exit $msg
+fi
+
+
+hour=`expr $hour + $hour_inc`
+
+done
+
+wait
+
+while (test "$hour" -le "$end_hour_b")
   do
 
   gfs_hour=`expr $hour + 6`
