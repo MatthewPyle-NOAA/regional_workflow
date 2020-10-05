@@ -1,4 +1,81 @@
-﻿HiresW v8.0.0 - released September 14, 2020
+﻿HiresW v8.0.1 - released October 5, 2020
+
+
+Google docs version at: 
+
+
+https://docs.google.com/document/d/1cqVuemxBGvCNnqZQcTayHrH95ROdXkUE72u4s9A9gkk/edit?usp=sharing
+
+
+#####################
+Update overview 
+#####################
+
+
+* Includes changes for the FV3 to initialize from GFSv16 (changing from nemsio to netcdf files).  
+
+
+#####################
+Obtaining and building the package
+#####################
+
+
+Clone it with this command (but change hiresw.v8.0.1 to whatever you want to call it in the directory that it is cloned into):
+
+
+git clone -b v8.0.1  https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.1
+
+
+Installation directions:
+
+
+1. Check out the external components (UFS_utils, FV3 model, post processor)  for FV3:
+cd sorc
+./manage_externals/checkout_externals
+2. Build the ARW executables:
+cd arw
+./link_fix.sh
+The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be executed before build_hiresw.sh.   The BUILD_* variables near the top of the build_hiresw.sh script allow for selecting which codes to build.  Execute the script to build the requested executables.
+./build_hiresw.sh
+3. Install the ARW executables:
+The install_hiresw.sh script has INSTALL_* variables corresponding to the BUILD_* variables in build_hiresw.sh in case there is a desire to only copy select executables to the final executable space.  Executing the script copies the executables to the proper exec/arw/ space.
+./install_hiresw.sh
+4. Build the FV3 executables:
+cd ../fv3
+./link_fix.sh
+The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be run before build_all.sh
+Control over what gets built by the build_all.sh script is contained in the regional_build.cfg file.  The delivered version should build all that is needed.
+./build_all.sh
+5. Install the FV3 executables:
+Copies executables from the source directories to their final executable names under exec/fv3/
+./install_all.sh
+
+
+
+
+#############################
+Job/script changes of note:
+#############################
+
+
+
+
+The JHIRESW_MAKE_BC job is reworked to generate all boundary information in two sequential chunks to prevent an effective doubling of node resources for this job with GFSv16 files, so will run up to 4 minutes longer than the original version for GFSv15.
+
+
+JHIRESW_MAKE_BC (20 nodes/80 tasks for HI/PR/Guam; 40 nodes/160 tasks for CONUS and AK)
+
+
+
+
+Remaining details follow the release notes for HiresW v8.0.0
+
+
+# -----------------------------------------------------------------------------------
+
+
+HiresW v8.0.0 - rereleased September 27, 2020
+HiresW v8.0.0 - released September 14, 2020
 
 
 Google docs version at https://docs.google.com/document/d/1K61gTsztJGA7nVDb9bbDidMN3LTpiNcDzUNqs3KXL_A/edit?usp=sharing
@@ -26,30 +103,30 @@ Obtaining and building the package
 Clone it with this command (but change hiresw.v8.0.0 to whatever you want to call it in the directory that it is cloned into):
 
 
-git clone -b v8.0 https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
+git clone -b v8.0_beta  https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
 
 
 Installation directions:
 
 
-1. Check out the external components (UFS_utils, FV3 model, post processor)  for FV3:
+2. Check out the external components (UFS_utils, FV3 model, post processor)  for FV3:
 cd sorc
 ./manage_externals/checkout_externals
-2. Build the ARW executables:
+3. Build the ARW executables:
 cd arw
 ./link_fix.sh
 The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be executed before build_hiresw.sh.   The BUILD_* variables near the top of the build_hiresw.sh script allow for selecting which codes to build.  Execute the script to build the requested executables.
 ./build_hiresw.sh
-3. Install the ARW executables:
+4. Install the ARW executables:
 The install_hiresw.sh script has INSTALL_* variables corresponding to the BUILD_* variables in build_hiresw.sh in case there is a desire to only copy select executables to the final executable space.  Executing the script copies the executables to the proper exec/arw/ space.
 ./install_hiresw.sh
-4. Build the FV3 executables:
+5. Build the FV3 executables:
 cd ../fv3
 ./link_fix.sh
 The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be run before build_all.sh
 Control over what gets built by the build_all.sh script is contained in the regional_build.cfg file.  The delivered version should build all that is needed.
 ./build_all.sh
-5. Install the FV3 executables:
+6. Install the FV3 executables:
 Copies executables from the source directories to their final executable names under exec/fv3/
 ./install_all.sh
 
