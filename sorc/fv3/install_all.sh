@@ -64,18 +64,10 @@ fi
 #------------------------------------
  ${CP} hireswfv3_bucket.fd/hireswfv3_bucket                 $EXEdir/hireswfv3_bucket
 
-
-
 #------------------------------------
 # install chgres_cube
 #------------------------------------
- ${CP} hireswfv3_utils.fd/exec/chgres_cube.exe          $EXEdir/hireswfv3_chgres_cube
-
-#------------------------------------
-# install wgrib2
-#------------------------------------
- ${CP} hireswfv3_wgrib2.cd/grib2/wgrib2/wgrib2          $EXEdir/hireswfv3_wgrib2
-
+ ${CP} hireswfv3_utils.fd/exec/chgres_cube          $EXEdir/hireswfv3_chgres_cube
 
 #------------------------------------
 # install sfc_climo_gen

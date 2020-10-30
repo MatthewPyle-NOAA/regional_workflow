@@ -45,8 +45,8 @@
   <!ENTITY RUN_ENVIR "dev">
   <!ENTITY NET "hiresw">
   <!ENTITY RUN "hiresw">
-  <!ENTITY CCPP "false">
-  <!ENTITY hiresw_ver "v8.0.0">
+  <!ENTITY CCPP "true">
+  <!ENTITY hiresw_ver "v8.0.1">
   <!ENTITY rzdmuser "mpyle">
   <!ENTITY CASE "C768">
   <!ENTITY GESROOT "&MYCOMROOT;/../nwges">
@@ -93,6 +93,7 @@
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
     <envar><name>jobid</name><value>hiresw.cleanup_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>job</name><value>hiresw.cleanup_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
         <and>

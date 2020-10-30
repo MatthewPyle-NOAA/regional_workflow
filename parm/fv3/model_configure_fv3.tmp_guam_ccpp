@@ -24,8 +24,6 @@ output_1st_tstep_rst:    .false.
 quilting:                .true.
 write_groups:            1
 write_tasks_per_group:   12
-write_dopost:            .false.
-output_history:          .true.
 num_files:               2
 filename_base:           'dyn''phy'
 output_file:             'netcdf' 'netcdf'
@@ -40,14 +38,13 @@ jchunk3d:                -1
 kchunk3d:                -1
 
 
-
 output_grid:             'rotated_latlon'
-cen_lon:                 -69.0  # central longitude
-cen_lat:                 18.0   # central latitude
-lon1:                    -7.8  # longitude of lower-left point in rotated coordinate system (in degrees)
-lat1:                    -5.2  # latitude of lower-left ...
-lon2:                    7.8   # longitude of upper-right ...
-lat2:                    5.2   # latitude of upper-right ...
+cen_lon:                 146.0  # central longitude
+cen_lat:                 15.0   # central latitude
+lon1:                    -5.6  # longitude of lower-left point in rotated coordinate system (in degrees)
+lat1:                    -4.8  # latitude of lower-left ...
+lon2:                    5.6   # longitude of upper-right ...
+lat2:                    4.8   # latitude of upper-right ...
 dlon:                    0.025
 dlat:                    0.025
 

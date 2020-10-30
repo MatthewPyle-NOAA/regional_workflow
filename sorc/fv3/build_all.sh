@@ -43,14 +43,6 @@ echo " .... Library build not currently supported .... "
 #./build_libs.sh > $logs_dir/build_libs.log 2>&1
 }
 
-#------------------------------------
-# build wgrib2
-#------------------------------------
-$Build_wgrib2 && {
-echo " .... Building wgrib2 .... "
-./build_wgrib2.sh > $logs_dir/build_wgrib2.log 2>&1
-}
-
 #-----------------------------------
 # build forecast
 #------------------------------------

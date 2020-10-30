@@ -4,7 +4,7 @@
  declare -a Build_prg=("Build_libs" "Build_forecast"  "Build_gsi" \
                        "Build_post" "Build_bufr" "Build_fv3snowbucket" "Build_bucket"  "Build_sndp" \
                        "Build_stnmlist" "Build_utils" "Build_chgres" "Build_chgres_cube" \
-                       "Build_smartinit" "Build_smartprecip" "Build_wgrib2" \
+                       "Build_smartinit" "Build_smartprecip"  \
                        "Build_orog" "Build_sfc_climo_gen" "Build_regional_grid" "Build_nctools")
 
 #

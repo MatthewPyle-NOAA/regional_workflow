@@ -34,7 +34,7 @@ write_fsyncflag:         .false.
 ideflate:                1
 nbits:                   18
 ichunk2d:                -1
-ichunk2d:                -1
+jchunk2d:                -1
 ichunk3d:                -1
 jchunk3d:                -1
 kchunk3d:                -1
