@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -x 
+
+echo `date` $0 `date -u` begin
+export PS4='$SECONDS + '
+
+###########################################################
+# obtain unique process id (pid) and make temp directories
+###########################################################
+export pid=$$
+export DATA_IN=${DATA_IN:-${DATAROOT:?}}
+export DATA=$DATA_IN/${jobid:?}
+
+rm -rf $DATA
+mkdir -p $DATA
+
+cd $DATA
+
+####################################
+# Determine Job Output Name on System
+####################################
+export outid="LL$job"
+export pgmout="OUTPUT.${pid}"
+
+export cycle=t${cyc}z
+
+###############################
+# Specify NET and RUN name
+##############################
+export NET=hiresw
+export RUN=hiresw
+
+# Run setpdy and initialize PDY variables
+
+if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+then
+setpdy.sh
+. ./PDY
+fi
+
+env
+
+########################################################
+# Start remove the directories
+########################################################
+echo DATAROOT is $DATAROOT
+
+cd $DATAROOT
+      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
+      do
+        rm -rf hiresw.${step}_${NEST}_${MODEL}_${cyc}_${envir}
+      done
+
+date

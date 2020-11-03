@@ -19,7 +19,6 @@ fi
 #------------------------------------
 
 . ./partial_build.sh
-
 cd hireswfv3_utils.fd
 
 #------------------------------------
@@ -35,7 +34,6 @@ echo " .... Building chgres .... "
 #------------------------------------
 $Build_chgres_cube && {
 echo " .... Building chgres_cube .... "
-# ./build_chgres_cube.sh > $logs_dir/build_chgres_cube.log 2>&1
 ./build_all.sh > $logs_dir/build_chgres_cube.log 2>&1
 }
 

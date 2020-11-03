@@ -190,7 +190,7 @@ fi
 # Copy or set up files data_table, diag_table, field_table,
 #   input.nml, input_nest02.nml, model_configure, and nems.configure
 #-------------------------------------------------------------------
-CCPP=${CCPP:-"false"}
+CCPP=${CCPP:-"true"}
 CCPP_SUITE=${CCPP_SUITE:-"FV3_GFS_2017_gfdlmp_regional"}
 
 if [ $tmmark = tm00 ] ; then
@@ -199,10 +199,43 @@ if [ $tmmark = tm00 ] ; then
     cp ${PARMfv3}/input_fv3_da.nml input.nml 
 # Free forecast without DA (cold start)
   elif [ $model = fv3sar ] ; then 
+
     if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
-      cp ${PARMfv3}/input_fv3_${NEST}_ccpp.nml input.nml.tmp
-      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml
-      cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+      cp ${PARMfv3}/input_fv3_${NEST}ccpp.nml_inp input.nml.tmp
+      cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml_inp
+#      cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
+
+      if [ $RESTART -eq 1 ]
+      then
+
+       cat input.nml_inp | \
+       sed s:_MAKENH_:.F.: | \
+       sed s:_NAINIT_:0: | \
+       sed s:_NGGPSIC_:.F.: | \
+       sed s:_EXTERNALIC_:.F.: | \
+       sed s:_NSTF_NAME_:2,0,0,0,0: | \
+       sed s:_MOUNTAIN_:.T.: | \
+       sed s:_WARMSTART_:.T.:  > input.nml
+      else
+       cat input.nml_inp | \
+       sed s:_MAKENH_:.T.: | \
+       sed s:_NAINIT_:1: | \
+       sed s:_NGGPSIC_:.T.: | \
+       sed s:_EXTERNALIC_:.T.: | \
+       sed s:_NSTF_NAME_:2,0,0,0,0: | \
+       sed s:_MOUNTAIN_:.F.: | \
+       sed s:_WARMSTART_:.F.:  > input.nml
+       fi
+
+      if [ ! -e input.nml ] ; then
+         echo "FATAL ERROR: no input_fv3_${NEST}ccpp.nml_inp in PARMfv3 directory.  Create one!"
+         exit
+      else
+        mv input.nml input.nml.tmp
+        cat input.nml.tmp | \
+            sed s/_TASK_X_/${TASK_X}/ | sed s/_TASK_Y_/${TASK_Y}/  >  input.nml
+      fi
+
     else
 
       if [ $RESTART -eq 1 ]
@@ -227,8 +260,6 @@ if [ $tmmark = tm00 ] ; then
        sed s:_WARMSTART_:.F.:  > input.nml
        fi
 
-#      cp ${PARMfv3}/input_fv3_${NEST}.nml input.nml
-
       if [ ! -e input.nml ] ; then
          echo "FATAL ERROR: no input_fv3_${NEST}.nml in PARMfv3 directory.  Create one!"
          exit
@@ -239,7 +270,7 @@ if [ $tmmark = tm00 ] ; then
       fi
     fi
   fi
-  cp ${PARMfv3}/model_configure_fv3.tmp_${NEST} model_configure.tmp
+  cp ${PARMfv3}/model_configure_fv3.tmp_${NEST}_ccpp model_configure.tmp
 else
 
 echo "FATAL ERROR: tmmark not set as tm00 - this version of script requires tmmark=tm00"
@@ -277,6 +308,9 @@ $yr $mn $dy $hr 0 0
 
 cat temp diag_table.tmp > diag_table
 
+export OMP_THREADS=1
+export OMP_NUM_THREADS=1
+
 cat model_configure.tmp | sed s/NTASKS/$TOTAL_TASKS/ | sed s/YR/$yr/ | \
     sed s/MN/$mn/ | sed s/DY/$dy/ | sed s/H_R/$hr/ | \
 #tmp    sed s/NHRS/$NFCSTHRS/ | sed s/NTHRD/$OMP_NUM_THREADS/ | \
@@ -295,6 +329,7 @@ startmsg
 export MKL_CBWR=AVX2
 
 ${APRUNC} $EXECfv3/hireswfv3_forecast >$pgmout 2>err
+# ${APRUNC} $EXECfv3/NEMS.x_insertphys >$pgmout 2>err
 export err=$?;err_chk
 
 # Copy files needed for next analysis

@@ -44,8 +44,13 @@ module load atp
 module load intel/15.0.3.187
 module load hpss
 
-module load NetCDF-intel-haswell/4.2
-module load HDF5-serial-intel-haswell/1.8.9
+# module load NetCDF-intel-haswell/4.2
+# module load HDF5-serial-intel-haswell/1.8.9
+
+# module load cray-netcdf/4.3.3.1
+# module load cray-hdf5/1.8.14
+
+module load NetCDF-intel-sandybridge/4.7.4
 
 module load jasper-gnu-haswell/1.900.1
 module load png-intel-haswell/1.2.49
