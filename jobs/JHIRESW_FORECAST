@@ -13,6 +13,8 @@ unset MP_DEBUG_NOTIMEOUT #recommended by Farid to avoid time out message
 if [ $MODEL = 'fv3' ]
 then
 . $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+
+
 fi
 
 ###############################
@@ -97,9 +99,9 @@ then
   export MP_USE_TOKEN_FLOW_CONTROL=yes
   export MP_INSTANCES=2
 else
-   export KMP_AFFINITY=scatter
-   export OMP_NUM_THREADS=2
-   export OMP_STACKSIZE=1024m
+#   export KMP_AFFINITY=scatter
+#   export OMP_NUM_THREADS=2
+#   export OMP_STACKSIZE=1024m
 fi
 
 # export SENDECF=NO

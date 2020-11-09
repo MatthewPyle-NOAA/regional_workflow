@@ -12,7 +12,7 @@ cd fv3
 # 1st time only
 ./link_fix.sh
 
-/gpfs/dell1/nco/ops/nwtest/upgrade_utils.v0.0.2/exec/checkoutsidecompilefiles ./build_all.sh >& build_all.log
+/gpfs/dell1/nco/ops/nwtest/upgrade_utils.v0.0.2/exec/checkoutsidecompilefiles ./build_all.sh >& build_all_fv3.log
 
 #################################
 # ARW build
@@ -23,4 +23,4 @@ cd ../arw
 #1st time only
 ./link_fix.sh
 
-./build_hiresw.sh
+/gpfs/dell1/nco/ops/nwtest/upgrade_utils.v0.0.2/exec/checkoutsidecompilefiles ./build_hiresw.sh >& build_all_arw.log

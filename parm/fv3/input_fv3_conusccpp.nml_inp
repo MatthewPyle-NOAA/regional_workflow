@@ -212,6 +212,9 @@
        do_skeb        = .F.
        lndp_type      = 0
        n_var_lndp     = 0
+       min_lakeice    = 0.15
+       min_seaice     = 0.15
+       effr_in        = .T.
 /
 
   &interpolator_nml

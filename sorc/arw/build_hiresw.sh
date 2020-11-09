@@ -1,4 +1,5 @@
-set -x
+#! /bin/sh
+set -eux
 module purge
 
 module load ncep

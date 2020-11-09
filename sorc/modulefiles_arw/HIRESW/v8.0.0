@@ -13,7 +13,7 @@ module-whatis " HIRESW whatis description"
 set ver v8.0.0
 
 set sys [uname sysname]
-set HIRESW /gpfs/hps/nco/ops/nwprod/hiresw.v7.0.0/modulefiles/HIRESW
+set HIRESW /gpfs/hps/nco/ops/nwprod/hiresw.v8.0.0/modulefiles/HIRESW
 set lname HIRESW
 
 #module use /gpfs/hps/nco/ops/nwpara/lib/modulefiles
