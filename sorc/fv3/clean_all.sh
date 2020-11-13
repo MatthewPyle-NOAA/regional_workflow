@@ -4,8 +4,9 @@ BASE=`pwd`
 
 ##############################
 
-cd ${BASE}/hireswfv3_forecast.fd
-clean -a
+cd ${BASE}/hireswfv3_forecast.fd/FV3
+make clean
+make cleanall
 
 ##############################
 

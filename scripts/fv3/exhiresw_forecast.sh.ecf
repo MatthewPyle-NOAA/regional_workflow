@@ -329,7 +329,6 @@ startmsg
 export MKL_CBWR=AVX2
 
 ${APRUNC} $EXECfv3/hireswfv3_forecast >$pgmout 2>err
-# ${APRUNC} $EXECfv3/NEMS.x_insertphys >$pgmout 2>err
 export err=$?;err_chk
 
 # Copy files needed for next analysis
