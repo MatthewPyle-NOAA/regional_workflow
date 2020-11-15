@@ -203,7 +203,6 @@ if [ $tmmark = tm00 ] ; then
     if [ $CCPP  = true ] || [ $CCPP = TRUE ] ; then
       cp ${PARMfv3}/input_fv3_${NEST}ccpp.nml_inp input.nml.tmp
       cat input.nml.tmp | sed s/CCPP_SUITE/\'$CCPP_SUITE\'/ >  input.nml_inp
-#      cp ${PARMfv3}/suite_${CCPP_SUITE}.xml suite_${CCPP_SUITE}.xml
 
       if [ $RESTART -eq 1 ]
       then

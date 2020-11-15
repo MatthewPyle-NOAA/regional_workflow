@@ -1,7 +1,9 @@
-﻿HiresW v8.0.0 - released September 14, 2020
+﻿HiresW v8.0.0 - re-re-released November 15, 2020 (new FV3 model, refreshed build system)
+HiresW v8.0.0 - re-released September 27, 2020 (ARW fix)
+HiresW v8.0.0 - released September 14, 2020
 
 
-Google docs version at https://docs.google.com/document/d/1K61gTsztJGA7nVDb9bbDidMN3LTpiNcDzUNqs3KXL_A/edit?usp=sharing
+Google docs version (which may be more up to date) is at: https://docs.google.com/document/d/1K61gTsztJGA7nVDb9bbDidMN3LTpiNcDzUNqs3KXL_A/edit?usp=sharing
 
 
 #####################
@@ -26,32 +28,28 @@ Obtaining and building the package
 Clone it with this command (but change hiresw.v8.0.0 to whatever you want to call it in the directory that it is cloned into):
 
 
-git clone -b v8.0 https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
+git clone -b [a]v8.0_gamma  https://github.com/MatthewPyle-NOAA/regional_workflow.git hiresw.v8.0.0
 
 
-Installation directions:
+Simplified installation directions:
 
 
-1. Check out the external components (UFS_utils, FV3 model, post processor)  for FV3:
+1. Build the executables
+
+
 cd sorc
-./manage_externals/checkout_externals
-2. Build the ARW executables:
-cd arw
-./link_fix.sh
-The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be executed before build_hiresw.sh.   The BUILD_* variables near the top of the build_hiresw.sh script allow for selecting which codes to build.  Execute the script to build the requested executables.
-./build_hiresw.sh
-3. Install the ARW executables:
-The install_hiresw.sh script has INSTALL_* variables corresponding to the BUILD_* variables in build_hiresw.sh in case there is a desire to only copy select executables to the final executable space.  Executing the script copies the executables to the proper exec/arw/ space.
-./install_hiresw.sh
-4. Build the FV3 executables:
-cd ../fv3
-./link_fix.sh
-The link_fix.sh step also pulls in prebuilt libraries needed for the build, so must be run before build_all.sh
-Control over what gets built by the build_all.sh script is contained in the regional_build.cfg file.  The delivered version should build all that is needed.
 ./build_all.sh
-5. Install the FV3 executables:
-Copies executables from the source directories to their final executable names under exec/fv3/
+Within this overall “build_all” script there are steps to check out external codes (for the FV3), and a copying in of fix files for both ARW and FV3.
+
+
+The actual build work is being done by the arw/build_hiresw.sh script and fv3/build_all.sh scripts.  
+ The BUILD_* variables near the top of the ARW build_hiresw.sh script allow for selecting which codes to build.   The regional_build.cfg file in sorc/fv3 allows for specifying which components are compiled for the FV3 build.
+2. Install the executables for both ARW and FV3
 ./install_all.sh
+Again, the actual work is done by model specific scripts, in this case arw/install_hiresw.sh script and fv3/install_all.sh.
+The arw/install_hiresw.sh script has INSTALL_* variables corresponding to the BUILD_* variables in arw/build_hiresw.sh in case there is a desire to only copy select executables to the final executable space.  Executing the script copies the executables to the proper exec/arw/ space.
+
+
 
 
 
@@ -258,6 +256,19 @@ APCP:surface:0-0 day acc fcst
 WEASD:surface:0-0 day acc fcst:
 
 
+4. For the 00 h CONUS files specifically created for SBN:
+
+
+Currently hiresw.tCCz.*_5km.f00.conus{east|west}.grib2
+Becoming hiresw.tCCz.*_5km.f00.conussbn.grib2
+
+
+This record is removed:
+
+
+REFD:263 K level:0-0 day max fcst:
+
+
 
 
 BUFR output changes:
@@ -390,10 +401,10 @@ JHIRESW_MAKE_IC (4 nodes, 16 tasks total)
 JHIRESW_MAKE_BC (20 nodes/80 tasks for HI/PR/Guam; 40 nodes/160 tasks for CONUS and AK)
 
 
-The FV3 uses JHIRESW_POST_ODD and JHIRESW_POST_EVEN for all domains (the NMMB and ARW only use them for the CONUS domain) .  Snow depth changes for FV3 are computed by differencing the instantaneous snow depth at successive hours, so the odd/even jobs have a bit of overlap for the FV3 system.  The JHIRESW_POST_EVEN job (and scripts/fv3/exhiresw_post_even.sh.ecf) handles all of this differencing.  Both jobs need to be run to generate complete forecast output at a given hour. 
+The FV3 uses JHIRESW_POST_ODD and JHIRESW_POST_EVEN for all domains (the NMMB and ARW only use them for the CONUS domain) .  Snow depth changes for FV3 are computed by differencing the instantaneous snow depth at successive hours, so the odd/even hour jobs have a bit of overlap for the FV3 system.  The JHIRESW_POST_EVEN job (and scripts/fv3/exhiresw_post_even.sh.ecf) handles all of this differencing.  Both jobs need to be run to generate complete forecast output at a given hour. 
 
 
-A new odd/even PRDGEN job is added (only used by the FV3 for the Alaska and CONUS domains):
+A new odd/even hour PRDGEN job is added (only used by the FV3 for the Alaska and CONUS domains):
 
 
 JHIRESW_PRDGEN_EVEN
@@ -415,28 +426,30 @@ CONUS
 
 
 Prod NMMB ~  3720 seconds on 41 nodes
-Para FV3  ~ 6250 seconds on 74 nodes 
+Para FV3  ~ 5373 seconds on 93 nodes  (30 x 72 + 3 x 24)
+Para FV3 ~7210 seconds on 151 nodes (32 x 108 + 7 x 24) [ I/O hurt performance ]
 
 
 AK 
 
 
 Prod NMMB ~  4020 seconds on 27 nodes
-Para FV3  ~ 5280 seconds on 56 nodes 
+Para FV3  ~ 5638 seconds on 51 nodes (24 x 48 + 3 x 24)
+Para FV3  ~ 4618 seconds on 102 nodes (24 x 96 + 6 x 24) [ I/O limits performance]
 
 
 PR 
 
 
 Prod NMMB ~  3467 seconds on 5 nodes
-Para FV3  ~ 4463 seconds on 9 nodes 
+Para FV3  ~ 4121 seconds on 10 nodes 
 
 
 HI 
 
 
 Prod NMMB ~  3387 seconds on 2 nodes
-Para FV3  ~ 3653 seconds on 7 nodes 
+Para FV3  ~ 3972 seconds on 7 nodes 
 
 
 GUAM:
@@ -551,4 +564,14 @@ Some limited changes to how HIRESW data is archived are being proposed.  The fir
 Comparing the size of just the NMMB aspects going to HPSS against the potential FV3 aspects, it looks like a very slight increase (~19.4 GB/day to ~20.0 GB/day) with this upgrade.  An HPCRAC request has been drafted but hasn’t been submitted as of this writing.
 
 
-I have a prototype file with these desired changes, but did not include it in the code release.
+
+
+
+
+
+
+
+
+
+
+[a]is it -b or -t for a tag??
