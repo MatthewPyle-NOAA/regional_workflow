@@ -1,5 +1,5 @@
-#BSUB -oo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_wrfbufrsndodd.out__DOM___CYC___CORE_
-#BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.0/logs/test_wrfbufrsndodd.err__DOM___CYC___CORE_
+#BSUB -oo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.2/logs/test_wrfbufrsndodd.out__DOM___CYC___CORE_
+#BSUB -eo /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/hiresw.v8.0.2/logs/test_wrfbufrsndodd.err__DOM___CYC___CORE_
 #BSUB -q "devhigh"
 #BSUB -J HIRESW_BUFR_ODD
 #BSUB -cwd /gpfs/hps3/emc/meso/noscrub/Matthew.Pyle/

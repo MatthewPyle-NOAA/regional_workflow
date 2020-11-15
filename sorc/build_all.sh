@@ -8,6 +8,8 @@
 if [ ! -e fv3/hireswfv3_utils.fd ]
 then
 ./manage_externals/checkout_externals
+else
+echo "already ran checkout_externals"
 fi
 
 cd fv3
@@ -20,8 +22,6 @@ fi
 
 # /gpfs/dell1/nco/ops/nwtest/upgrade_utils.v0.0.2/exec/checkoutsidecompilefiles ./build_all.sh >& build_all_fv3.log
 ./build_all.sh >& build_all_fv3.log
-
-exit
 
 #################################
 # ARW build

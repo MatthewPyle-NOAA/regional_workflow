@@ -8,7 +8,7 @@ module load ncep
 module load craype-sandybridge
 module use -a /opt/cray/modulefiles
 
-module load -a ../modulefiles_fv3/v8.0.0-cray-intel
+module load -a ../modulefiles_fv3/build_v8.0.0-cray-intel
 
 
 

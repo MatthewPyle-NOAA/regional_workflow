@@ -69,6 +69,8 @@ wgrib2def="lambert:271:38.0:38.0 250.200:884:5000 22.100:614:5000"
 elif [ $region = "conus" ]
 then
 wgrib2def="lambert:262.5:38.5:38.5 237.280:1079:5000 21.138:635:5000"
+IM=1079
+JM=635
 else
 err_exit "FATAL ERROR: No proper definition for variable region provided to regional_prdgen_oldgrid.sh_5km"
 fi
@@ -154,7 +156,7 @@ $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TSOIL:0-0.1 m below ground:" -gri
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":SOILW:0-0.1 m below ground:" -grib nn.grb_3
 export err=$?; err_chk
-$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TCDC:entire" -match "hour fcst:"  -grib nn.grb_4
+$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":TCDC:entire"   -grib nn.grb_4
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "HGT:cloud ceiling:" -grib ceiling.grb
 export err=$?; err_chk
@@ -164,12 +166,10 @@ $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "REFD:4000 m above ground:" -grib 4
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "REFD:263 K level:" -grib 263krefd.grb
 export err=$?; err_chk
-$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":MDIV:30-0 mb above ground:" -grib mconv.grb
-export err=$?; err_chk
 
-cat nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb mconv.grb  > inputs_nn.grb
+cat nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb  > inputs_nn.grb
 
-rm nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb mconv.grb
+rm nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb
 
 $WGRIB2 inputs_nn.grb -set_grib_type ${compress_type} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
 export err=$?; err_chk
@@ -189,7 +189,153 @@ fi
 
 ###############################################################
 ###############################################################
+
+# compute precip buckets
+
+threehrprev=`expr $fhr - 3`
+sixhrprev=`expr $fhr - 6`
+onehrprev=`expr $fhr - 1`
+
+if [ $threehrprev -lt 10 ]
+then
+threehrprev=0$threehrprev
+fi
+
+if [ $sixhrprev -lt 10 ]
+then
+sixhrprev=0$sixhrprev
+fi
+
+if [ $onehrprev -lt 10 ]
+then
+onehrprev=0$onehrprev
+fi
+
+
+echo "to f00 test"
+
+if [ $fhr -eq 00 ]
+then
+echo "inside f00 test"
+      cp ${filenamthree}${fhr}.tm00 $DATA/hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${region}_${subpiece}
+else
+
+if [ $subpiece =  "0"  -o $subpiece =  "1" ]
+then
+
+### do precip buckets if model is ARW
+
+looplim=90
+loop=1
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $DATA/prdgen_5kmsbn_${region}_${subpiece}/$filenamthree$onehrprev.tm00 ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 30 minutes of waiting for $DATA/prdgen_5kmsbn_${region}_${subpiece}/$filenamthree$onehrprev.tm00"
+   err_exit $msg
+ fi
+done
+
+
+  rm PCP1HR${fhr}.tm00
+  rm input.card
+  echo "$DATA/prdgen_5kmsbn_${region}_${subpiece}" > input.card
+  echo $filenamthree >> input.card
+  echo $onehrprev >> input.card
+  echo $fhr >> input.card
+  echo $reflag >> input.card
+  echo $IM $JM >> input.card
+
+ export pgm=hiresw_bucket
+ $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ export err=$?; err_chk
+
+mv errfile errfile_${fhr}
+
+  if [ $model = "arw" ] ; then
+
+  if [ $fhr%3 -eq 0 ]
+  then
+
+looplim=90
+loop=1
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $DATA/prdgen_5kmsbn_${region}_${subpiece}/$filenamthree$threehrprev.tm00 ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 10
+ fi
+
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $DATA/prdgen_5kmsbn_${region}_${subpiece}/$filenamthree$threehrprev.tm0"
+   err_exit $msg
+ fi
+done
+
+  rm PCP3HR${fhr}.tm00
+  rm input.card
+  echo "$DATA/prdgen_5kmsbn_${region}_${subpiece}" > input.card
+  echo $filenamthree >> input.card
+  echo $threehrprev >> input.card
+  echo $fhr >> input.card
+  echo $reflag >> input.card
+  echo $IM $JM >> input.card
+
+ export pgm=hiresw_bucket
+ $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ export err=$?; err_chk
+mv errfile errfile_${fhr}_3hrly
+
+  if [ $fhr -ne 3 ]
+  then
+    cat ${filenamthree}${fhr}.tm00 PCP1HR${fhr}.tm00 PCP3HR${fhr}.tm00 > hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2
+  else
+    cat ${filenamthree}${fhr}.tm00 PCP1HR${fhr}.tm00 > hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2
+  fi
+
+  fi # ARW 3 h
+
+  if [ $fhr%3 -ne 0 ]
+  then
+
+  if [ $fhr -ne 1 ]
+  then
+    cat ${filenamthree}${fhr}.tm00 PCP1HR${fhr}.tm00 > hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2
+  else
+    cp ${filenamthree}${fhr}.tm00 hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2
+  fi
+
+  fi
+
+  fi
+
+  else
+
+#  cp ${filenamthree}${fhr}.tm00 $DOMOUT.t${CYC}z.awpregf${fhr}
+cp ${filenamthree}${fhr}.tm00  hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2
+
+fi # subpiece1
+
+###### DONE PRECIP BUCKET
+
+###############################################################
+###############################################################
 ###############################################################
 
-  cp ${filenamthree}${fhr}.tm00 $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${region}_${subpiece}
+    cp  hiresw.t${CYC}z.${model}_5km.f${fhr}.${DOMIN_SMALL}.grib2 \
+     $DATA/${RUN}.t${CYC}z.${MODEL}_5km.f${fhr}.${DOMIN_SMALL}.grib2_${region}_${subpiece}
 
+fi # f00 test
