@@ -130,7 +130,7 @@ done
 
 ### extract just needed items
 
-compress_type=jpeg
+compress="c3 -set_bitmap 1"
 
 
 echo want to process from $INPUT_DATA the file BGDAWP${fhr}.tm00
@@ -138,7 +138,7 @@ echo want to process from $INPUT_DATA the file BGDAWP${fhr}.tm00
 $WGRIB2 $INPUT_DATA/BGDAWP${fhr}.tm00 | grep -F -f regional_grid_extract.txt | $WGRIB2 -i -grib inputs.grb $INPUT_DATA/BGDAWP${fhr}.tm00
 export err=$?; err_chk
 
-$WGRIB2 inputs.grb -set_grib_type ${compress_type} -new_grid_winds grid -new_grid_vectors default -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_bilin
+$WGRIB2 inputs.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_vectors default -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_bilin
 export err=$?; err_chk
 
 if [ $subpiece =  "1" ]
@@ -168,10 +168,10 @@ cat nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263k
 
 rm nn.grb nn.grb_2 nn.grb_3 nn.grb_4 ceiling.grb 1000refd.grb 4000refd.grb 263krefd.grb mconv.grb
 
-$WGRIB2 inputs_nn.grb -set_grib_type ${compress_type} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
+$WGRIB2 inputs_nn.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
 export err=$?; err_chk
 
-$WGRIB2 inputs_budget.grb -set_grib_type ${compress_type} -new_grid_winds grid -new_grid_interpolation budget -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_budget
+$WGRIB2 inputs_budget.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation budget -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_budget
 export err=$?; err_chk
 
 
