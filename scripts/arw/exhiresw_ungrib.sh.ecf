@@ -146,19 +146,36 @@ then
 
 icnt=0
 
-while [ ! -e ${COMINgfs}/${cycold}/${mod}.t${cycold}z.${type}${whr} ]
+while [ ! -e ${COMINgfs}/${cycold}/atmos/${mod}.t${cycold}z.${type}${whr} ]
 do
   sleep 10
   if [ $icnt -gt 90 ]; then 
-    msg="FATAL ERROR: ${COMINgfs}/${cycold}/${mod}.t${cycold}z.${type}${whr} STILL NOT AVAILABLE after 15 minutes waiting."
+    msg="FATAL ERROR: ${COMINgfs}/${cycold}/atmos/${mod}.t${cycold}z.${type}${whr} STILL NOT AVAILABLE after 15 minutes waiting."
     export err=911; err_chk
    else 
      icnt=$((icnt + 1))
    fi 
 done
 
-cp ${COMINgfs}/${cycold}/${mod}.t${cycold}z.${type}${whr} $DATA/.
+cp ${COMINgfs}/${cycold}/atmos/${mod}.t${cycold}z.${type}${whr} $DATA/.
   export err1=$?
+
+if [ $err1 -eq 0 ]
+then
+
+cd $DATA
+
+$WGRIB2 ${mod}.t${cycold}z.${type}${whr}  -not ':0.01 mb' \
+             -not ':0.02 mb' \
+             -not ':0.04 mb' \
+             -not ':0.07 mb'  \
+             -not ':0.1 mb'  \
+             -not ':0.2 mb' \
+             -not ':0.7 mb'  -grib tmp.grib2
+
+mv tmp.grib2 ${mod}.t${cycold}z.${type}${whr}
+fi
+
   cp $PARMhiresw/hiresw_Vtable.GFS  $DATA/run_ungrib_1/Vtable 
   cp $PARMhiresw/hiresw_Vtable.GFS  $DATA/run_ungrib_2/Vtable 
   cp $PARMhiresw/hiresw_Vtable.GFS  $DATA/run_ungrib_3/Vtable 
