@@ -356,6 +356,19 @@
       </param>
 
        <param>
+       <shortname>VUCSH_ON_SPEC_HGT_LVL_ABOVE_GRND_0-6km</shortname>
+       <pname>VUCSH</pname>
+       <scale>3.0</scale>
+       </param>
+
+       <param>
+       <shortname>VVCSH_ON_SPEC_HGT_LVL_ABOVE_GRND_0-6km</shortname>
+       <pname>VVCSH</pname>
+       <scale>3.0</scale>
+       </param>
+
+
+       <param>
        <shortname>ACM_APCP_ON_SURFACE</shortname>
        <pname>APCP</pname>
          <scale>-3.0</scale>
