@@ -55,8 +55,6 @@ export pid=$$
 
 export DATA=${DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
 export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.post_${NEST}_${MODEL}_${cyc}_${envir}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${cyc}_${envir}}
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${cyc}_${envir}}
 
 mkdir -p $DATA
 cd $DATA

@@ -32,8 +32,8 @@ region=$6
 
 reflag=1
 
-mkdir ${DATA}/prdgen_5kmsbn_${region}_${subpiece}
-cd ${DATA}/prdgen_5kmsbn_${region}_${subpiece}/
+mkdir -p ${DATA}/prdgen_5kmsbn_${region}_${subpiece}/${fhr}/
+cd ${DATA}/prdgen_5kmsbn_${region}_${subpiece}/${fhr}
 
 DOMIN=${DOMIN_SMALL}${model}
 
@@ -85,18 +85,18 @@ export tmmark=tm00
 
 cp $PARMfv3/hiresw_conus_awpregeastwest.txt_${subpiece} regional_grid_extract.txt
 
-if [ $DOMIN_SMALL = "conus" ]
-then
+# if [ $DOMIN_SMALL = "conus" ]
+# then
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
 # INPUT_DATA_FORE=${INPUT_DATA}
 
@@ -105,7 +105,7 @@ fi
 # INPUT_DATA=${DATA}
 
 
-fi
+# fi
 
 
 looplim=90

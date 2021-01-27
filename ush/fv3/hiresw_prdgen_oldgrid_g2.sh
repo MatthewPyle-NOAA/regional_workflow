@@ -29,8 +29,8 @@ subpiece=$5
 compress="c3 -set_bitmap 1"
 reflag=1
 
-mkdir ${DATA}/prdgen_5km_${subpiece}
-cd ${DATA}/prdgen_5km_${subpiece}/
+mkdir -p ${DATA}/prdgen_5km_${subpiece}/${fhr}
+cd ${DATA}/prdgen_5km_${subpiece}/${fhr}
 
 DOMIN=${DOMIN_SMALL}${model}
 
@@ -96,15 +96,15 @@ fi
 # if [ $DOMIN_SMALL = "conus" ]
 # then
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
 # fi
 

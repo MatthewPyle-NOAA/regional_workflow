@@ -34,8 +34,8 @@ compress="c3 -set_bitmap 1"
 
 reflag=1
 
-mkdir ${DATA}/prdgen_3km_${subpiece}
-cd ${DATA}/prdgen_3km_${subpiece}/
+mkdir -p ${DATA}/prdgen_3km_${subpiece}/${fhr}
+cd ${DATA}/prdgen_3km_${subpiece}/${fhr}/
 
 DOMIN=${DOMIN_SMALL}${model}
 
@@ -72,18 +72,18 @@ then
 cp $PARMfv3/hiresw_subset.txt hiresw_grid_extract.txt
 fi
 
-if [ $DOMIN_SMALL = "conus" ]
-then
+# if [ $DOMIN_SMALL = "conus" ]
+# then
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
 # INPUT_DATA_FORE=${INPUT_DATA}
 
@@ -91,7 +91,7 @@ fi
 
 # INPUT_DATA=${DATA}
 
-fi
+# fi
 
 
 

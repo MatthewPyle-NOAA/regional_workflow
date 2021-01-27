@@ -17,14 +17,15 @@
 # 2009-12-18  Matthew Pyle -- shortened to 48-h and generalized for multiple domains
 #                             and diferent dynamical cores
 # 2019-10-28  Matthew Pyle -- Converted for FV3 SAR and 60 hours
+# 2021-01-27  Matthew Pyle -- Eliminates looping over forecast hours
 #
 
 set -x
 
 MODEL=fv3
 
-mkdir -p $DATA/bufrpost
-cd $DATA/bufrpost
+mkdir -p $DATA/bufrpost/${fhr}
+cd $DATA/bufrpost/${fhr}
 
 RUNLOC=${NEST}${MODEL}
 
@@ -53,47 +54,39 @@ CYCLE=$PDY$cyc
 startd=$YYYY$MM$DD
 startdate=$CYCLE
 
-endtime=`$NDATE $FHRLIM $CYCLE`
+# endtime=`$NDATE $FHRLIM $CYCLE`
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 
-YYYY=`echo $endtime | cut -c1-4`
-MM=`echo $endtime | cut -c5-6`
-DD=`echo $endtime | cut -c7-8`
+# YYYY=`echo $endtime | cut -c1-4`
+# MM=`echo $endtime | cut -c5-6`
+# DD=`echo $endtime | cut -c7-8`
 
-FINALDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
+# FINALDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 
 # check for existence of sndpostdone files
 
 cd $DATA
 
-if [ -e sndpostdone00.tm00 ]
+if [ -e ./sndpostdone${fhr}.tm00 ]
 then
-
-lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
-typeset -Z2 lasthour
-
-let "fhr=lasthour+1"
-typeset -Z2 fhr
-
-else
-
-fhr=00
-
+ echo "FV3 BUFR job for ${fhr} appears to already be complete"
+ ls -l ./sndpostdone${fhr}.tm00
+ exit 0
 fi
 
-echo starting with fhr $fhr
+echo running with fhr $fhr
 
-cd $DATA/bufrpost
+cd $DATA/bufrpost/${fhr}/
 
 ########################################################
 
-while [ $fhr -le $FHRLIM ]
-do
+# while [ $fhr -le $FHRLIM ]
+# do
 
 date=`$NDATE $fhr $CYCLE`
 
-let fhrold="$fhr - 1"
+# let fhrold="$fhr - 1"
 
 if [ $model == "FV3S" ]
 then
@@ -147,8 +140,8 @@ export pgm=hireswfv3_bufr
 
 . prep_step
 
-export FORT19="$DATA/bufrpost/hiresw_profdat"
-export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+export FORT19="$DATA/bufrpost/${fhr}/hiresw_profdat"
+export FORT79="$DATA/bufrpost/${fhr}/profilm.c1.${tmmark}"
 export FORT11="itag"
 
 startmsg
@@ -158,29 +151,34 @@ export err=$?;err_chk
 
 echo DONE $fhr at `date`
 
-mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+mv $DATA/bufrpost/${fhr}/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
 echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
 cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
 mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
-fhr=`expr $fhr + $INCR`
+# fhr=`expr $fhr + $INCR`
 
+# if [ $fhr -lt 10 ]
+# then
+# fhr=0$fhr
+# fi
 
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
-fi
+# wdate=`$NDATE ${fhr} $CYCLE`
 
-wdate=`$NDATE ${fhr} $CYCLE`
-
-done
+# done
 
 cd $DATA
+
+
+# limit this to f60
 
 ########################################################
 ############### SNDP code
 ########################################################
+
+if [ $fhr -eq 60 ]
+then
 
 export pgm=hiresw_sndp_${RUNLOC}
 
@@ -275,6 +273,8 @@ then
   $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr
   $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}_TAR $job $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
 fi
+
+fi # f60 if test
 
 echo EXITING $0 with return code $err
 exit $err

@@ -35,10 +35,11 @@ mkdir ${DATA}/prdgen_full
 
 if [ $DOMIN_SMALL = "conus"  ]
 then
- mkdir ${DATA}/prdgen_full_${subpiece}
- cd ${DATA}/prdgen_full_${subpiece}/
+ mkdir -p ${DATA}/prdgen_full_${subpiece}/${fhr}
+ cd ${DATA}/prdgen_full_${subpiece}/${fhr}
 else
- cd ${DATA}/prdgen_full/
+ mkdir -p ${DATA}/prdgen_full/${fhr}
+ cd ${DATA}/prdgen_full/${fhr}
 fi
 
 #cd $DATA
@@ -108,15 +109,15 @@ export tmmark=tm00
 # make GRIB file with pressure data every 25 mb for EMC's FVS
 # verification
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
 
 # INPUT_DATA_FORE=${INPUT_DATA}
