@@ -154,8 +154,8 @@ echo DONE $fhr at `date`
 mv $DATA/bufrpost/${fhr}/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
 echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
-cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
-mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
+# cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+# mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
 # fhr=`expr $fhr + $INCR`
 
@@ -179,6 +179,26 @@ cd $DATA
 
 if [ $fhr -eq 60 ]
 then
+
+# cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+
+fhrloop=01
+
+cat $DATA/profilm.c1.${tmmark}.f${fhrloop} > $DATA/profilm.c1.${tmmark}
+
+while [ $fhrloop -le 59 ]
+do
+let fhrloop=fhrloop+1
+
+if [ $fhrloop -lt 10 ] 
+then
+  fhrloop=0${fhrloop}
+fi
+
+echo "added ${fhrloop} to the main combined file"
+cat $DATA/profilm.c1.${tmmark}.f${fhrloop} >> $DATA/profilm.c1.${tmmark}
+
+done
 
 export pgm=hiresw_sndp_${RUNLOC}
 
