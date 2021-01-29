@@ -1,0 +1,79 @@
+  <!-- Site specific entities for wcoss_cray -->
+  <!ENTITY SCHEDULER       "lsfcray">
+  <!ENTITY ACCOUNT         "&CPU_ACCOUNT;">
+  <!ENTITY QUEUE_PE        "devhigh"> <!-- queue for PE (parallel environment) jobs -->
+  <!ENTITY PE_EXTRA        "">
+  <!ENTITY QUEUE_SERIAL    "devhigh"> <!-- queue for serial jobs -->
+  <!ENTITY SERIAL_EXTRA    "">
+  <!ENTITY QUEUE_SHARED    "dev_shared">
+  <!ENTITY SHARED_EXTRA    "<shared/>">
+  <!ENTITY QUEUE_SERVICE   "dev_transfer">
+  <!ENTITY SERVICE_EXTRA   "<shared/>">
+  <!ENTITY CORES_EXTRA     "<nodesize>24</nodesize>">
+  <!ENTITY NODES_EXTRA     "<nodesize>24</nodesize>">
+  <!ENTITY PURE_OPENMP     "<nodes>1:ppn=1:tpp=24</nodes>">
+  <!ENTITY RESERVATION     "">
+  <!ENTITY MEMORY          "<memory>1500M</memory>">
+  <!ENTITY THREADS         "24">
+  <!ENTITY REQUEST_THREADS "<envar><name>PURE_OPENMP_THREADS</name><value>&THREADS;</value></envar><envar><name>OMP_NUM_THREADS</name><value>&THREADS;</value></envar><envar><name>KMP_NUM_THREADS</name><value>&THREADS;</value></envar>">
+
+
+  <!ENTITY UNGRIB_RESOURCES "<nodes>1:ppn=4:tpp=1</nodes><envar><name>NTASK</name><value>4</value></envar><envar><name>NCTSK</name><value>4</value></envar><envar><name>NTASK</name><value>4</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
+
+  <!ENTITY METGRID_RESOURCES "<nodes>9:ppn=1:tpp=1</nodes><envar><name>NTASK</name><value>9</value></envar><envar><name>NCTSK</name><value>1</value></envar><envar><name>NTASK</name><value>9</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
+
+<!ENTITY PREPFINAL_RESOURCES "<nodes>3:ppn=6:tpp=1</nodes><envar><name>NTASK</name><value>18</value></envar> <envar><name>NTASK</name><value>18</value></envar>  <envar><name>PTILE</name><value>6</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
+
+
+
+<!-- some of these are domain specific -->
+  <!ENTITY FORECAST_EXTRA "<envar><name>PTILE</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:24:00</walltime>">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_hi "<nodes>3:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>72</value></envar><envar><name>TASK_X</name><value>5</value></envar><envar><name>TASK_Y</name><value>14</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>2</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_conus "<nodes>71:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>1692</value></envar><envar><name>TASK_X</name><value>20</value></envar><envar><name>TASK_Y</name><value>72</value></envar><envar><name>WG</name><value>4</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_ak "<nodes>54:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>1284</value></envar><envar><name>TASK_X</name><value>19</value></envar><envar><name>TASK_Y</name><value>60</value></envar><envar><name>WG</name><value>3</value></envar><envar><name>WTPG</name><value>20</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_pr "<nodes>6:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>144</value></envar><envar><name>TASK_X</name><value>7</value></envar><envar><name>TASK_Y</name><value>20</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>4</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_guam "<nodes>4:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>94</value></envar><envar><name>TASK_X</name><value>5</value></envar><envar><name>TASK_Y</name><value>18</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>4</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_himem2 "<nodes>3:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>72</value></envar><envar><name>TASK_X</name><value>5</value></envar><envar><name>TASK_Y</name><value>14</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>2</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_conusmem2 "<nodes>58:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>1392</value></envar><envar><name>TASK_X</name><value>20</value></envar><envar><name>TASK_Y</name><value>60</value></envar><envar><name>WG</name><value>4</value></envar><envar><name>WTPG</name><value>24</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_akmem2 "<nodes>40:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>938</value></envar><envar><name>TASK_X</name><value>19</value></envar><envar><name>TASK_Y</name><value>60</value></envar><envar><name>WG</name><value>3</value></envar><envar><name>WTPG</name><value>20</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY FORECAST_TM00_RESOURCES_prmem2 "<nodes>5:ppn=24:tpp=1</nodes><envar><name>NTASK</name><value>116</value></envar><envar><name>TASK_X</name><value>7</value></envar><envar><name>TASK_Y</name><value>20</value></envar><envar><name>WG</name><value>1</value></envar><envar><name>WTPG</name><value>4</value></envar>&FORECAST_EXTRA;">
+
+  <!ENTITY POST_EXTRA "<envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:20:00</walltime>">
+  <!ENTITY POST_RESOURCES_conus "<nodes>2:ppn=11</nodes><envar><name>NTASK</name><value>22</value></envar><envar><name>PTILE</name><value>11</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_ak    "<nodes>2:ppn=8</nodes><envar><name>NTASK</name><value>16</value></envar><envar><name>PTILE</name><value>8</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_hi "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_pr "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_guam "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
+
+  <!ENTITY ALTPOST_SINGLE "<envar><name>PTILE</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:09:00</walltime>">
+  <!ENTITY ALTPOST_EXTRA "<envar><name>PTILE</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:09:00</walltime>">
+  <!ENTITY ALTPOST_RESOURCES_conus "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_ak "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_hi "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_pr "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_guam "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+
+  <!ENTITY PRDGEN_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
+
+  <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
+
+  <!ENTITY GEMPAK_RESOURCES       "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY GEMPAK_RESOURCES_SHORT "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY AWIPS_RESOURCES        "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY AWIPS_RESOURCES_SHORT  "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
+
+  <!ENTITY BUFR_EXTRA "<envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:59:00</walltime>">
+  <!ENTITY BUFRPOST_RESOURCES "<nodes>1:ppn=1</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>PTILE</name><value>1</value></envar>&BUFR_EXTRA;">
+
+
+  <!ENTITY ARCHIVE_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>06:00:00</walltime>">
+  <!ENTITY CLEANUP_RESOURCES "<cores>1</cores><memory>1500M</memory><walltime>00:10:00</walltime>">

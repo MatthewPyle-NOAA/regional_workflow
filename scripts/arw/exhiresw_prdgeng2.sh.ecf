@@ -20,6 +20,7 @@
 # 2013-09-01  Matthew Pyle - Changes to be run from prdgenmgr (works on the $post_times hour passed in)
 # 2014-02-27  Matthew Pyle - Undoes changes to be run from prdgenmgr (now loops over time again)
 # 2014-12-09  Matthew Pyle - Adds ability to be restarted midstream
+# 2021-01-27  Matthew Pyle - Removes looping over time within script - just work on ${fhr} passed in
 #
 
 set -x
@@ -33,41 +34,32 @@ filedir=$DATA
 
 export tmmark=tm00
 
-export fhr=00
-export fhrend=48
+# export fhr=00
+# export fhrend=48
 
 ## see if any prdgendone?? files exist, and if so, which is the last hour completed
 
-while [ $fhr -le $fhrend ]
-do
+# while [ $fhr -le $fhrend ]
+# do
 
 if [ -e prdgendone${fhr} ]
 then
-let fhr=fhr+1
-
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
+echo "f${fhr} of prdgen appears to have already run"
+ls -l ./prdgendone${fhr}
+exit 0
 fi
 
-fhrsave=${fhr}
+# done
 
-else
-fhrsave=${fhr}
-fhr=99
-fi
-
-done
-
-fhr=${fhrsave}
+# fhr=${fhrsave}
 
 echo STARTING PRDGEN with fhr $fhr
 
 
 icnt=1
 
-while [ $fhr -le $fhrend ]
-do
+# while [ $fhr -le $fhrend ]
+# do
 
 
 if [ $NEST = "conus" -o $NEST = "conusmem2" ]
@@ -319,11 +311,11 @@ if [ $fhr -eq 36 -a $SENDECF = YES ]; then
   ecflow_client --event prdgen36_ready
 fi
 
-let fhr=fhr+1
+# let fhr=fhr+1
+# 
+# if [ $fhr -lt 10 ]
+# then
+# fhr=0$fhr
+# fi
 
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
-fi
-
-done
+# done

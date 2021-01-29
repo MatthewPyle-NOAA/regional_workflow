@@ -33,8 +33,8 @@ compress="c3 -set_bitmap 1"
 
 reflag=1
 
-mkdir ${DATA}/prdgen_3km_${subpiece}
-cd ${DATA}/prdgen_3km_${subpiece}/
+mkdir ${DATA}/prdgen_3km_${subpiece}/${fhr}
+cd ${DATA}/prdgen_3km_${subpiece}/${fhr}
 
 DOMIN=${DOMIN_SMALL}${model}
 
@@ -46,13 +46,6 @@ reflag=0
 fi
 
 DOMOUT=${DOMIN_SMALL}${modelout}
-
-if [ $DOMIN = "conusnmmb" ]
-then
-  filenamthree="wrf.CONUS03"
-  IM=1799
-  JM=1059
-fi
 
 if [ $DOMIN = "conusarw" -o $DOMIN = "conusmem2arw" ]
 then
@@ -78,20 +71,20 @@ then
 cp $PARMhiresw/hiresw_subset.txt hiresw_grid_extract.txt
 fi
 
-if [ $DOMIN_SMALL = "conus" ]
-then
+# if [ $DOMIN_SMALL = "conus" ]
+# then
 
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $fhr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $fhr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
-fi
+# fi
 
 
 
@@ -126,8 +119,10 @@ $WGRIB2  inputs.grb  -set_grib_type ${compress} -new_grid_interpolation neighbor
 if [ $subpiece = "1" ]
 then
 cat ${filenamthree}${fhr}.tm00_nn > ${filenamthree}${fhr}.tm00
+cp ${filenamthree}${fhr}.tm00 ../
 else
 mv ${filenamthree}${fhr}.tm00_nn ${filenamthree}${fhr}.tm00
+cp ${filenamthree}${fhr}.tm00 ../
 fi
 
 export err=$?; err_chk
@@ -136,6 +131,8 @@ export err=$?; err_chk
 ###############################################################
 ###############################################################
 ###############################################################
+
+cd  ../
 
 
 # compute precip buckets
@@ -200,16 +197,16 @@ done
 
 
   rm PCP1HR${fhr}.tm00
-  rm input.card
-  echo "$DATA/prdgen_3km_${subpiece}" > input.card
-  echo $filenamthree >> input.card
-  echo $onehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  rm input.card.${fhr}
+  echo "$DATA/prdgen_3km_${subpiece}" > input.card.${fhr}
+  echo $filenamthree >> input.card.${fhr}
+  echo $onehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
  export pgm=hiresw_bucket
- $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
  export err=$?; err_chk
 
   if [ $model = "arw" ] ; then
@@ -246,16 +243,16 @@ done
 
 
   rm PCP3HR${fhr}.tm00
-  rm input.card
-  echo "$DATA/prdgen_3km_${subpiece}" > input.card
-  echo $filenamthree >> input.card
-  echo $threehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  rm input.card.${fhr}
+  echo "$DATA/prdgen_3km_${subpiece}" > input.card.${fhr}
+  echo $filenamthree >> input.card.${fhr}
+  echo $threehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
  export pgm=hiresw_bucket
- $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
  export err=$?; err_chk
 
 	if [ $fhr -ne 3 ]

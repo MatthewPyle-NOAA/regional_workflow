@@ -464,7 +464,7 @@ chmod 775 wgrib2.poe
 export MP_PGMMODEL=mpmd
 export MP_CMDFILE=wgrib2.poe
 #time mpirun.lsf
-time aprun -n 1 -N 1 -d $NTASK wgrib2.poe
+time aprun -n 1 -N 1 -d $NTASK ./wgrib2.poe
 export err=$?;  err_chk
 
 else
@@ -487,7 +487,7 @@ chmod 775 wgrib2.poe
 export MP_PGMMODEL=mpmd
 export MP_CMDFILE=wgrib2.poe
 #time mpirun.lsf
-time aprun -n 1 -N 1 -d 11 wgrib2.poe
+time aprun -n 1 -N 1 -d 11 ./wgrib2.poe
 export err=$?;  err_chk
 
 fi

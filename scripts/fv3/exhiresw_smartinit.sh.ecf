@@ -56,15 +56,15 @@ echo start smartinit with hr $hr
 while [ $hr -le $hrlim ]
 do
 
-if [ $hr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $hr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
+# if [ $hr -eq 00 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# elif [ $hr%2 -eq 0 ]
+# then
+# INPUT_DATA=$INPUT_DATA_EVEN
+# else
+# INPUT_DATA=$INPUT_DATA_ODD
+# fi
 
 
 looplim=45

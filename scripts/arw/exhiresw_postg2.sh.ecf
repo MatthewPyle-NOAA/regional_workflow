@@ -56,35 +56,24 @@ cp hiresw_micro_lookup.dat eta_micro_lookup.dat
 
 . $COMIN/hiresw.t${cyc}z.${RUNLOC}.envir.sh
 
-fhr=00
-fhrend=48
+# fhr=00
+# fhrend=48
 
 ## see if any postdone?? files exist, and if so, which is the last hour completed
 
-while [ $fhr -le $fhrend ]
-do
+# while [ $fhr -le $fhrend ]
+# do
 
 if [ -e postdone${fhr} ]
 then
-let fhr=fhr+1
-
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
+echo "It looks like this ARW post hour was run already"
+ls -l ./postdone${fhr}
+exit 0
 fi
 
-fhrsave=${fhr}
+# done
 
-else
-
-fhrsave=${fhr}
-fhr=99
-
-fi
-
-done
-
-fhr=${fhrsave}
+# fhr=${fhrsave}
 
 echo STARTING POST with fhr $fhr
 
@@ -93,22 +82,12 @@ echo STARTING POST with fhr $fhr
 # OUTTYP=binarympiio
 OUTTYP=binary
 
-
-if [ $MODEL = "nmmb" ]
-then
-# OUTTYP=binarynemsio
-OUTTYP=binarynemsiompiio
-fi
-
 model=`echo $MODEL | tr '[a-z]' '[A-Z]'`
-
 
 YYYY=`echo $PDY | cut -c1-4`
 MM=`echo $PDY | cut -c5-6`
 DD=`echo $PDY | cut -c7-8`
 CYCLE=$PDY$cyc
-
-
 
 startd=$YYYY$MM$DD
 startdate=$CYCLE
@@ -182,8 +161,8 @@ fi
 
 ##### export fhr=00
 
-while [ $wdate -le $edate ]
-do
+# while [ $wdate -le $edate ]
+# do
 
 date=`$NDATE $fhr $CYCLE`
 
@@ -377,22 +356,28 @@ fi
 aprun  -n $NTASK -N $PTILE $EXEChiresw/hiresw_post  <  itag  > $pgmout 2>errfile
 export err=$?;err_chk
 
-cp $pgmout ${pgmout}_${fhr}
-cp errfile errfile_${fhr}
+if [ $err -eq 0 ]
+then
+# move output to main post run directory
+mv WRFPRS${fhr}.tm00  ${DATA}/
+fi
+
+cp $pgmout ${DATA}/${pgmout}_${fhr}
+cp errfile ${DATA}/errfile_${fhr}
 
 echo "done executing the post" > $DATA/postdone${fhr}
 # postmsg "$jlogfile" "HIRESW ${NEST}${MODEL} POST done for F${fhr}"
 
-fhr=`expr $fhr + $INCR`
+# fhr=`expr $fhr + $INCR`
 
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
-fi
+# if [ $fhr -lt 10 ]
+# then
+# fhr=0$fhr
+# fi
 
-wdate=`$NDATE ${fhr} $CYCLE`
+# wdate=`$NDATE ${fhr} $CYCLE`
 
-done
+# done
 
 echo EXITING $0
 exit

@@ -34,10 +34,11 @@ mkdir ${DATA}/prdgen_full
 
 if [ $DOMIN_SMALL = "conus" -o $DOMIN_SMALL = "conusmem2" ]
 then
- mkdir ${DATA}/prdgen_full_${subpiece}
- cd ${DATA}/prdgen_full_${subpiece}/
+ mkdir -p ${DATA}/prdgen_full_${subpiece}/${fhr}
+ cd ${DATA}/prdgen_full_${subpiece}/${fhr}
 else
- cd ${DATA}/prdgen_full/
+ mkdir -p ${DATA}/prdgen_full/${fhr}
+ cd ${DATA}/prdgen_full/${fhr}
 fi
 
 #cd $DATA
@@ -54,54 +55,6 @@ fi
 DOMOUT=${DOMIN_SMALL}${modelout}
 DOMOUTtwo="cent"${modelout}
 
-
-if [ $DOMIN = "conusnmmb" ]
-then
-  filenamthree="wrf.CONUS04"
-  rg="conus"
-  gres="2p5km"
-  IM=2145
-  JM=1377
-  reg="30 6 0 0 0 0 0 0 2145 1377 20192000 238446000 136 25000000 265000000 2540000 2540000 0 64 25000000 25000000"
-  wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540"
-elif [ $DOMIN = "aknmmb" ]
-then
-  filenamthree="wrf.AK04"
-  rg="ak"
-  gres="3km"
-  IM=1649
-  JM=1105
-#  reg="20 6 0 0 0 0 0 0 1649 1105 40530000 -178571000 136 60000000 -150000000 2976000 2976000 0 64"
-  reg="20 6 0 0 0 0 0 0 1649 1105 40530000 181429000 136 60000000 2100000000 2976000 2976000 0 64"
-  wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976"
-elif [ $DOMIN = "guamnmmb" ]
-then
-  filenamthree="wrf.GU04"
-  rg="guam"
-  gres="2p5km"
-  IM=193
-  JM=193
-  reg="10 6 0 0 0 0 0 0 193 193 12350000 143687000 136 20000000 16794000 148280000 64 0 2500000 2500000"
-  wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794"
-elif [ $DOMIN = "hinmmb" ]
-then
-  filenamthree="wrf.HI04"
-  rg="hi"
-  gres="2p5km"
-  IM=321
-  JM=225
-  reg="10 6 0 0 0 0 0 0 321 225 18073000 198475000 136 20000000 23088000 206131000 64 0 2500000 2500000"
-  wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088"
-elif [ $DOMIN = "prnmmb" ]
-then
-  filenamthree="wrf.PR04"
-  rg="pr"
-  gres="2p5km"
-  IM=177
-  JM=129
-  reg="10 6 0 0 0 0 0 0 177 129 16829000 291804000 136 20000000 19747000 296028000 64 0 2500000 2500000"
-  wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747"
-fi
 
 if [ $DOMIN = "akarw" -o $DOMIN = "akmem2arw" ]
 then
@@ -217,22 +170,6 @@ fi
 echo use_1h $use_1h
 echo use_3h $use_3h
 
-if [ $DOMIN_SMALL = "conus" ]
-then
-
-if [ $fhr -eq 00 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-elif [ $fhr%2 -eq 0 ]
-then
-INPUT_DATA=$INPUT_DATA_EVEN
-else
-INPUT_DATA=$INPUT_DATA_ODD
-fi
-
-fi
-
-
 looplim=90
 loop=1
 while [ $loop -le $looplim ]
@@ -328,8 +265,10 @@ then
   $WGRIB2 nn.grb  -new_grid_interpolation neighbor -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
   export err=$?; err_chk
   cat ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00_nn ${filenamthree}${fhr}.tm00_budget  > ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 else
   mv ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 fi
 
 fi
@@ -342,6 +281,7 @@ then
   $WGRIB2 nn.grb  -new_grid_interpolation neighbor -set_grib_type ${compress} -new_grid_winds grid -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
   export err=$?; err_chk
   cat ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00_nn ${filenamthree}${fhr}.tm00_budget  > ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 fi
 
      else # 3 hour time
@@ -355,8 +295,10 @@ then
 if [ $subpiece = "1" ]
 then
   cat ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00_budget > ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 else
   mv ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 fi
 
 fi
@@ -364,6 +306,7 @@ fi
 if [ $DOMIN_SMALL != "conus" -a $DOMIN_SMALL != "conusmem2" ]
 then
   cat ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00_budget > ${filenamthree}${fhr}.tm00
+  cp ${filenamthree}${fhr}.tm00 ../
 fi
 
 fi
@@ -375,6 +318,8 @@ cp $INPUT_DATA/WRFPRS${fhr}.tm00 $COMOUT/hiresw.t${CYC}z.$DOMOUT.wrfprs${fhr}
 ###############################################################
 ###############################################################
 ###############################################################
+
+cd ../
 
 # compute precip buckets
 
@@ -422,20 +367,20 @@ then
 
   rm PCP3HR${fhr}.tm00
   rm PCP1HR${fhr}.tm00
-  rm input.card
+  rm input.card.${fhr}
 
 if [ $subpiece = "1" ]
 then
-  echo "$DATA/prdgen_full_1" > input.card
+  echo "$DATA/prdgen_full_1" > input.card.${fhr}
 else
-  echo "$DATA/prdgen_full" > input.card
+  echo "$DATA/prdgen_full" > input.card.${fhr}
 fi
 
-  echo $filenamthree >> input.card
-  echo $onehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  echo $filenamthree >> input.card.${fhr}
+  echo $onehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
 
 if [ $subpiece = "1" ]
@@ -485,7 +430,7 @@ fi
 
 
    export pgm=hiresw_bucket
-   $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+   $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
 #   export err=$?; err_chk
 
      if [ $model = "arw" ] ; then
@@ -540,21 +485,21 @@ done
 
 fi
 
-  rm input.card
+  rm input.card.${fhr}
 if [ $subpiece = "1" ]
 then
-  echo "$DATA/prdgen_full_1" > input.card
+  echo "$DATA/prdgen_full_1" > input.card.${fhr}
 else
-  echo "$DATA/prdgen_full" > input.card
+  echo "$DATA/prdgen_full" > input.card.${fhr}
 fi
-  echo $filenamthree >> input.card
-  echo $threehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  echo $filenamthree >> input.card.${fhr}
+  echo $threehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
   export pgm=hiresw_bucket
-  $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+  $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
 #   export err=$?; err_chk
 
      cat ${filenamthree}${fhr}.tm00 PCP1HR${fhr}.tm00 > hiresw.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2

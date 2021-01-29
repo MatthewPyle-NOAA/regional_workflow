@@ -28,8 +28,8 @@ subpiece=$5
 compress="c3 -set_bitmap 1"
 reflag=1
 
-mkdir ${DATA}/prdgen_5km_${subpiece}
-cd ${DATA}/prdgen_5km_${subpiece}/
+mkdir -p ${DATA}/prdgen_5km_${subpiece}/${fhr}
+cd ${DATA}/prdgen_5km_${subpiece}/${fhr}
 
 DOMIN=${DOMIN_SMALL}${model}
 
@@ -42,47 +42,6 @@ reflag=0
 fi
 
 DOMOUT=${DOMIN_SMALL}${modelout}
-
-if [ $DOMIN = "conusnmmb" ]
-then
-  filenamthree="wrf.EAST05"
-  IM=884
-  JM=614
-elif [ $DOMIN = "aknmmb" ]
-then
-  filenamthree="wrf.AK05"
-  IM=825
-  JM=603
-  wgt=ak
-  reg="20 6 0 0 0 0 0 0 825 603 44800000 -174500000 136 60000000 -150000000 5000000 5000000 0 64" 
-  wgrib2def="nps:210:60 185.5:825:5000 44.8:603:5000"
-elif [ $DOMIN = "hinmmb" ]
-then
-  filenamthree="wrf.HI05"
-  IM=223
-  JM=170
-  wgt=hi
-#  reg="0 6 0 0 0 0 0 0 223 170 0 0 16400000 -162350000 136 24005000 -152360000 45000 45000 64"
-  reg="0 6 0 0 0 0 0 0 223 170 0 0 16400000 197650000 136 24005000 207640000 45000 45000 64"
-  wgrib2def="latlon 197.65:223:.045 16.4:170:.045"
-elif [ $DOMIN = "prnmmb" ]
-then
-  filenamthree="wrf.PR05"
-  IM=340
-  JM=208
-  wgt=pr
-#  reg="0 6 0 0 0 0 0 0 340 208 0 0 13500000 -76590000 136 22815000 -61335000 45000 45000 64"
-  reg="0 6 0 0 0 0 0 0 340 208 0 0 13500000 283410000 136 22815000 298665000 45000 45000 64"
-  wgrib2def="latlon 283.41:340:.045 13.5:208:.045"
-elif [ $DOMIN = "guamnmmb" ]
-then
-  filenamthree="wrf.GU05"
-  IM=223
-  JM=170
-  wgt=guam
-  reg="0 6 0 0 0 0 0 0 223 170 0 0 11700000 141000000 136 19305000 150990000 45000 45000 64"
-  wgrib2def="latlon 141.0:223:.045 11.7:170:.045"
-fi
 
 if [ $DOMIN = "conusarw" ]
 then
@@ -201,8 +160,10 @@ fi
 if [ $subpiece =  "0"  -o $subpiece =  "1" ]
 then
 cat ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00_nn ${filenamthree}${fhr}.tm00_budget > ${filenamthree}${fhr}.tm00
+cp ${filenamthree}${fhr}.tm00 ../
 else
 mv ${filenamthree}${fhr}.tm00_bilin ${filenamthree}${fhr}.tm00
+cp ${filenamthree}${fhr}.tm00 ../
 fi
 
 
@@ -210,6 +171,9 @@ export err=$?; err_chk
 
 ###############################################################
 ###############################################################
+
+
+cd ../
 
 # compute precip buckets
 
@@ -268,16 +232,16 @@ done
 
 
   rm PCP1HR${fhr}.tm00
-  rm input.card
-  echo "$DATA/prdgen_5km_${subpiece}" > input.card
-  echo $filenamthree >> input.card
-  echo $onehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  rm input.card.${fhr}
+  echo "$DATA/prdgen_5km_${subpiece}" > input.card.${fhr}
+  echo $filenamthree >> input.card.${fhr}
+  echo $onehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
  export pgm=hiresw_bucket
- $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
  export err=$?; err_chk
 
 mv errfile errfile_${fhr}
@@ -307,16 +271,16 @@ do
 done
 
   rm PCP3HR${fhr}.tm00
-  rm input.card
-  echo "$DATA/prdgen_5km_${subpiece}" > input.card
-  echo $filenamthree >> input.card
-  echo $threehrprev >> input.card
-  echo $fhr >> input.card
-  echo $reflag >> input.card
-  echo $IM $JM >> input.card
+  rm input.card.${fhr}
+  echo "$DATA/prdgen_5km_${subpiece}" > input.card.${fhr}
+  echo $filenamthree >> input.card.${fhr}
+  echo $threehrprev >> input.card.${fhr}
+  echo $fhr >> input.card.${fhr}
+  echo $reflag >> input.card.${fhr}
+  echo $IM $JM >> input.card.${fhr}
 
  export pgm=hiresw_bucket
- $EXEChiresw/hiresw_bucket < input.card >> $pgmout 2>errfile
+ $EXEChiresw/hiresw_bucket < input.card.${fhr} >> $pgmout 2>errfile
  export err=$?; err_chk
 mv errfile errfile_${fhr}_3hrly
 

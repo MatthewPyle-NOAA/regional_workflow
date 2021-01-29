@@ -21,8 +21,8 @@
 set -x
 
 
-mkdir -p $DATA/bufrpost
-cd $DATA/bufrpost
+mkdir -p $DATA/bufrpost/${fhr}
+cd $DATA/bufrpost/${fhr}
 
 RUNLOC=${NEST}${MODEL}
 
@@ -79,19 +79,11 @@ edate=$eyr$emn$edy$ehr
 
 cd $DATA
 
-if [ -e sndpostdone00.tm00 ]
+if [ -e sndpostdone${fhr}.tm00 ]
 then
-
-lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
-typeset -Z2 lasthour
-
-let "fhr=lasthour+1"
-typeset -Z2 fhr
-
-else
-
-fhr=00
-
+echo "Appear to have run the BUFRPOST for ARW for this hour"
+ls -l sndpostdone${fhr}.tm00
+exit 0
 fi
 
 timeform=$STARTDATE
@@ -103,12 +95,12 @@ wdate=`$NDATE +${fhr} $startdate`
 echo starting with fhr $fhr
 echo starting with wdate $wdate
 
-cd $DATA/bufrpost
+cd $DATA/bufrpost/${fhr}
 
 ########################################################
 
-while [ $wdate -le $edate ]
-do
+# while [ $wdate -le $edate ]
+# do
 
 datestr=`date`
 echo top of loop at $datestr
@@ -200,41 +192,60 @@ export pgm=hiresw_wrfbufr
 
 . prep_step
 
-export FORT19="$DATA/bufrpost/hiresw_profdat"
-export FORT79="$DATA/bufrpost/profilm.c1.${tmmark}"
+export FORT19="$DATA/bufrpost/${fhr}/hiresw_profdat"
+export FORT79="$DATA/bufrpost/${fhr}/profilm.c1.${tmmark}"
 export FORT11="itag"
 
 startmsg
 
-# using mpirun.lsf needed after WCOSS SP4.2 upgrade
-
-#mpirun.lsf $EXEChiresw/hiresw_wrfbufr  > pgmout.log_${fhr} 2>&1 
 aprun -n $NTASK -N $PTILE $EXEChiresw/hiresw_wrfbufr  > pgmout.log_${fhr} 2>&1 
 export err=$?;err_chk
 
-mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
+mv $DATA/bufrpost/${fhr}/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
 echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
-cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
-mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
+# cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+# mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
-fhr=`expr $fhr + $INCR`
+# fhr=`expr $fhr + $INCR`
 
 
-if [ $fhr -lt 10 ]
-then
-fhr=0$fhr
-fi
+# if [ $fhr -lt 10 ]
+# then
+# fhr=0$fhr
+# fi
 
-wdate=`$NDATE ${fhr} $CYCLE`
+# wdate=`$NDATE ${fhr} $CYCLE`
 
-done
+# done
 
 cd $DATA
 
 ########################################################
 ############### SNDP code
 ########################################################
+
+if [ $fhr -eq 48 ]
+then
+
+fhrloop=01
+
+cat $DATA/profilm.c1.${tmmark}.f${fhrloop} > $DATA/profilm.c1.${tmmark}
+
+while [ $fhrloop -le 47 ]
+do
+let fhrloop=fhrloop+1
+
+if [ $fhrloop -lt 10 ]
+then
+  fhrloop=0${fhrloop}
+fi
+
+echo "added ${fhrloop} to the main combined file"
+cat $DATA/profilm.c1.${tmmark}.f${fhrloop} >> $DATA/profilm.c1.${tmmark}
+
+done
+
 
 export pgm=hiresw_sndp_${RUNLOC}
 
@@ -334,6 +345,8 @@ then
   $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.class1.bufr
   $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE}_TAR $job $COMOUT/${RUN}.t${cyc}z.${RUNLOC}.bufrsnd.tar.gz
 fi
+
+fi # f60 if test
 
 echo EXITING $0 with return code $err
 exit $err
