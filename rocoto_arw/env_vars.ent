@@ -70,10 +70,3 @@
  <envar>
    <name>NHRS</name><value>48</value>
  </envar>
- <envar>
-   <name>GESROOT</name><value>&GESROOT;</value>
- </envar>
- <envar>
-   <name>MYGESROOT</name><value>&GESROOT;</value>
- </envar>
-

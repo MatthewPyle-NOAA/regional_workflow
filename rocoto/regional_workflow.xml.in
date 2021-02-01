@@ -4,7 +4,7 @@
 
   <!-- Set some variables for use later: -->
   <!ENTITY CYCLE_THROTTLE "4">
-  <!ENTITY TASK_THROTTLE "20">
+  <!ENTITY TASK_THROTTLE "35">
 
   <!-- Maximum number of times to try various jobs -->
   <!ENTITY MAX_TRIES_TRANSFER "3"> <!-- pulling data over network -->
@@ -50,7 +50,6 @@
   <!ENTITY hiresw_ver "v8.0.1">
   <!ENTITY rzdmuser "mpyle">
   <!ENTITY CASE "C768">
-  <!ENTITY GESROOT "&MYCOMROOT;/../nwges_new">
   <!ENTITY NHRS "60">
 
   <!ENTITY COMINgfs "@[COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/para]">
@@ -98,7 +97,7 @@
 
     <dependency>
         <and>
-          <timedep> <cyclestr offset="02:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="01:00:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task> 
@@ -140,7 +139,7 @@
     <queue>&QUEUE_PE;</queue>
     &PE_EXTRA;
     &RESERVATION;
-    &MAKE_BC_RESOURCES;
+    &MAKE_BC_RESOURCES_@[DOMAIN:-conus];
     &ENV_VARS;
     <envar><name>tmmark</name><value>tm00</value></envar>
     <envar><name>job</name><value>hiresw.make_bc_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
@@ -188,7 +187,7 @@
    <task name="post#fhr#" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_POST</command>
       <jobname>hiresw_post_&DOMAIN;_fv3_<cyclestr>@Y@m@d@H</cyclestr></jobname>
-      <join><cyclestr>&LOGDIR;/hiresw_post_&DOMAIN;_fv3_@Y@m@d@H.f#fhr#.log</cyclestr></join>
+      <join><cyclestr>&LOGDIR;/hiresw_post_&DOMAIN;_fv3_@Y@m@d@H.#fhr#.log</cyclestr></join>
       <account>&ACCOUNT;</account>
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
@@ -240,7 +239,7 @@
 <!--  ********************** Run the BUFR post processor *********************  -->
 
   <metatask name="bufrpost">
-  <var name="fhr">&FHRS1;</var>
+  <var name="fhr">&FHRS;</var>
     <task name="bufrpost#fhr#" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_WRFBUFRSND</command>
       <jobname>hiresw_bufrpost_&DOMAIN;_fv3_<cyclestr>@Y@m@d@H</cyclestr></jobname>
@@ -304,7 +303,7 @@
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
       &RESERVATION;
-      &ALTPOST_RESOURCES_@[DOMAIN:-conus];
+      &SMARTINITB_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>hiresw.smartinitb_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
@@ -339,11 +338,8 @@
     <dependency>
        <and>
           <!-- Start the post if the forecast is running or if it has already completed. -->
-          <or>
-           <taskdep task="forecast" state="RUNNING"/>
-           <taskdep task="forecast"/>
-          </or>
           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf001</datadep>
+          <taskdep task="prdgen01"/> 
        </and>
     </dependency>
   </task>
@@ -365,12 +361,8 @@
 
     <dependency>
        <and>
-          <!-- Start the post if the forecast is running or if it has already completed. -->
-          <or>
-           <taskdep task="forecast" state="RUNNING"/>
-           <taskdep task="forecast"/>
-          </or>
           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf001</datadep>
+          <taskdep task="prdgen01"/> 
        </and>
     </dependency>
   </task>

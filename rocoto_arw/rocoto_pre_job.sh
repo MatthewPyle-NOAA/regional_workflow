@@ -36,7 +36,7 @@ module list
 # export WGRIB2=${HOMEfv3}/exec/fv3/hireswfv3_wgrib2
 
 # export WGRIB2=/gpfs/hps/nco/ops/nwtest/lib/wgrib2/v2.0.8/NCEPLIBS-wgrib2/build/wgrib2/wgrib2
-export WGRIB2=/gpfs/hps/nco/ops/nwtest/lib/wgrib2/v2.0.8/intel/bin/wgrib2
+# export WGRIB2=/gpfs/hps/nco/ops/nwtest/lib/wgrib2/v2.0.8/intel/bin/wgrib2
 
 export COMROOT=${MYCOMROOT}
 export RUN_ENVIR=dev

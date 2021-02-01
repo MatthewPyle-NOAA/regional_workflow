@@ -38,7 +38,9 @@ fi
 ####################################
 # PDY and CDATE are passed in through Rocoto xml
 
-if [ $RUN_ENVIR = 'prod' -o $MODEL = 'arw' ]
+export cycle=${cycle:-t${cyc}z}
+
+if [ $RUN_ENVIR = 'prod'  ]
 then
 setpdy.sh
 . ./PDY
@@ -59,7 +61,6 @@ cd $DATA/${fhr}
 export outid="LL$job"
 export pgmout="OUTPUT.${pid}"
 
-export cycle=${cycle:-t${cyc}z}
 
 if [ $MODEL = 'arw' ]
 then
@@ -74,17 +75,6 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 fi
 
 export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
-
-####################################
-# Run setpdy and initialize PDY variables
-####################################
-# PDY and CDATE are passed in through Rocoto xml
-
-if [ $RUN_ENVIR = 'prod' -o $MODEL = 'arw' ]
-then
-setpdy.sh
-. ./PDY
-fi
 
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 

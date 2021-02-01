@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE workflow [
+
+  <!-- Set some variables for use later: -->
+  <!ENTITY CYCLE_THROTTLE "4">
+  <!ENTITY TASK_THROTTLE "40">
+
+  <!-- Maximum number of times to try various jobs -->
+  <!ENTITY MAX_TRIES_TRANSFER "3"> <!-- pulling data over network -->
+  <!ENTITY MAX_TRIES_BIG_JOBS "2"> <!-- forecast or other huge jobs -->
+  <!ENTITY MAX_TRIES "3"> <!-- everything else -->
+  <!ENTITY MAX_TRIES_PRDGEN "2"> <!-- everything else -->
+  <!ENTITY MAX_TRIES_SMARTINIT "3"> <!-- smartinit -->
+
+  <!-- Enabling or disabling parts of the workflow: -->
+  <!ENTITY GTYPE "@[GTYPE:-regional]">
+  <!ENTITY RUN_DA "NO"> <!-- place holder currently -->
+
+  <!-- Variables for cycle definition -->
+  <!ENTITY CYCLE_YMDH_BEG "@[CYCLE_YMDH_BEG:-2019070100]">
+  <!ENTITY CYCLE_YMDH_END "@[CYCLE_YMDH_END:-2019070212]">
+  <!ENTITY CYCLE_INT_HH "@[CYCLE_INT_HH:-12]">
+  <!ENTITY CYCLE_INTERVAL "&CYCLE_INT_HH;:00:00">
+
+  <!-- Variables to set up the experiment -->
+  <!ENTITY EXPT "@[EXPT:-regional]">
+  <!ENTITY DOMAIN "@[DOMAIN:-conus]">
+  <!ENTITY FHRS "00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48">
+  <!ENTITY FHRS1 "01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48">
+
+  <!ENTITY USER "@[USER]">
+  <!-- Project account to use for submitting jobs/tasks -->
+  <!ENTITY CPU_ACCOUNT "@[CPU_ACCOUNT:-HREF-T2O]">
+
+  <!-- Variables for directories -->
+  <!ENTITY HOMEhiresw "@[HOMEhiresw:-/gpfs/dell2/emc/modeling/noscrub/&USER;/regional_workflow_hiresw;]">
+  <!ENTITY JOBS "&HOMEhiresw;/jobs">
+  <!ENTITY UTILush "&HOMEhiresw;/util/ush">
+  <!ENTITY SCRIPTS "&HOMEhiresw;/scripts">
+  <!ENTITY MYCOMROOT "@[MYCOMROOT:-/gpfs/dell1/ptmp/&USER;/com]">
+  <!ENTITY DATAROOT "@[DATAROOT:-/gpfs/dell1/stmp/&USER;/tmpnwprd]">
+  <!ENTITY LOGDIR "&MYCOMROOT;/../log_new">
+  <!ENTITY envir "para">
+
+  <!ENTITY RUN_ENVIR "dev">
+  <!ENTITY NET "hiresw">
+  <!ENTITY RUN "hiresw">
+  <!ENTITY CCPP "true">
+  <!ENTITY hiresw_ver "v8.0.1">
+  <!ENTITY rzdmuser "mpyle">
+  <!ENTITY CASE "C768">
+  <!ENTITY NHRS "48">
+
+  <!ENTITY COMINgfsbase "@[COMINgfsbase:-/gpfs/dell1/nco/ops/com/gfs/para]">
+  <!ENTITY COMINnambase "@[COMINnambase:-/gpfs/dell1/nco/ops/com/nam/prod]">
+
+  <!-- rocoto pre command to launch the jobs -->
+  <!ENTITY PRE "&HOMEhiresw;/rocoto_arw/rocoto_pre_job.sh">
+
+  <!-- Site to run the workflow -->
+  <!ENTITY % CUSTOM_SITE SYSTEM "@[SITE_FILE:-sites/wcoss_dell_p3.ent]">
+  %CUSTOM_SITE;
+
+  <!-- Load the env_vars.ent into ENV_VARS so we can set variables
+  common to all jobs. -->
+  <!ENTITY ENV_VARS SYSTEM "env_vars.ent"> 
+  <!ENTITY TIMEOFFSET "-00:06:00:00">
+
+
+]>
+
+<!--  *******************************************************************  -->
+<!--  *********************** Workflow starts here **********************  -->
+
+<workflow realtime="T" cyclethrottle="&CYCLE_THROTTLE;" scheduler="&SCHEDULER;" taskthrottle="&TASK_THROTTLE;" cyclelifespan="00:23:30:00">
+
+  <cycledef>&CYCLE_YMDH_BEG;00 &CYCLE_YMDH_END;00 &CYCLE_INTERVAL;</cycledef>
+
+  <log><cyclestr>&LOGDIR;/workflow_hiresw_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></log>
+
+<!--  *******************************************************************  -->
+<!--  **************************** pre clean ****************************  -->
+
+  <task name="preclean" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_CLEANUP_FRONT</command>
+    <jobname>hiresw_cleanup_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_cleanupfront_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &CLEANUP_RESOURCES;
+    &ENV_VARS;
+    <envar><name>tmmark</name><value>tm00</value></envar>
+    <envar><name>jobid</name><value>hiresw.cleanup_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>job</name><value>hiresw.cleanup_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+        <and>
+          <timedep> <cyclestr offset="01:00:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+        </and>
+    </dependency>
+  </task> 
+
+<!--  *******************************************************************  -->
+<!--  **************************** ungrib  *****************************  -->
+
+  <task name="ungrib" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_UNGRIB</command>
+    <jobname>hiresw_ungrib_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_ungrib_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &UNGRIB_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.ungrib_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+        <and>
+          <datadep age="5:00" minsize="17103324"><cyclestr offset="&TIMEOFFSET;">&COMINgfsbase;/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f054</cyclestr></datadep>
+          <datadep age="5:00" minsize="171324"><cyclestr>&COMINnambase;/nam.@Y@m@d/nam.t@Hz.awp15154.tm00.grib2</cyclestr></datadep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <taskdep task="preclean"/> 
+        </and>
+    </dependency>
+  </task> 
+
+<!--  *******************************************************************  -->
+<!--  **************************** metgrid  *****************************  -->
+
+  <task name="metgrid" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_METGRID</command>
+    <jobname>hiresw_metgrid_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_metgrid_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &METGRID_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.metgrid_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+      <and>
+          <taskdep task="preclean"/> 
+          <taskdep task="ungrib"/> 
+        </and>
+    </dependency>
+  </task>
+
+<!--  *******************************************************************  -->
+<!--  **************************** prepfinal  ***************************  -->
+
+  <task name="prepfinal" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_PREPFINAL</command>
+    <jobname>hiresw_prepfinal_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_prepfinal_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &PREPFINAL_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.prepfinal_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+      <and>
+          <taskdep task="preclean"/> 
+          <taskdep task="metgrid"/> 
+        </and>
+    </dependency>
+  </task>
+
+<!--  *******************************************************************  -->
+<!--  ********************** forecast  *****************************  -->
+
+  <task name="forecast" maxtries="&MAX_TRIES_BIG_JOBS;">
+    <command>&PRE; &JOBS;/JHIRESW_FORECAST</command>
+    <jobname>hiresw_forecast_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_forecast_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &FORECAST_TM00_RESOURCES_@[DOMAIN:-conus];
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.forecast_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <dependency>
+      <and>
+        <taskdep task="prepfinal"/> 
+      </and>
+    </dependency>
+  </task>
+
+<!--  *******************************************************************  -->
+<!--  ********************** Run the post processor *********************  -->
+
+
+  <metatask name="post">
+  <var name="fhr">&FHRS;</var>
+   <task name="post#fhr#" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JHIRESW_POST</command>
+      <jobname>hiresw_post_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hiresw_post_&DOMAIN;_arw_@Y@m@d@H.f#fhr#.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &POST_RESOURCES_@[DOMAIN:-conus];
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>hiresw.post_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <dependency>
+        <and>
+          <!-- Start the post if the forecast has written the needed model output for the hour  -->
+           <datadep age="02:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
+           <taskdep task="preclean"/> 
+        </and>
+      </dependency>
+
+   </task>
+  </metatask>
+
+  <metatask name="prdgen">
+  <var name="fhr">&FHRS;</var>
+  <task name="prdgen#fhr#" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JHIRESW_PRDGEN</command>
+      <jobname>hiresw_prdgen_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hiresw_prdgen_&DOMAIN;_arw_@Y@m@d@H.#fhr#.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &PRDGEN_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>hiresw.prdgen_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;</value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <dependency>
+        <and>
+          <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
+           <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;/postdone#fhr#</datadep>
+           <taskdep task="preclean"/> 
+        </and>
+      </dependency>
+   </task>
+   </metatask>
+
+
+<!--  *******************************************************************  -->
+<!--  ********************** Run the BUFR post processor *********************  -->
+
+  <metatask name="bufrpost">
+  <var name="fhr">&FHRS;</var>
+    <task name="bufrpost#fhr#" maxtries="&MAX_TRIES;">
+      <command>&PRE; &JOBS;/JHIRESW_WRFBUFRSND</command>
+      <jobname>hiresw_bufrpost_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hiresw_bufrpost_&DOMAIN;_arw_@Y@m@d@H.#fhr#.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &BUFRPOST_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>fhr</name><value>#fhr#</value></envar>
+      <envar><name>job</name><value>hiresw.bufrpost_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>INPUT_DATA</name><value>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>COMIN</name><value>&MYCOMROOT;/&NET;/&envir;/&RUN;.<cyclestr>@Y@m@d</cyclestr></value></envar>
+
+      <dependency>
+        <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast" state="RUNNING"/>
+           <taskdep task="forecast"/>
+          </or>
+          <taskdep task="preclean"/> 
+          <datadep age="02:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
+        </and>
+      </dependency>
+    </task>
+    </metatask>
+
+
+<!-- *********************************************************************** -->
+<!-- ***************************** smartinit   ***************************** -->
+
+   <task name="smartinit_a" maxtries="&MAX_TRIES_SMARTINIT;">
+      <command>&PRE; &JOBS;/JHIRESW_SMARTINIT</command>
+      <jobname>hiresw_smartinit_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hiresw_smartinit_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &SMARTINIT_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>hiresw.smartinit_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;</value></envar>
+      <dependency>
+        <and>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone30</datadep>
+           <timedep> <cyclestr offset="01:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+           <taskdep task="preclean"/> 
+        </and>
+      </dependency>
+   </task>
+
+   <task name="smartinit_b" maxtries="&MAX_TRIES_SMARTINIT;">
+      <command>&PRE; &JOBS;/JHIRESW_SMARTINITB</command>
+      <jobname>hiresw_smartinitb_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+      <join><cyclestr>&LOGDIR;/hiresw_smartinitb_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+      <account>&ACCOUNT;</account>
+      <queue>&QUEUE_PE;</queue>
+      &PE_EXTRA;
+      &RESERVATION;
+      &SMARTINITB_RESOURCES;
+      &ENV_VARS;
+      <envar><name>tmmark</name><value>tm00</value></envar>
+      <envar><name>job</name><value>hiresw.smartinitb_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>POST_DATA</name><value><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;</value></envar>
+      <envar><name>PRDGEN_DATA</name><value><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;</value></envar>
+      <dependency>
+        <and>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone30</datadep>
+           <timedep> <cyclestr offset="01:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+           <taskdep task="preclean"/> 
+        </and>
+      </dependency>
+   </task>
+
+
+
+<!-- *********************************************************************** -->
+<!-- ***************************** GEMPAK job ***************************** -->
+
+  <task name="gempak" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_GEMPAK</command>
+    <jobname><cyclestr>hiresw_gempak_&DOMAIN;_arw_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_gempak_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &GEMPAK_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.gempak_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+       <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast" state="RUNNING"/>
+           <taskdep task="forecast"/>
+          </or>
+          <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone01</datadep>
+       </and>
+    </dependency>
+  </task>
+
+<!-- *********************************************************************** -->
+<!-- ***************************** AWIPS job ***************************** -->
+
+  <task name="awips" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_AWIPS</command>
+    <jobname><cyclestr>hiresw_awips_&DOMAIN;_arw_@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_awips_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &AWIPS_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.awips_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+       <and>
+          <!-- Start the post if the forecast is running or if it has already completed. -->
+          <or>
+           <taskdep task="forecast" state="RUNNING"/>
+           <taskdep task="forecast"/>
+          </or>
+          <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone01</datadep>
+       </and>
+    </dependency>
+  </task>
+
+
+</workflow>

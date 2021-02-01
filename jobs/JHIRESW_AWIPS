@@ -54,7 +54,7 @@ fi
 ###################################
 # Set up the UTILITIES
 ###################################
-if [ $MODEL = 'arw' -o $RUN_ENVIR = 'prod' ]
+if [ $RUN_ENVIR = 'prod' ]
 then
 setpdy.sh
 . ./PDY

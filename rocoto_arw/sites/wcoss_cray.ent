@@ -5,7 +5,7 @@
   <!ENTITY PE_EXTRA        "">
   <!ENTITY QUEUE_SERIAL    "devhigh"> <!-- queue for serial jobs -->
   <!ENTITY SERIAL_EXTRA    "">
-  <!ENTITY QUEUE_SHARED    "dev_shared">
+  <!ENTITY QUEUE_SHARED    "devhigh_shared">
   <!ENTITY SHARED_EXTRA    "<shared/>">
   <!ENTITY QUEUE_SERVICE   "dev_transfer">
   <!ENTITY SERVICE_EXTRA   "<shared/>">
@@ -22,8 +22,9 @@
 
   <!ENTITY METGRID_RESOURCES "<nodes>9:ppn=1:tpp=1</nodes><envar><name>NTASK</name><value>9</value></envar><envar><name>NCTSK</name><value>1</value></envar><envar><name>NTASK</name><value>9</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
 
-<!ENTITY PREPFINAL_RESOURCES "<nodes>3:ppn=6:tpp=1</nodes><envar><name>NTASK</name><value>18</value></envar> <envar><name>NTASK</name><value>18</value></envar>  <envar><name>PTILE</name><value>6</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
+<!ENTITY PREPFINAL_RESOURCES "<nodes>3:ppn=6:tpp=1</nodes><envar><name>NTASK</name><value>18</value></envar>  <envar><name>PTILE</name><value>6</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
 
+<!ENTITY PREPRAP_RESOURCES "<nodes>3:ppn=3:tpp=1</nodes><envar><name>NTASK</name><value>9</value></envar>  <envar><name>PTILE</name><value>3</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>00:15:00</walltime>">
 
 
 <!-- some of these are domain specific -->
@@ -53,6 +54,10 @@
   <!ENTITY POST_RESOURCES_hi "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_pr "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
   <!ENTITY POST_RESOURCES_guam "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_conusmem2 "<nodes>2:ppn=8</nodes><envar><name>NTASK</name><value>16</value></envar><envar><name>PTILE</name><value>8</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_akmem2    "<nodes>2:ppn=8</nodes><envar><name>NTASK</name><value>16</value></envar><envar><name>PTILE</name><value>8</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_himem2 "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
+  <!ENTITY POST_RESOURCES_prmem2 "<nodes>1:ppn=2</nodes><envar><name>NTASK</name><value>2</value></envar><envar><name>PTILE</name><value>2</value></envar>&POST_EXTRA;">
 
   <!ENTITY ALTPOST_SINGLE "<envar><name>PTILE</name><value>1</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:09:00</walltime>">
   <!ENTITY ALTPOST_EXTRA "<envar><name>PTILE</name><value>24</value></envar><envar><name>OMP_THREADS</name><value>1</value></envar><walltime>02:09:00</walltime>">
@@ -61,10 +66,16 @@
   <!ENTITY ALTPOST_RESOURCES_hi "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
   <!ENTITY ALTPOST_RESOURCES_pr "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
   <!ENTITY ALTPOST_RESOURCES_guam "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_conusmem2 "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_akmem2 "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_himem2 "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY ALTPOST_RESOURCES_prmem2 "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
 
   <!ENTITY PRDGEN_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
 
-  <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_EXTRA;">
+  <!ENTITY SMARTINIT_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>15</value></envar><envar><name>NTASK</name><value>15</value></envar>&ALTPOST_SINGLE;">
+  <!ENTITY SMARTINITB_RESOURCES "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_SINGLE;">
+
 
   <!ENTITY GEMPAK_RESOURCES       "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">
   <!ENTITY GEMPAK_RESOURCES_SHORT "<nodes>1:ppn=24</nodes><envar><name>NTASK</name><value>1</value></envar><envar><name>NTASK</name><value>1</value></envar>&ALTPOST_EXTRA;">

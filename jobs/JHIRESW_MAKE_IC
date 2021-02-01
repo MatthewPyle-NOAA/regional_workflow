@@ -54,13 +54,6 @@ export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
 
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 mkdir -p $COMOUT
-export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
-mkdir -p $NWGES
-
-if [ $tmmark = tm00 ] ; then	# SAR without DA
-  export INPdir=$NWGES/anl.${NEST}.$tmmark
-fi
-mkdir -p $INPdir
 
 #####################################
 # wcoss environment settings

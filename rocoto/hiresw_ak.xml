@@ -50,7 +50,6 @@
   <!ENTITY hiresw_ver "v8.0.0">
   <!ENTITY rzdmuser "mpyle">
   <!ENTITY CASE "C768">
-  <!ENTITY GESROOT "&MYCOMROOT;/../nwges">
   <!ENTITY NHRS "60">
 
   <!ENTITY TIMEOFFSET "-00:06:00:00">

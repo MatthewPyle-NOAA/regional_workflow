@@ -4,7 +4,7 @@
 
   <!-- Set some variables for use later: -->
   <!ENTITY CYCLE_THROTTLE "4">
-  <!ENTITY TASK_THROTTLE "30">
+  <!ENTITY TASK_THROTTLE "40">
 
   <!-- Maximum number of times to try various jobs -->
   <!ENTITY MAX_TRIES_TRANSFER "3"> <!-- pulling data over network -->
@@ -50,10 +50,10 @@
   <!ENTITY hiresw_ver "v8.0.1">
   <!ENTITY rzdmuser "mpyle">
   <!ENTITY CASE "C768">
-  <!ENTITY GESROOT "&MYCOMROOT;/../nwges_new">
   <!ENTITY NHRS "48">
 
   <!ENTITY COMINgfsbase "@[COMINgfsbase:-/gpfs/dell1/nco/ops/com/gfs/para]">
+  <!ENTITY COMINrapbase "@[COMINrapbase:-/gpfs/hps/nco/ops/com/rap/prod]">
 
   <!-- rocoto pre command to launch the jobs -->
   <!ENTITY PRE "&HOMEhiresw;/rocoto_arw/rocoto_pre_job.sh">
@@ -128,6 +128,30 @@
   </task> 
 
 <!--  *******************************************************************  -->
+<!--  **************************** preprap  *****************************  -->
+
+  <task name="preprap" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_PREPRAP</command>
+    <jobname>hiresw_preprap_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_preprap_&DOMAIN;_arw_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &PREPRAP_RESOURCES;
+    &ENV_VARS;
+    <envar><name>job</name><value>hiresw.preprap_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+        <and>
+          <datadep age="5:00" minsize="103324"><cyclestr>&COMINrapbase;/rap.@Y@m@d/rap.t@Hz.awip32f00df.grib2</cyclestr></datadep>
+          <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <taskdep task="preclean"/> 
+        </and>
+    </dependency>
+  </task> 
+
+<!--  *******************************************************************  -->
 <!--  **************************** metgrid  *****************************  -->
 
   <task name="metgrid" maxtries="&MAX_TRIES;">
@@ -190,6 +214,7 @@
     <dependency>
       <and>
         <taskdep task="prepfinal"/> 
+        <taskdep task="preprap"/> 
       </and>
     </dependency>
   </task>
@@ -216,7 +241,7 @@
       <dependency>
         <and>
           <!-- Start the post if the forecast has written the needed model output for the hour  -->
-           <datadep age="02:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
            <taskdep task="preclean"/> 
         </and>
       </dependency>
@@ -243,7 +268,7 @@
       <dependency>
         <and>
           <!-- Start the prdgen job if the forecast is running or if it has already completed.  -->
-           <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;/postdone#fhr#</datadep>
+           <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;/postdone#fhr#</datadep>
            <taskdep task="preclean"/> 
         </and>
       </dependency>
@@ -255,7 +280,7 @@
 <!--  ********************** Run the BUFR post processor *********************  -->
 
   <metatask name="bufrpost">
-  <var name="fhr">&FHRS1;</var>
+  <var name="fhr">&FHRS;</var>
     <task name="bufrpost#fhr#" maxtries="&MAX_TRIES;">
       <command>&PRE; &JOBS;/JHIRESW_WRFBUFRSND</command>
       <jobname>hiresw_bufrpost_&DOMAIN;_arw_<cyclestr>@Y@m@d@H</cyclestr></jobname>
@@ -280,7 +305,7 @@
            <taskdep task="forecast"/>
           </or>
           <taskdep task="preclean"/> 
-          <datadep age="02:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
+          <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H_&envir;/fcstdone#fhr#.tm00</cyclestr></datadep>
         </and>
       </dependency>
     </task>
@@ -320,7 +345,7 @@
       <queue>&QUEUE_PE;</queue>
       &PE_EXTRA;
       &RESERVATION;
-      &ALTPOST_RESOURCES_@[DOMAIN:-conus];
+      &SMARTINITB_RESOURCES;
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>hiresw.smartinitb_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
@@ -359,7 +384,7 @@
            <taskdep task="forecast" state="RUNNING"/>
            <taskdep task="forecast"/>
           </or>
-          <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H</cyclestr>_&envir;/logf001</datadep>
+          <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone01</datadep>
        </and>
     </dependency>
   </task>
@@ -386,7 +411,7 @@
            <taskdep task="forecast" state="RUNNING"/>
            <taskdep task="forecast"/>
           </or>
-          <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_arw_@H</cyclestr>_&envir;/logf001</datadep>
+          <datadep age="03:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_arw_@H</cyclestr>_&envir;/prdgendone01</datadep>
        </and>
     </dependency>
   </task>

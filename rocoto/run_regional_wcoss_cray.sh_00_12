@@ -13,7 +13,7 @@ module load rocoto/1.2.4
 
 # if want a non-CONUS domain, export DOMAIN here
 
-doms="conus hi guam"
+doms="hi conus guam" 
 
 for DOMAIN in $doms
 do
@@ -37,11 +37,11 @@ export NWROOT=nwprod
 
 # First, last, and interval of the workflow cycles
 CYCLE_YMDH_BEG="2019083000"
-CYCLE_YMDH_END="2021013100"
+CYCLE_YMDH_END="2021123112"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
-COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+COMINgfs=/gpfs/dell1/nco/ops/com/gfs/para
 DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd_new
 MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com_new
 
@@ -60,15 +60,7 @@ expdb=${EXPT}_${DOMAIN}.db
 
 template=regional_workflow.xml.in
 
-if [ $DOMAIN = "conus" ]
-then
-template=regional_workflow.xml.in_akconus
-echo defined template as $template
-pwd
-else
-template=regional_workflow.xml.in_small
 echo template is $template
-fi
 
 # Generate the workflow definition file by parsing regional_workflow.xml.in
 sed -e "s|@\[EXPT.*\]|${EXPT}|g" \

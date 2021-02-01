@@ -61,7 +61,7 @@ fi
 
 # Run setpdy and initialize PDY variables
 
-if [ $MODEL = 'arw' -o $RUN_ENVIR = "prod" ]
+if [ $RUN_ENVIR = "prod" ]
 then
 setpdy.sh
 . ./PDY
@@ -87,8 +87,6 @@ fi
 
 export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}
 mkdir -p $COMOUT
-export NWGES=${GESROOT}/${NET}/${envir}/${RUN}.${PDY}/${cyc}
-mkdir -p $NWGES
 
 #####################################
 # wcoss environment settings

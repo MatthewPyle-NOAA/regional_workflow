@@ -48,8 +48,12 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 
 
 # Run setpdy and initialize PDY variables
-setpdy.sh
-. ./PDY
+
+if [ $RUN_ENVIR = 'prod' ]
+then
+ setpdy.sh
+ . ./PDY
+fi
 
 ### COMINgfs with be based on $PDY$cyc MINUS 6 hours
 

@@ -38,7 +38,6 @@ export WGRIB2=/gpfs/hps/nco/ops/nwtest/lib/wgrib2/v2.0.8/intel/bin/wgrib2
 
 export COMROOT=${MYCOMROOT}
 export RUN_ENVIR=dev
-export GESROOT=${MYGESROOT}
 
 export NWROOT=/gpfs/hps/nco/ops/nwprod
 
