@@ -199,7 +199,7 @@ module external_ic_mod
    real(kind=R_GRID), parameter :: cnst_0p20=0.20d0
    real :: deg2rad
    character (len = 80) :: source   ! This tells what the input source was for the data
-   character(len=27), parameter :: source_fv3gfs = 'FV3GFS GAUSSIAN NEMSIO FILE'
+   character(len=27), parameter :: source_fv3gfs = 'FV3GFS GAUSSIAN NETCDF FILE'
   public get_external_ic, get_cubed_sphere_terrain
 
 ! version number of this module
@@ -576,7 +576,7 @@ contains
 !
       call get_data_source(source,Atm%flagstruct%regional)
       if (trim(source) == source_fv3gfs) then
-         call mpp_error(NOTE, "READING FROM REGRIDDED FV3GFS NEMSIO FILE")
+         call mpp_error(NOTE, "READING FROM REGRIDDED FV3GFS NETCDF FILE")
       endif
 !
 !--- read in ak and bk from the gfs control file using fms_io read_data ---
@@ -2763,7 +2763,7 @@ contains
             enddo
          enddo
       endif
-  endif ! data source /= FV3GFS GAUSSIAN NEMSIO FILE
+  endif ! data source /= FV3GFS GAUSSIAN NETCDF FILE
 
 ! For GFS spectral input, omega in pa/sec is stored as w in the input data so actual w(m/s) is calculated
 ! For GFS nemsio input, omega is 0, so best not to use for input since boundary data will not exist for w

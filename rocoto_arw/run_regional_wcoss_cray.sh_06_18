@@ -4,16 +4,17 @@ set -x
 
 # Home directory of the regional_workflow package
 # HOMEfv3=/gpfs/hps3/emc/meso/noscrub/${USER}/regional_workflow_hiresw
-HOMEfv3=/gpfs/hps3/emc/meso/noscrub/${USER}/hiresw.v8.0.1
+HOMEhiresw=/gpfs/hps3/emc/meso/noscrub/${USER}/hiresw.v8.0.1
 
 module load xt-lsfhpc/9.1.3
 module load NetCDF-intel-haswell/4.2
 module use -a /usrx/local/emc_rocoto/modulefiles
 module load rocoto/1.2.4
+module load prod_util/1.1.2
 
 
 # if want a non-CONUS domain, export DOMAIN here
-doms="pr ak"
+doms="pr prmem2 ak akmem2"
 
 
 for DOMAIN in $doms
@@ -22,7 +23,7 @@ do
 export DOMAIN
 
 
-cd ${HOMEfv3}/rocoto
+cd ${HOMEhiresw}/rocoto_arw
 
 source ./config.workflow.defaults
 
@@ -39,14 +40,18 @@ export NWROOT=nwprod
 
 # First, last, and interval of the workflow cycles
 CYCLE_YMDH_BEG="2019083018"
-CYCLE_YMDH_END="2021013118"
+CYCLE_YMDH_END="2021122818"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
-COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
+COMINgfsbase=`compath.py gfs/para`
+COMINrapbase=`compath.py rap/prod`
+COMINnambase=`compath.py nam/prod`
 
-DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd_new
-MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com_new
+echo COMINrapbase is $COMINrapbase
+
+DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd_newarw
+MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com_newarw
 
 
 if [ ! -e ${MYCOMROOT} ] ; then
@@ -68,11 +73,17 @@ template=regional_workflow.xml.in
 
 if [ $DOMAIN = "ak" ]
 then
-template=regional_workflow.xml.in_akconus
+template=regional_workflow.xml.in
 echo defined template as $template
 pwd
+elif [ $DOMAIN = "pr" ]
+then
+template=regional_workflow.xml.in_rapic
+echo defined template as $template
+pwd
+
 else
-template=regional_workflow.xml.in_small
+template=regional_workflow.xml.in
 
 fi
 
@@ -85,13 +96,15 @@ sed -e "s|@\[EXPT.*\]|${EXPT}|g" \
     -e "s|@\[USER.*\]|${USER}|g" \
     -e "s|@\[CPU_ACCOUNT.*\]|${CPU_ACCOUNT}|g" \
     -e "s|@\[SITE_FILE.*\]|${SITE_FILE}|g" \
-    -e "s|@\[HOMEfv3.*\]|${HOMEfv3}|g" \
+    -e "s|@\[HOMEhiresw.*\]|${HOMEhiresw}|g" \
     -e "s|@\[MYCOMROOT.*\]|${MYCOMROOT}|g" \
     -e "s|@\[DATAROOT.*\]|${DATAROOT}|g" \
     -e "s|@\[MAKE_GRID_OROG.*\]|${MAKE_GRID_OROG}|g" \
     -e "s|@\[MAKE_SFC_CLIMO.*\]|${MAKE_SFC_CLIMO}|g" \
     -e "s|@\[GET_INPUT.*\]|${GET_INPUT}|g" \
-    -e "s|@\[COMINgfs.*\]|${COMINgfs}|g" \
+    -e "s|@\[COMINgfsbase.*\]|${COMINgfsbase}|g" \
+    -e "s|@\[COMINrapbase.*\]|${COMINrapbase}|g" \
+    -e "s|@\[COMINnambase.*\]|${COMINnambase}|g" \
     $template \
     > ${expxml}
 

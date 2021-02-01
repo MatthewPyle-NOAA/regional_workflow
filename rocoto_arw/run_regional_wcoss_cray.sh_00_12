@@ -10,10 +10,11 @@ module load xt-lsfhpc/9.1.3
 module load NetCDF-intel-haswell/4.2
 module use -a /usrx/local/emc_rocoto/modulefiles
 module load rocoto/1.2.4
+module load prod_util/1.1.2
 
 # if want a non-CONUS domain, export DOMAIN here
 
-doms="hi" 
+doms="hi himem2 conus conusmem2" 
 
 for DOMAIN in $doms
 do
@@ -37,11 +38,16 @@ export NWROOT=nwprod
 
 # First, last, and interval of the workflow cycles
 CYCLE_YMDH_BEG="2019083000"
-CYCLE_YMDH_END="2021022800"
+CYCLE_YMDH_END="2021122800"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
-COMINgfs=/gpfs/dell1/nco/ops/com/gfs/para
+COMINgfsbase=`compath.py gfs/para`
+COMINrapbase=`compath.py rap/prod`
+COMINnambase=`compath.py nam/prod`
+
+echo COMINrapbase is $COMINrapbase
+
 DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd_newarw
 MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com_newarw
 
@@ -58,16 +64,16 @@ fi
 expxml=${EXPT}_${DOMAIN}.xml
 expdb=${EXPT}_${DOMAIN}.db
 
-template=regional_workflow.xml.in
+# template=regional_workflow.xml.in
 
 if [ $DOMAIN = "conus" ]
 then
-template=regional_workflow.xml.in_akconus
-echo defined template as $template
-pwd
+ template=regional_workflow.xml.in_rapic
+# echo defined template as $template
+# pwd
 else
-template=regional_workflow.xml.in_small
-echo template is $template
+ template=regional_workflow.xml.in
+ echo template is $template
 fi
 
 # Generate the workflow definition file by parsing regional_workflow.xml.in
@@ -86,7 +92,9 @@ sed -e "s|@\[EXPT.*\]|${EXPT}|g" \
     -e "s|@\[MAKE_GRID_OROG.*\]|${MAKE_GRID_OROG}|g" \
     -e "s|@\[MAKE_SFC_CLIMO.*\]|${MAKE_SFC_CLIMO}|g" \
     -e "s|@\[GET_INPUT.*\]|${GET_INPUT}|g" \
-    -e "s|@\[COMINgfs.*\]|${COMINgfs}|g" \
+    -e "s|@\[COMINgfsbase.*\]|${COMINgfsbase}|g" \
+    -e "s|@\[COMINrapbase.*\]|${COMINrapbase}|g" \
+    -e "s|@\[COMINnambase.*\]|${COMINnambase}|g" \
     $template \
     > ${expxml}
 
