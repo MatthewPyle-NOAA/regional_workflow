@@ -90,3 +90,5 @@ module load atp
 module use /usrx/local/emc_rocoto/modulefiles
 module load rocoto/1.3.0rc2
 
+module load gempak/7.3.2
+

@@ -40,7 +40,6 @@ module list
 
 export COMROOT=${MYCOMROOT}
 export RUN_ENVIR=dev
-export GESROOT=${MYGESROOT}
 
 export NWROOT=/gpfs/hps/nco/ops/nwprod
 
