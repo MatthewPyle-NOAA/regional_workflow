@@ -1,15 +1,20 @@
 #!/bin/sh
 ############################################################################
-# Script name:		exfv3cam_sar_chgres.sh
+# Script name:		exhiresw_make_ic.sh
 # Script description:	Makes ICs on fv3 stand-alone regional grid 
 #                       using FV3GFS initial conditions.
 # Script history log:
 #   1) 2016-09-30       Fanglin Yang
 #   2) 2017-02-08	Fanglin Yang and George Gayno
 #			Use the new CHGRES George Gayno developed.
+#
 #   3) 2019-05-02	Ben Blake
 #			Created exfv3cam_sar_chgres.sh script
 #			from global_chgres_driver.sh
+#
+#   4) 2021-02-01       Matthew Pyle
+#                       Changes to attach domain/cycle specific information 
+#                       to filenames when moving output.
 ############################################################################
 set -ax
 
@@ -84,7 +89,7 @@ err=$?; err_chk
 #
 # move output files to save directory
 #
-mv gfs_ctrl.nc $INPdir/.
+mv gfs_ctrl.nc $COMOUT/hiresw.t${cyc}z.${NEST}${MODEL}.gfs_ctrl.nc
 err=$?
 
 if [ $err -ne 0 ]
@@ -94,7 +99,7 @@ err_exit $msg
 fi
 
 
-mv gfs.bndy.nc $INPdir/gfs_bndy.tile7.000.nc
+mv gfs.bndy.nc $COMOUT/hiresw.t${cyc}z.${NEST}${MODEL}.gfs_bndy.tile7.000.nc
 err=$?
 
 if [ $err -ne 0 ]
@@ -104,7 +109,7 @@ err_exit $msg
 fi
 
 
-mv out.atm.tile1.nc $INPdir/gfs_data.tile7.nc
+mv out.atm.tile1.nc $COMOUT/hiresw.t${cyc}z.${NEST}${MODEL}.gfs_data.tile7.nc
 err=$?
 
 if [ $err -ne 0 ]
@@ -113,7 +118,7 @@ msg="FATAL ERROR: problem in make_ic generating out.atm.tile1.nc"
 err_exit $msg
 fi
 
-mv out.sfc.tile1.nc $INPdir/sfc_data.tile7.nc
+mv out.sfc.tile1.nc $COMOUT/hiresw.t${cyc}z.${NEST}${MODEL}.sfc_data.tile7.nc
 err=$?
 
 if [ $err -ne 0 ]

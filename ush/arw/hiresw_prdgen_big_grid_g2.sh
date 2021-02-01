@@ -30,8 +30,6 @@ subpiece=${5}
 reflag=1
 compress="c3 -set_bitmap 1"
 
-mkdir ${DATA}/prdgen_full
-
 if [ $DOMIN_SMALL = "conus" -o $DOMIN_SMALL = "conusmem2" ]
 then
  mkdir -p ${DATA}/prdgen_full_${subpiece}/${fhr}

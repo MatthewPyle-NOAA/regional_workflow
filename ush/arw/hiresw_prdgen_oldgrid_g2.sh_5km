@@ -166,8 +166,12 @@ else
 mv ${filenamthree}${fhr}.tm00_bilin  ${filenamthree}${fhr}.tm00
 fi
 
+cp ${filenamthree}${fhr}.tm00 ../
+
 ###############################################################
 ###############################################################
+
+cd ../
 
 # compute precip buckets
 

@@ -445,19 +445,19 @@ if [ $outreg != "conusmem2" -a $outreg != "himem2" -a  $outreg != "prmem2" -a $o
 then
 
 echo "#!/bin/ksh" > wgrib2.poe
-echo "a.poe &" >> wgrib2.poe
-echo "b.poe &" >> wgrib2.poe
-echo "c.poe &" >> wgrib2.poe
-echo "d.poe &" >> wgrib2.poe
-echo "e.poe &" >> wgrib2.poe
-echo "f.poe &" >> wgrib2.poe
-echo "g.poe &" >> wgrib2.poe
-echo "h.poe &" >> wgrib2.poe
-echo "i.poe &" >> wgrib2.poe
-echo "j.poe &" >> wgrib2.poe
-echo "k.poe &" >> wgrib2.poe
-echo "l.poe &" >> wgrib2.poe
-echo "m.poe &" >> wgrib2.poe
+echo "./a.poe &" >> wgrib2.poe
+echo "./b.poe &" >> wgrib2.poe
+echo "./c.poe &" >> wgrib2.poe
+echo "./d.poe &" >> wgrib2.poe
+echo "./e.poe &" >> wgrib2.poe
+echo "./f.poe &" >> wgrib2.poe
+echo "./g.poe &" >> wgrib2.poe
+echo "./h.poe &" >> wgrib2.poe
+echo "./i.poe &" >> wgrib2.poe
+echo "./j.poe &" >> wgrib2.poe
+echo "./k.poe &" >> wgrib2.poe
+echo "./l.poe &" >> wgrib2.poe
+echo "./m.poe &" >> wgrib2.poe
 echo "wait" >> wgrib2.poe
 
 chmod 775 wgrib2.poe
@@ -470,17 +470,17 @@ export err=$?;  err_chk
 else
 
 echo "#!/bin/ksh" > wgrib2.poe
-echo "a.poe &" >> wgrib2.poe
-echo "b.poe &" >> wgrib2.poe
-echo "c.poe &" >> wgrib2.poe
-echo "d.poe &" >> wgrib2.poe
-echo "e.poe &" >> wgrib2.poe
-echo "f.poe &" >> wgrib2.poe
-echo "g.poe &" >> wgrib2.poe
-echo "h.poe &" >> wgrib2.poe
-echo "i.poe &" >> wgrib2.poe
-echo "l.poe &" >> wgrib2.poe
-echo "m.poe &" >> wgrib2.poe
+echo "./a.poe &" >> wgrib2.poe
+echo "./b.poe &" >> wgrib2.poe
+echo "./c.poe &" >> wgrib2.poe
+echo "./d.poe &" >> wgrib2.poe
+echo "./e.poe &" >> wgrib2.poe
+echo "./f.poe &" >> wgrib2.poe
+echo "./g.poe &" >> wgrib2.poe
+echo "./h.poe &" >> wgrib2.poe
+echo "./i.poe &" >> wgrib2.poe
+echo "./l.poe &" >> wgrib2.poe
+echo "./m.poe &" >> wgrib2.poe
 echo "wait" >> wgrib2.poe
 
 chmod 775 wgrib2.poe
@@ -858,7 +858,15 @@ cp ${freq}snow ${freq}snow.${fhr}_interp
   mv WRFPRS${fhr}i.tm00.temp WRFPRS${fhr}i.tm00
 	fi
 
-  cpfs ${COMROOT}/date/t${cyc}z DATE
+#  cpfs ${COMROOT}/date/t${cyc}z DATE
+# if [ ${RUN_ENVIR} = 'prod' ]
+# then
+# setpdy.sh
+# . ./PDY
+
+export CDATE=${PDY}${cyc}
+
+echo "DATE__${CDATE}xxxx" > DATE
 
   if [ -s $prdgfl ];then  
     mv ${prdgfl} meso${rg}.NDFDf${fhr}  

@@ -24,6 +24,7 @@ resterr=1
 
 restart_interval=6
 FHMAX=60
+hrlist="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
 model=fv3sar
 
 cd $DATA
@@ -101,7 +102,27 @@ cp $DATA/INPUT/sfc_data.nc $DATA/INPUT/sfc_data.tile7.nc
 
 else
 echo "not restart"
-cp ${NWGES}/anl.${NEST}.${tmmark}/*.nc INPUT
+
+for fhr in $hrlist
+do
+cp ${COMIN}/hiresw.t${cyc}z.${NEST}fv3.gfs_bndy.tile7.0${fhr}.nc INPUT/gfs_bndy.tile7.0${fhr}.nc
+done
+
+cp ${COMIN}/hiresw.t${cyc}z.${NEST}fv3.gfs_ctrl.nc INPUT/gfs_ctrl.nc
+err1=$?
+cp ${COMIN}/hiresw.t${cyc}z.${NEST}fv3.gfs_data.tile7.nc INPUT/gfs_data.tile7.nc
+err2=$?
+cp ${COMIN}/hiresw.t${cyc}z.${NEST}fv3.sfc_data.tile7.nc INPUT/sfc_data.tile7.nc
+err3=$?
+
+if [ $err1 -ne 0 -o $err2 -ne 0 -o $err3 -ne 0 ]
+then
+msg="FATAL ERROR:  Missing FV3 initial condition file(s)"
+ls -l INPUT/gfs_ctrl.nc INPUT/gfs_data.tile7.nc INPUT/sfc_data.tile7.nc
+err_exit $msg
+fi
+
+
 RESTART=0
 fi
 
@@ -111,14 +132,8 @@ let "numbndy_check=$NHRS/3+1"
 if [ $tmmark = tm00 ] ; then
   if [ $numbndy -ne $numbndy_check ] ; then
     export err=13
-    echo "Don't have all BC files at tm00, abort run"
-    err_exit "Don't have all BC files at tm00, abort run"
-  fi
-else
-  if [ $numbndy -ne 2 ] ; then
-    export err=2
-    echo "Don't have both BC files at ${tmmark}, abort run"
-    err_exit "Don't have all BC files at ${tmmark}, abort run"
+    msg="FATAL ERROR: Don't have all BC files at tm00, abort run"
+    err_exit $msg
   fi
 fi
 

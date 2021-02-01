@@ -182,7 +182,7 @@ then
 
 # cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
 
-fhrloop=01
+fhrloop=00
 
 cat $DATA/profilm.c1.${tmmark}.f${fhrloop} > $DATA/profilm.c1.${tmmark}
 

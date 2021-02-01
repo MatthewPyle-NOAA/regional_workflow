@@ -33,7 +33,7 @@ compress="c3 -set_bitmap 1"
 
 reflag=1
 
-mkdir ${DATA}/prdgen_3km_${subpiece}/${fhr}
+mkdir -p ${DATA}/prdgen_3km_${subpiece}/${fhr}
 cd ${DATA}/prdgen_3km_${subpiece}/${fhr}
 
 DOMIN=${DOMIN_SMALL}${model}

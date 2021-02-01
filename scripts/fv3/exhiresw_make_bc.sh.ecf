@@ -1,7 +1,7 @@
 #!/bin/sh
 ############################################################################
-# Script name:		exfv3cam_sar_chgres.sh
-# Script description:	Makes ICs on fv3 stand-alone regional grid 
+# Script name:		exhiresw_make_bc.sh
+# Script description:	Makes LBCs on fv3 stand-alone regional grid 
 #                       using FV3GFS initial conditions.
 # Script history log:
 #   1) 2016-09-30       Fanglin Yang
@@ -17,6 +17,9 @@
 #
 #   5) 2020-10-05       Matthew Pyle
 #                       Changes for GFSv16 and processing netCDF files
+
+#   6) 2021-02-01       Matthew Pyle
+#                       Revises file names for LBC output
 ############################################################################
 set -ax
 
@@ -270,7 +273,7 @@ hrlist="03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
 for hr in $hrlist
 do
 hruse=0${hr}
-mv ${hruse}/gfs.bndy.nc $INPdir/gfs_bndy.tile7.${hruse}.nc
+mv ${hruse}/gfs.bndy.nc $COMOUT/hiresw.t${cyc}z.${NEST}${MODEL}.gfs_bndy.tile7.${hruse}.nc
 err=$?
 if [ $err -ne 0 ]
 then

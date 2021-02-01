@@ -228,7 +228,7 @@ cd $DATA
 if [ $fhr -eq 48 ]
 then
 
-fhrloop=01
+fhrloop=00
 
 cat $DATA/profilm.c1.${tmmark}.f${fhrloop} > $DATA/profilm.c1.${tmmark}
 

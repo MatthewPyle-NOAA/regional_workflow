@@ -30,29 +30,6 @@ fi
 
 ### 
 
-# believe PRDGEN_DATA could be even/odd post directories
-
-
-if [ $outreg = "ak" -o $outreg = "conus" ]
-then
-
-if [ $fhr -eq 0 ]
-then
- PRDGEN_DATA=$PRDGEN_DATA_EVEN
-
-else
-
- if [ ${fhr}%2 -eq 0 ]
- then
-  PRDGEN_DATA=$PRDGEN_DATA_EVEN
- else
-  PRDGEN_DATA=$PRDGEN_DATA_ODD
- fi
-
-fi
-
-fi
-
 
 # use $RUN to make it easy to switch later?
 

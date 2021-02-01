@@ -31,7 +31,7 @@ subpiece=${5}
 reflag=1
 compress="c3 -set_bitmap 1"
 
-mkdir ${DATA}/prdgen_full
+mkdir -p ${DATA}/prdgen_full
 
 if [ $DOMIN_SMALL = "conus"  ]
 then
@@ -361,12 +361,12 @@ looplim=90
 loop=1
 fi
 
-  rm input.card
+  rm input.card.${fhr}
 if [ $subpiece = "1" ]
 then
-  echo "$DATA/prdgen_full_1" > input.card
+  echo "$DATA/prdgen_full_1" > input.card.${fhr}
 else
-  echo "$DATA/prdgen_full" > input.card
+  echo "$DATA/prdgen_full" > input.card.${fhr}
 fi
 
      cat ${filenamthree}${fhr}.tm00  > ${RUN}.t${CYC}z.${model}_${gres}.f${fhr}.${DOMIN_SMALL}.grib2
