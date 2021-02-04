@@ -239,7 +239,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/logf0${fhr}"
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $altpath/BGDAWP${fhrold}.tm00"
    err_exit $msg
  fi
 done
@@ -311,6 +311,7 @@ if [ -e $filecheck ]
 then
  mv PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_snow
  $EXECfv3/hireswfv3_bucket < input.card.${fhr}
+ export err=$?; err_chk
  cat ./PCP3HR${fhr}.tm00 >> $filecheck
  cp PCP3HR${fhr}.tm00 PCP3HR${fhr}.tm00_qpf
 fi
@@ -359,7 +360,6 @@ echo "$dim1 $dim2" >> input.${fhr}
 $EXECfv3/hireswfv3_fv3snowbucket < input.${fhr}
 export err=$?; err_chk
 
-# not sure I understand this repeated fv3snowbucket call
 # 1 h added to odd time file
 if [ -e $altpath/BGDAWP${fhrold}.tm00 ]
 then
@@ -406,7 +406,7 @@ export err=$?; err_chk
 cat ./PCP3HR${fhrold}.tm00 >>  $altpath/BGDAWP${fhrold}.tm00
 fi
 
-## do 3 h QPF from hireswfv3_bucket?
+## do 3 h QPF from hireswfv3_bucket
 
 
   echo "${curpath}" > input.card.${fhr}
@@ -428,6 +428,8 @@ then
  mv PCP3HR${fhrold}.tm00 PCP3HR${fhrold}.tm00_snow
 
  $EXECfv3/hireswfv3_bucket < input.card.${fhr}
+ export err=$?; err_chk
+
 if [ $fhrold = '03' ]
 then
  echo " will not duplicate the 3 h total at f03 "
