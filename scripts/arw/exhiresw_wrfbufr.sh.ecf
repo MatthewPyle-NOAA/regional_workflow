@@ -241,6 +241,29 @@ then
   fhrloop=0${fhrloop}
 fi
 
+# check on existence
+looplim=45
+loop=1
+
+while [ $loop -le $looplim ]
+do
+ echo in while
+ if [ -s $DATA/profilm.c1.${tmmark}.f${fhrloop} ]
+ then
+   break
+ else
+   loop=$((loop+1))
+   sleep 20
+ fi
+ if [ $loop -ge $looplim ]
+   then
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for profilm.c1.${tmmark}.f${fhrloop}"
+   err_exit $msg
+ fi
+done
+#
+
+
 echo "added ${fhrloop} to the main combined file"
 cat $DATA/profilm.c1.${tmmark}.f${fhrloop} >> $DATA/profilm.c1.${tmmark}
 
