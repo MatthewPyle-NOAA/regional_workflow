@@ -97,7 +97,7 @@
 
     <dependency>
         <and>
-          <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="01:10:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task> 
@@ -364,6 +364,33 @@
           <datadep age="05:00"><cyclestr>&DATAROOT;/hiresw.forecast_&DOMAIN;_fv3_@H</cyclestr>_&envir;/logf001</datadep>
           <taskdep task="prdgen01"/> 
        </and>
+    </dependency>
+  </task>
+
+<!--  **********************************************************************  -->
+<!--  ******************************* Cleanup ******************************  -->
+
+  <task name="cleanup" maxtries="&MAX_TRIES;">
+    <command>&PRE; &JOBS;/JHIRESW_CLEANUP</command>
+    <jobname>hiresw_cleanup_&DOMAIN;_fv3_<cyclestr>@Y@m@d@H</cyclestr></jobname>
+    <join><cyclestr>&LOGDIR;/hiresw_cleanup_&DOMAIN;_fv3_@Y@m@d@H.log</cyclestr></join>
+    <account>&ACCOUNT;</account>
+    <queue>&QUEUE_PE;</queue>
+    &PE_EXTRA;
+    &RESERVATION;
+    &CLEANUP_RESOURCES;
+    &ENV_VARS;
+    <envar><name>jobid</name><value>hiresw.cleanup_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="gempak"/>
+        <taskdep task="awips"/>
+        <taskdep task="bufrpost60"/>
+        <taskdep task="smartinit_b"/>
+        <taskdep task="make_ic"/>
+        <taskdep task="make_bc"/>
+      </and>
     </dependency>
   </task>
 

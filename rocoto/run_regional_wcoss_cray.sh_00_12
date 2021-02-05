@@ -60,6 +60,12 @@ expdb=${EXPT}_${DOMAIN}.db
 
 template=regional_workflow.xml.in
 
+if [ ${DOMAIN} = "conus" ]
+then
+template=regional_workflow.xml.in_akconus
+fi
+
+
 echo template is $template
 
 # Generate the workflow definition file by parsing regional_workflow.xml.in

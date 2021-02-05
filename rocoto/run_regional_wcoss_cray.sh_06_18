@@ -66,6 +66,12 @@ expdb=${EXPT}_${DOMAIN}.db
 
 template=regional_workflow.xml.in
 
+if [ ${DOMAIN} = "ak" ]
+then
+template=regional_workflow.xml.in_akconus
+fi
+
+
 
 
 sed -e "s|@\[EXPT.*\]|${EXPT}|g" \
