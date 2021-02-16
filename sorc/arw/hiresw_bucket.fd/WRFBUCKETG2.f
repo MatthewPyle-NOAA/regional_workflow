@@ -116,7 +116,7 @@ C grib2
 		write(0,*) 'bad baopen!!! ', ierr1
 		write(0,*) 'bad baopen!!! ', ierr2
 		write(0,*) 'bad baopen!!! ', ierr3
-		STOP
+		STOP 9
 	endif
 	
 	p_earlier=0.
@@ -163,7 +163,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET .ne. 0) then
 	write(0,*) 'bad getgb1 earlier ', IRET
-	STOP
+	STOP 99
 	endif
 
 
@@ -188,7 +188,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET .ne. 0) then
 	write(0,*) 'bad getgb snow earlier ', IRET
-	STOP
+	STOP 999
 	endif
 
         s_earlier=gfld%fld
@@ -215,7 +215,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET1 .ne. 0) then
 	 write(0,*) 'bad getgb later ', IRET1
-	STOP
+	STOP 9998
 	endif
 
         write(0,*) 'set p_later to gfld%fld'
@@ -243,7 +243,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET1 .ne. 0) then
 	 write(0,*) 'bad getgb snow later ', IRET1
-	STOP
+	STOP 9999
 	endif
 
         write(0,*) 'set s_later to gfld%fld'
