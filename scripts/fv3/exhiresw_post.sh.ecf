@@ -270,6 +270,7 @@ do
  echo in while
  if [ -s $altpath/temp.t${cyc}z.f${fhrold3}.grib2 ]
  then
+   sleep 1
    break
  else
    loop=$((loop+1))

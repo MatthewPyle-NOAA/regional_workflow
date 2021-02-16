@@ -121,7 +121,6 @@
     <dependency>
         <and>
           <datadep age="5:00" minsize="17103324"><cyclestr offset="&TIMEOFFSET;">&COMINgfsbase;/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f054</cyclestr></datadep>
-          <datadep age="5:00" minsize="171324"><cyclestr>&COMINnambase;/nam.@Y@m@d/nam.t@Hz.awp15154.tm00.grib2</cyclestr></datadep>
           <timedep> <cyclestr offset="00:20:00"> @Y@m@d@H@M@S </cyclestr></timedep>
           <taskdep task="preclean"/> 
         </and>

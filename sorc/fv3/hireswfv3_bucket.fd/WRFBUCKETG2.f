@@ -113,7 +113,7 @@ C grib2
 		write(0,*) 'bad baopen!!! ', ierr1
 		write(0,*) 'bad baopen!!! ', ierr2
 		write(0,*) 'bad baopen!!! ', ierr3
-		STOP
+		STOP 9
 	endif
 	
 	p_earlier=0.
@@ -161,7 +161,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET .ne. 0) then
 	write(0,*) 'bad getgb1 earlier ', IRET
-	STOP
+	STOP 99
 	endif
 
 
@@ -189,7 +189,7 @@ C    &                  UNPACK,K,GFLD,IRET)
 
 	if (IRET1 .ne. 0) then
 	 write(0,*) 'bad getgb later ', IRET1
-	STOP
+	STOP 999
 	endif
 
         write(0,*) 'set p_later to gfld%fld'
