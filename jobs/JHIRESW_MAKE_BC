@@ -1,30 +1,7 @@
 #!/bin/ksh -l
-set -xe
-
-. $HOMEfv3/ush/fv3/hiresw_run_commands_bc.sh
-
-####################################
-# Specify Execution Areas
-####################################
-export CHGRESEXEC=$EXECfv3/hireswfv3_chgres_cube
-
-####################################
-# Run setpdy and initialize PDY variables
-####################################
-# PDY, CDATE, and tmmark are passed in through Rocoto xml
-
-if [ ${RUN_ENVIR} = 'prod' ]
-then
-setpdy.sh
-. ./PDY
-
-export CDATE=${PDY}${cyc}
-
-fi
-
-export month=`echo $CDATE | cut -c 5-6`
-export day=`echo $CDATE | cut -c 7-8`
-
+set -xa
+export PS4='$SECONDS + '
+date
 
 #####################################
 # Obtain unique process id (pid) and make temp directory
@@ -35,20 +12,61 @@ mkdir -p $DATA
 cd $DATA
 export BNDYdir=$DATA
 
-export pid=$$
-export pgmout="OUTPUT.${pid}"
-export pgmerr=errfile
+####################################
+# Run setpdy and initialize PDY variables
+####################################
+# PDY, CDATE, and tmmark are passed in through Rocoto xml
+
+export cycle=${cycle:-t${cyc}z}
+if [ ${RUN_ENVIR} = 'nco' ]
+then
+setpdy.sh
+. ./PDY
+fi
+
+export CDATE=${PDY}${cyc}
+export month=`echo $CDATE | cut -c 5-6`
+export day=`echo $CDATE | cut -c 7-8`
+
+
+####################################
+# Specify Execution Areas
+####################################
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+export CHGRESEXEC=$EXECfv3/hireswfv3_chgres_cube
+export UTILush=${UTILush:-$HOMEfv3/util/ush}
+
+export FIXsar=${FIXsar:-$HOMEfv3/fix/fv3/fix_sar/$NEST}
+export FIXam=${FIXam:-$HOMEfv3/fix/fv3/fix_am}
+export FIXco2=${FIXco2:-$FIXam/fix_co2_proj}
+export CASE=C768
+export NHRS=60
+
+. $PARMfv3/run_commands_bc.config
+
+###############################
+# Specify NET and RUN name
+###############################
+export NET=${NET:-hiresw}
+export RUN=${RUN:-hiresw}
 
 #####################################
 # Define COM directories
 #####################################
-export COMINgdas=${COMINgdas:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export GBCOMINgfs=${GBCOMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
-export COMINgfs=${COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod}
+export COMINgdas=${COMINgdas:-$(compath.py gfs/prod)}
+export GBCOMINgfs=${GBCOMINgfs:-$(compath.py gfs/para)}
+export COMINgfs=${COMINgfs:-$(compath.py gfs/para)}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
 
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 mkdir -p $COMOUT
+
+export pgmout="OUTPUT.$$"
+export pgmerr=errfile
 
 #####################################
 # wcoss environment settings
@@ -61,12 +79,12 @@ fi
 export CDAS=gfs
 export LEVS=65
 export LSOIL=4
-export REGIONAL=2		# REGIONAL=0 - uniform, stretch, or nest
-				# REGIONAL=1 - generate data and boundary (for regional case)
-				# REGIONAL=2 - generate boundaries only (for regional case)
+export REGIONAL=2               # REGIONAL=0 - uniform, stretch, or nest
+                                # REGIONAL=1 - generate data and boundary (for regional case)
+                                # REGIONAL=2 - generate boundaries only (for regional case)
 export HALO=4
 export ictype=pfv3gfs
-export nst_anl=.false.		# false or true to include NST analysis
+export nst_anl=.false.          # false or true to include NST analysis
 export KMP_AFFINITY=disabled
 
 env

@@ -50,11 +50,11 @@ then
     $TOCGRIB2 < $PARMutil/grib2_${NEST}_hiresw.awpreg_f${fhr}
 
     if [ $SENDCOM = "YES" ] ; then
-       cp  $FORT51  $COMOUT/wmo/
+       cp  $FORT51  $COMOUTwmo/
     fi
 
     if [ $SENDDBN_NTC = "YES" ] ; then
-       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $COMOUT/wmo/grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
+       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $COMOUTwmo/grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
     else
        msg="File $output_grb.$job not posted to db_net."
        postmsg "$jlogfile" "$msg"
@@ -82,11 +82,11 @@ else
     $TOCGRIB2 < $PARMutil/grib2_${NEST}_hiresw.awpreg_f${fhr}
 
     if [ $SENDCOM = "YES" ] ; then
-       cp  $FORT51  $COMOUT/wmo/
+       cp  $FORT51  $COMOUTwmo/
     fi
 
     if [ $SENDDBN_NTC = "YES" ] ; then
-       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $COMOUT/wmo/grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
+       $DBNROOT/bin/dbn_alert NTC_LOW ${DBN_ALERT_TYPE} $job $COMOUTwmo/grib2.t${cyc}z.awpreg_${RUNLOC}f${fhr}
     else
        msg="File $output_grb.$job not posted to db_net."
        postmsg "$jlogfile" "$msg"

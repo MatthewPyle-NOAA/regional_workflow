@@ -14,7 +14,7 @@ module load prod_util/1.1.2
 
 # if want a non-CONUS domain, export DOMAIN here
 
-doms="hi himem2 conus conusmem2" 
+doms="hi himem2" 
 
 for DOMAIN in $doms
 do
@@ -48,8 +48,8 @@ COMINnambase=`compath.py nam/prod`
 
 echo COMINrapbase is $COMINrapbase
 
-DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd_newarw
-MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com_newarw
+DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd
+MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com
 
 
 if [ ! -e ${MYCOMROOT} ] ; then

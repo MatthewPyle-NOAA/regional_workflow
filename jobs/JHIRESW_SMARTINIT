@@ -7,51 +7,34 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
-###############################
-# Specify NET and RUN name
-###############################
-export NET=${NET:-hiresw}
-export RUN=${RUN:-hiresw}
-export SENDCOM=${SENDCOM:-YES}
-
-# 
+#
 # obtain unique process id (pid) and make temp directories
 #
-
-export pid=$$
-
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
-export INPUT_DATA_EVEN=${INPUT_DATA_EVEN:-${DATAROOT:?}/hiresw.posteven_${NEST}_${MODEL}_${cyc}}
-export INPUT_DATA_ODD=${INPUT_DATA_ODD:-${DATAROOT:?}/hiresw.postodd_${NEST}_${MODEL}_${cyc}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.post_${NEST}_${MODEL}_${cyc}_${envir}}
 
 mkdir -p $DATA
 cd $DATA
 
-####################################
-# Determine Job Output Name on System
-####################################
-export outid="LL$job"
-export pgmout="OUTPUT.${pid}"
+export SENDCOM=${SENDCOM:-YES}
 
-export cycle=${cycle:-t${cyc}z}
-
-# why is this block here but not elsewhere?
-if [ $MODEL = 'fv3' ]
+####################################
+# Specify Execution Areas
+####################################
+if [ $MODEL = 'arw' ]
 then
-export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
-export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
-export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
-export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
-else
-
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
 export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
 export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
 export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
 export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-
+else
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export FIXsar=${FIXsar:-$HOMEfv3/fix/fv3/fix_sar/$NEST}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
 fi
 
 ###################################
@@ -73,19 +56,27 @@ do
   cd $DATA/smartinit_${hr}
 
   # Run setpdy and initialize PDY variables
-  if [ $RUN_ENVIR = 'prod' ]
+  if [ $RUN_ENVIR = 'nco' ]
   then
+    export cycle=${cycle:-t${cyc}z}
     setpdy.sh
     . ./PDY
   else
 
-# define PDYm1 for rocoto FV3 case
+# define PDYm1 for rocoto case
     export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
   fi
 done
 
+###############################
+# Specify NET and RUN name
+###############################
+export NET=${NET:-hiresw}
+export RUN=${RUN:-hiresw}
 
-
+#####################################
+# Define COM directories
+#####################################
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 
@@ -108,6 +99,8 @@ let srefcyc2=$srefcyc
 if [ $srefcyc2 -lt 10 ];then srefcyc2="0"${srefcyc2};fi
 
 export COMINsref=${COMINsref:-$COMsref/sref.${SREF_PDY}/${srefcyc2}/ensprod}
+
+export pgmout="OUTPUT.$$"
 
 ########################################################
 # Execute the script.

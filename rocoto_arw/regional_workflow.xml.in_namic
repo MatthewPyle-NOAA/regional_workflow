@@ -117,6 +117,7 @@
     &UNGRIB_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.ungrib_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.ungrib_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
         <and>
@@ -141,6 +142,7 @@
     &METGRID_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.metgrid_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.metgrid_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
       <and>
@@ -164,6 +166,7 @@
     &PREPFINAL_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.prepfinal_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.prepfinal_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
       <and>
@@ -187,6 +190,7 @@
     &FORECAST_TM00_RESOURCES_@[DOMAIN:-conus];
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.forecast_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.forecast_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
     <dependency>
       <and>
         <taskdep task="prepfinal"/> 
@@ -212,6 +216,7 @@
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>hiresw.post_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>jobid</name><value>hiresw.post_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <dependency>
         <and>
@@ -238,6 +243,7 @@
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>hiresw.prdgen_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+      <envar><name>jobid</name><value>hiresw.prdgen_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
       <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_arw_@H</cyclestr>_&envir;</value></envar>
       <envar><name>fhr</name><value>#fhr#</value></envar>
       <dependency>
@@ -351,6 +357,7 @@
     &GEMPAK_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.gempak_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.gempak_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
        <and>
@@ -378,6 +385,7 @@
     &AWIPS_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.awips_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.awips_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
        <and>

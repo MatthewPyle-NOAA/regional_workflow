@@ -1,82 +1,68 @@
 #!/bin/sh
 
 ########################################
-# Runs HIRESW WRFBUFR and SNDP programs
+# Runs HIRESW SMARTINIT program
 ########################################
 set -xa
 export PS4='$SECONDS + ' 
 date
+
+# 
+# obtain unique process id (pid) and make temp directories
+#
+export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
+export PRDGEN_DATA=${PRDGEN_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
+
+mkdir -p $DATA
+cd $DATA
+
+# Run setpdy and initialize PDY variables
+export cycle=${cycle:-t${cyc}z}
+if [ $RUN_ENVIR = 'nco' ]
+then
+  setpdy.sh
+  . ./PDY
+
+else
+# define PDYm1 for rocoto case
+  export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
+fi
+
+export SENDCOM=${SENDCOM:-YES}
+
+####################################
+# Specify Execution Areas
+####################################
+if [ $MODEL = 'arw' ]
+then
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+else
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export FIXsar=${FIXsar:-$HOMEfv3/fix/fv3/fix_sar/$NEST}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+fi
+
+export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
+export DBN_ALERT_TYPE_SMART=${DBN_ALERT_TYPE_SMART:-HIRESW_${DBN_NEST}_NDFD_GB2}
+export DBN_ALERT_TYPE_SMART_WIDX=${DBN_ALERT_TYPE_SMART_WIDX:-HIRESW_${DBN_NEST}_NDFD_GB2_WIDX}
 
 ###############################
 # Specify NET and RUN name
 ###############################
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
-export SENDCOM=${SENDCOM:-YES}
 
-export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
-
-# 
-# obtain unique process id (pid) and make temp directories
-#
-export pid=$$
-
-export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinitb_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST}_${MODEL}_${cyc}_${envir}}
-
-mkdir -p $DATA
-cd $DATA
-
-####################################
-# Determine Job Output Name on System
-####################################
-export outid="LL$job"
-export pgmout="OUTPUT.${pid}"
-
-export cycle=${cycle:-t${cyc}z}
-
-###############################
-
-export DBN_ALERT_TYPE_SMART=${DBN_ALERT_TYPE_SMART:-HIRESW_${DBN_NEST}_NDFD_GB2}
-export DBN_ALERT_TYPE_SMART_WIDX=${DBN_ALERT_TYPE_SMART_WIDX:-HIRESW_${DBN_NEST}_NDFD_GB2_WIDX}
-
-# also have FV3 block defined here.
-if [ $MODEL = 'fv3' ]
-then
-export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
-export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
-export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
-export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
-
-else
-
-export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
-export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
-export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
-export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-
-fi
-
-
-###################################
-# Set up the UTILITIES
-###################################
-#module load grib_util
-
-# Run setpdy and initialize PDY variables
-
-if [ $RUN_ENVIR = 'prod' ]
-then
-  setpdy.sh
-  . ./PDY
-
-else
-# define PDYm1 for rocoto FV3 case
-  export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
-fi
-
+#####################################
+# Define COM directories
+#####################################
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMsref=${COMsref:-$(compath.py sref/prod)}
@@ -98,8 +84,10 @@ if [ $srefcyc2 -lt 10 ];then srefcyc2="0"${srefcyc2};fi
 
 export COMINsref=${COMINsref:-$COMsref/sref.${SREF_PDY}/${srefcyc2}/ensprod}
 
-#export IOBUF_PARAMS='*:verbose'
 export IOBUF_PARAMS='fort.11:size=64M:count=16:verbose'
+
+export pgmout="OUTPUT.$$"
+
 ########################################################
 # Execute the script.
 

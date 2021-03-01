@@ -376,6 +376,7 @@
     &GEMPAK_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.gempak_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.gempak_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
        <and>
@@ -403,6 +404,7 @@
     &AWIPS_RESOURCES;
     &ENV_VARS;
     <envar><name>job</name><value>hiresw.awips_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
+    <envar><name>jobid</name><value>hiresw.awips_&DOMAIN;_arw_<cyclestr>@H</cyclestr>_&envir;</value></envar>
 
     <dependency>
        <and>

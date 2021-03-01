@@ -7,10 +7,56 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
-if [ $MODEL = 'fv3' ]
+####################################
+# SENDCOM - Copy files to /com directory
+####################################
+export SENDCOM=${SENDCOM:-YES}
+export SENDDBN=${SENDDBN:-NO}
+
+#############################################################
+# obtain unique process id (pid) and make temp directories
+#############################################################
+export DATA=${DATA:-${DATAROOT:?}/hiresw.post_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
+mkdir -p $DATA/${fhr}
+cd $DATA/${fhr}
+
+####################################
+# Run setpdy and initialize PDY variables
+####################################
+# PDY and CDATE are passed in through Rocoto xml
+
+if [ $RUN_ENVIR = 'nco'  ]
 then
-. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+export cycle=${cycle:-t${cyc}z}
+setpdy.sh
+. ./PDY
 fi
+
+export CDATE=${PDY}${cyc}
+
+####################################
+# Specify Execution Areas
+####################################
+if [ $MODEL = 'arw' ]
+then
+export IOBUF_PARAMS='*:size=64M:count=8:verbose'
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+else
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+export POSTGPEXEC=${EXECfv3}/hireswfv3_post
+. $PARMfv3/run_commands_forecast.config
+fi
+
+export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
 
 ###############################
 # Specify NET and RUN name
@@ -18,65 +64,12 @@ fi
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
-####################################
-# SENDCOM - Copy files to /com directory
-####################################
-export SENDCOM=${SENDCOM:-YES}
-export SENDDBN=${SENDDBN:-NO}
-
-####################################
-# Specify Execution Areas
-####################################
-if [ $MODEL = 'fv3' ]
-then
-export POSTGPEXEC=${EXECfv3}/hireswfv3_post
-# export WGRIB2=${WGRIB2:-${EXECfv3}/hireswfv3_wgrib2}
-fi
-
-####################################
-# Run setpdy and initialize PDY variables
-####################################
-# PDY and CDATE are passed in through Rocoto xml
-
-export cycle=${cycle:-t${cyc}z}
-
-if [ $RUN_ENVIR = 'prod'  ]
-then
-setpdy.sh
-. ./PDY
-fi
-
-############################################################# 
-# obtain unique process id (pid) and make temp directories
-############################################################# 
-export pid=$$
-export DATA=${DATA:-${DATAROOT:?}/hiresw.post_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.forecast_${NEST}_${MODEL}_${cyc}_${envir}}
-mkdir -p $DATA/${fhr}
-cd $DATA/${fhr}
-
-####################################
-# Determine Job Output Name on System
-####################################
-export outid="LL$job"
-export pgmout="OUTPUT.${pid}"
-
-
-if [ $MODEL = 'arw' ]
-then
-export IOBUF_PARAMS='*:size=64M:count=8:verbose'
-
-export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
-export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
-export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
-export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-
-fi
-
-export DBN_NEST=`echo ${NEST}_${MODEL} | tr '[a-z]' '[A-Z]'`
-
+#####################################
+# Define COM directories
+#####################################
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+
+export pgmout="OUTPUT.$$"
 
 ################################################
 # Copy Forecast files from com

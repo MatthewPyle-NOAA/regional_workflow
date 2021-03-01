@@ -10,11 +10,50 @@ date
 export MP_PULSE=0
 unset MP_DEBUG_NOTIMEOUT #recommended by Farid to avoid time out message
 
-if [ $MODEL = 'fv3' ]
+#####################################
+# Working directories
+#####################################
+export DATA=${DATA:-${DATAROOT:?}/hiresw.forecast_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
+mkdir -p $DATA
+cd $DATA
+
+# Run setpdy and initialize PDY variables
+export cycle=${cycle:-t${cyc}z}
+if [ $RUN_ENVIR = 'nco' ]
 then
-. $HOMEfv3/ush/fv3/hiresw_run_commands_forecast.sh
+setpdy.sh
+. ./PDY
+fi
 
+export CDATE=${PDY}${cyc}
+offset=`echo $tmmark | cut -c 3-4`
+export CYCLEanl=`$NDATE -${offset} $CDATE`
 
+export MP_LABELIO=YES
+export MP_USE_BULK_XFER=yes
+
+#####################################
+# Specify Execution Areas
+#####################################
+
+if [ $MODEL = 'arw' ]
+then
+export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
+export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
+export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
+export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
+else
+export HOMEfv3=${HOMEfv3:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
+export EXECfv3=${EXECfv3:-$HOMEfv3/exec/fv3}
+export FIXfv3=${FIXfv3:-$HOMEfv3/fix/fv3}
+export PARMfv3=${PARMfv3:-$HOMEfv3/parm/fv3}
+export USHfv3=${USHfv3:-$HOMEfv3/ush/fv3}
+export FIXsar=${FIXsar:-$HOMEfv3/fix/fv3/fix_sar/$NEST}
+export FIXam=${FIXam:-$HOMEfv3/fix/fv3/fix_am}
+export FIXco2=${FIXco2:-$FIXam/fix_co2_proj}
+export CASE=C768
+. $PARMfv3/run_commands_forecast.config
 fi
 
 ###############################
@@ -24,69 +63,18 @@ export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
 
-offset=`echo $tmmark | cut -c 3-4`
-export CYCLEanl=`$NDATE -${offset} $CDATE`
-
-#####################################
-# Working directories
-#####################################
-
-export DATA=${DATA:-${DATAROOT:?}/hiresw.forecast_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-mkdir -p $DATA
-cd $DATA
-
-ecflow_client --event release_downstream
-
-####################################
-# Determine Job Output Name on System
-####################################
-
-export pid=$$
-export outid="LL$job"
-export pgmout="OUTPUT.${pid}"
-export pgmerr=errfile
-
-export cycle=${cycle:-t${cyc}z}
-export MP_LABELIO=YES
-export MP_USE_BULK_XFER=yes
-
-if [ $MODEL = 'arw' ]
-then
-export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
-export EXEChiresw=${EXEChiresw:-$HOMEhiresw/exec/arw}
-export FIXhiresw=${FIXhiresw:-$HOMEhiresw/fix/arw}
-export PARMhiresw=${PARMhiresw:-$HOMEhiresw/parm/arw}
-export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
-fi
-
-# Run setpdy and initialize PDY variables
-
-if [ $RUN_ENVIR = "prod" ]
-then
-setpdy.sh
-. ./PDY
-fi
-
-export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
-export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
-
-if [ ${MODEL} = "arw" ]
-then
-  export MP_SHARED_MEMORY=yes
-  export MP_USE_TOKEN_FLOW_CONTROL=yes
-  export MP_INSTANCES=2
-fi
-
-
-
 #####################################
 # Define COM directories
 #####################################
+export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
+export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 
-
-
-export COMOUT=${COMROOT}/${NET}/${envir}/${RUN}.${PDY}
 mkdir -p $COMOUT
+
+export pgmout="OUTPUT.$$"
+export pgmerr=errfile
+
+
 
 #####################################
 # wcoss environment settings
@@ -101,9 +89,6 @@ then
 #   export OMP_NUM_THREADS=2
 #   export OMP_STACKSIZE=1024m
 fi
-
-# export SENDECF=NO
-
 
 env
 

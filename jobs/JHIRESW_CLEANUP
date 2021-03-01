@@ -1,29 +1,25 @@
 #!/bin/sh
 
 set -x 
-
-echo `date` $0 `date -u` begin
 export PS4='$SECONDS + '
+echo `date` $0 `date -u` begin
 
 ###########################################################
 # obtain unique process id (pid) and make temp directories
 ###########################################################
-export pid=$$
-export DATA_IN=${DATA_IN:-${DATAROOT:?}}
-export DATA=$DATA_IN/${jobid:?}
-
-rm -rf $DATA
+export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
 mkdir -p $DATA
 
 cd $DATA
 
-####################################
-# Determine Job Output Name on System
-####################################
-export outid="LL$job"
-export pgmout="OUTPUT.${pid}"
 
+# Run setpdy and initialize PDY variables
 export cycle=t${cyc}z
+if [  $RUN_ENVIR = 'nco' ]
+then
+setpdy.sh
+. ./PDY
+fi
 
 ###############################
 # Specify NET and RUN name
@@ -31,13 +27,7 @@ export cycle=t${cyc}z
 export NET=hiresw
 export RUN=hiresw
 
-# Run setpdy and initialize PDY variables
-
-if [  $RUN_ENVIR = 'prod' ]
-then
-setpdy.sh
-. ./PDY
-fi
+export pgmout="OUTPUT.$$"
 
 env
 
@@ -45,22 +35,27 @@ env
 # Start remove the directories
 ########################################################
 cd $DATAROOT
-for mod in fv3 arw
+for mod in fv3 
 do
   if [ $cyc -eq 00 -o $cyc -eq 12 ]; then
     for nest in hi guam conus himem2 conusmem2
     do
-      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
+      for step in ungrib metgrid makebc makeic forecast post prdgen smartinit smartinitb bufrpost awips gempak
       do
-        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        if [ -d hiresw.${step}_${nest}_${mod}_${cyc}_${envir} ]; then
+         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        fi
+        
       done
     done
   else
     for nest in pr ak prmem2 akmem2
     do
-      for step in ungrib metgrid makebc makeic forecast post postodd posteven prdgen prdgenodd prdgeneven smartinit smartinitb bufrpost awips gempak
+      for step in ungrib metgrid makebc makeic forecast post prdgen smartinit smartinitb bufrpost awips gempak
       do
-        rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        if [ -d hiresw.${step}_${nest}_${mod}_${cyc}_${envir} ]; then
+         rm -rf hiresw.${step}_${nest}_${mod}_${cyc}_${envir}
+        fi
       done
     done
   fi
