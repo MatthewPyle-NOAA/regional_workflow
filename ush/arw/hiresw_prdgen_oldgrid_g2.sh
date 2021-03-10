@@ -151,7 +151,8 @@ then
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":(APCP|WEASD):" -grib inputs_budget.grb
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":(HINDEX|TSOIL|SOILW|CSNOW|CICEP|CFRZR|CRAIN|RETOP|REFD|LTNG|MAXREF):" -grib nn.grb
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "HGT:cloud ceiling:" -grib ceiling.grb
-cat nn.grb ceiling.grb > inputs_nn.grb
+$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":MDIV:30-0 mb above ground:" -grib mconv.grb
+cat nn.grb ceiling.grb mconv.grb > inputs_nn.grb
 
 $WGRIB2 inputs_nn.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation neighbor -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_nn
 $WGRIB2 inputs_budget.grb -set_grib_type ${compress} -new_grid_winds grid -new_grid_interpolation budget -new_grid ${wgrib2def} ${filenamthree}${fhr}.tm00_budget

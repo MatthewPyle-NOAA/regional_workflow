@@ -110,7 +110,10 @@ $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match ":(HINDEX|TSOIL|SOILW|CSNOW|CICEP|C
 export err=$?; err_chk
 $WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match "HGT:cloud ceiling:" -grib ceiling.grb
 export err=$?; err_chk
-cat nn.grb ceiling.grb > inputs_nn.grb
+$WGRIB2 $INPUT_DATA/WRFPRS${fhr}.tm00 -match  ":MDIV:30-0 mb above ground:" -grib mconv.grb
+export err=$?; err_chk
+
+cat nn.grb ceiling.grb mconv.grb > inputs_nn.grb
 
 $WGRIB2  inputs_nn.grb -new_grid_interpolation neighbor -set_grib_type ${compress} -new_grid_winds grid -new_grid lambert:265:25:25 226.541:1473:5079 12.190:1025:5079 ${filenamthree}${fhr}.tm00_nn
 export err=$?; err_chk
