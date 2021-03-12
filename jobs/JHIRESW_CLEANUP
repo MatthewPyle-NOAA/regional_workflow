@@ -61,4 +61,11 @@ do
   fi
 done
 
+offset=120
+export DAYdel=`$NDATE -${offset} $PDY${cyc} | cut -c1-8`
+
+echo DAYdel is $DAYdel
+echo will delete /gpfs/hps2/ptmp/Matthew.Pyle/com/hiresw/para/hiresw.${DAYdel}
+rm -rf /gpfs/hps2/ptmp/Matthew.Pyle/com/hiresw/para/hiresw.${DAYdel}
+
 date
