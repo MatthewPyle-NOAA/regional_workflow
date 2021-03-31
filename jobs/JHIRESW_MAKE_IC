@@ -63,7 +63,7 @@ export RUN=${RUN:-hiresw}
 #####################################
 export COMINgdas=${COMINgdas:-$(compath.py gfs/prod)}
 export GBCOMINgfs=${COMINgfs:-$(compath.py gfs/para)}
-export COMINgfs=${COMINgfs:-$(compath.py gfs/para)}
+export COMINgfs=${COMINgfs:-$(compath.py gfs/prod)}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
 
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}

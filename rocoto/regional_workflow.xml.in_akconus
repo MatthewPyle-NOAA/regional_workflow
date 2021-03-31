@@ -52,7 +52,7 @@
   <!ENTITY CASE "C768">
   <!ENTITY NHRS "60">
 
-  <!ENTITY COMINgfs "@[COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/para]">
+  <!ENTITY COMINgfs "@[COMINgfs:-/gpfs/dell1/nco/ops/com/gfs/prod]">
 
   <!-- rocoto pre command to launch the jobs -->
   <!ENTITY PRE "&HOMEfv3;/rocoto/rocoto_pre_job.sh">
@@ -97,7 +97,7 @@
 
     <dependency>
         <and>
-          <timedep> <cyclestr offset="01:00:00"> @Y@m@d@H@M@S </cyclestr></timedep>
+          <timedep> <cyclestr offset="00:30:00"> @Y@m@d@H@M@S </cyclestr></timedep>
         </and>
     </dependency>
   </task> 

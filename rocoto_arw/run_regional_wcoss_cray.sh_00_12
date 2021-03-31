@@ -42,7 +42,7 @@ CYCLE_YMDH_END="2021122800"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
-COMINgfsbase=`compath.py gfs/para`
+COMINgfsbase=`compath.py gfs/prod`
 COMINrapbase=`compath.py rap/prod`
 COMINnambase=`compath.py nam/prod`
 

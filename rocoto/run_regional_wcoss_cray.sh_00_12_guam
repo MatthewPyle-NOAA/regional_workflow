@@ -41,7 +41,7 @@ CYCLE_YMDH_END="2021123112"
 CYCLE_INT_HH="12"
 
 GET_INPUT=NO
-COMINgfs=/gpfs/dell1/nco/ops/com/gfs/para
+COMINgfs=/gpfs/dell1/nco/ops/com/gfs/prod
 DATAROOT=/gpfs/hps2/stmp/${USER}/tmpnwprd
 MYCOMROOT=/gpfs/hps2/ptmp/${USER}/com
 

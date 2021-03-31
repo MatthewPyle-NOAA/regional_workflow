@@ -52,7 +52,7 @@
   <!ENTITY CASE "C768">
   <!ENTITY NHRS "48">
 
-  <!ENTITY COMINgfsbase "@[COMINgfsbase:-/gpfs/dell1/nco/ops/com/gfs/para]">
+  <!ENTITY COMINgfsbase "@[COMINgfsbase:-/gpfs/dell1/nco/ops/com/gfs/prod]">
   <!ENTITY COMINrapbase "@[COMINrapbase:-/gpfs/hps/nco/ops/com/rap/prod]">
 
   <!-- rocoto pre command to launch the jobs -->
