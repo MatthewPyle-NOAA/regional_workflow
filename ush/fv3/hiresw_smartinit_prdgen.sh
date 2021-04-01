@@ -75,13 +75,13 @@ outreg=$rg
 case $RUNTYP in
   conusmem2arw) rg=conus; outreg=conusmem2; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
   conusarw|conusfv3) rg=conus; outreg=conus; wgrib2def="lambert:265:25:25 238.446:2145:2540 20.192:1377:2540";;
-  hiarw|hifv3) rg=hi; compress="jpeg";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
-  himem2arw) rg=hi; compress="jpeg"; outreg=himem2; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
-  prarw|prfv3) rg=pr; compress="jpeg"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
-  prmem2arw) rg=pr;  compress="jpeg"; outreg=prmem2; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
+  hiarw|hifv3) rg=hi; compress="c3";outreg=hi; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
+  himem2arw) rg=hi; compress="c3"; outreg=himem2; wgrib2def="mercator:20 198.475:321:2500:206.131 18.073:225:2500:23.088";;
+  prarw|prfv3) rg=pr; compress="c3"; outreg=pr; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
+  prmem2arw) rg=pr;  compress="c3"; outreg=prmem2; wgrib2def="mercator:20 291.804:177:2500:296.028 16.829:129:2500:19.747";;
   akmem2arw) rg=ak; outreg=akmem2; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
   akarw|akfv3) rg=ak; outreg=ak; wgrib2def="nps:210:60 181.429:1649:2976 40.53:1105:2976";;
-  guamarw|guamfv3) rg=guam; compress="jpeg"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
+  guamarw|guamfv3) rg=guam; compress="c3"; outreg=guam; wgrib2def="mercator:20 143.687:193:2500:148.280 12.35:193:2500:16.794";;
 esac
 
 cycon=0
