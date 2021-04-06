@@ -158,7 +158,7 @@
       NFLD = IFLD
       NRECOUT = IREC
       allocate(fld_info(NRECOUT+100))
-      do i=1,nrecout
+      do i=1,nrecout+100
         fld_info(i)%ifld=0
         fld_info(i)%lvl=0
         fld_info(i)%lvl1=0
