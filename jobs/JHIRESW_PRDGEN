@@ -37,7 +37,6 @@ fi
 ####################################
 # Specify Execution Areas
 ####################################
-
 if [ $MODEL = 'arw' ]
 then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}

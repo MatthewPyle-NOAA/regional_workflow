@@ -62,7 +62,7 @@ export RUN=${RUN:-hiresw}
 # Define COM directories
 #####################################
 export COMINgdas=${COMINgdas:-$(compath.py gfs/prod)}
-export GBCOMINgfs=${COMINgfs:-$(compath.py gfs/para)}
+export GBCOMINgfs=${COMINgfs:-$(compath.py gfs/prod)}
 export COMINgfs=${COMINgfs:-$(compath.py gfs/prod)}
 export INIDIR=${COMINgfs}/gfs.$PDY/$cyc
 
@@ -71,7 +71,6 @@ mkdir -p $COMOUT
 
 export pgmout="OUTPUT.$$"
 export pgmerr=errfile
-
 
 #####################################
 # wcoss environment settings

@@ -72,7 +72,7 @@ loop=1
 while [ $loop -le $looplim ]
 do
  echo in while
- if [ -s $INPUT_DATA/postdone${hr} ]
+ if [ -s $INPUT_DATA/prdgendone${hr} ]
  then
    break
  else
@@ -81,7 +81,7 @@ do
  fi
  if [ $loop -ge $looplim ]
    then
-   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/postdone${fhr}"
+   msg="FATAL ERROR: ABORTING after 15 minutes of waiting for $INPUT_DATA/prdgendone${fhr}"
    err_exit $msg
  fi
 done

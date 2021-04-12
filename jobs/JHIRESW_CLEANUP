@@ -35,8 +35,8 @@ env
 # Start remove the directories
 ########################################################
 cd $DATAROOT
-for mod in fv3 
-do
+for mod in fv3 arw
+ do
   if [ $cyc -eq 00 -o $cyc -eq 12 ]; then
     for nest in hi guam conus himem2 conusmem2
     do

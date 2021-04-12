@@ -7,11 +7,11 @@ set -xa
 export PS4='$SECONDS + ' 
 date
 
-#
+# 
 # obtain unique process id (pid) and make temp directories
 #
 export DATA=${DATA:-${DATAROOT:?}/hiresw.smartinit_${NEST:?}_${MODEL:?}_${cyc:?}_${envir:?}}
-export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.post_${NEST}_${MODEL}_${cyc}_${envir}}
+export INPUT_DATA=${INPUT_DATA:-${DATAROOT:?}/hiresw.prdgen_${NEST}_${MODEL}_${cyc}_${envir}}
 
 mkdir -p $DATA
 cd $DATA
@@ -40,8 +40,6 @@ fi
 ###################################
 # Set up the UTILITIES
 ###################################
-#module load grib_util
-
 if [ $MODEL = 'fv3' ]
 then
 hrs="00 03 06 09 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60"
@@ -63,7 +61,7 @@ do
     . ./PDY
   else
 
-# define PDYm1 for rocoto case
+# define PDYm1 for rocoto FV3 case
     export PDYm1=`$NDATE -24 ${PDY}00 | cut -c1-8`
   fi
 done

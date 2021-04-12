@@ -32,10 +32,9 @@ export CYCLEanl=`$NDATE -${offset} $CDATE`
 export MP_LABELIO=YES
 export MP_USE_BULK_XFER=yes
 
-#####################################
+####################################
 # Specify Execution Areas
-#####################################
-
+####################################
 if [ $MODEL = 'arw' ]
 then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
@@ -62,7 +61,6 @@ fi
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
-
 #####################################
 # Define COM directories
 #####################################
@@ -73,8 +71,6 @@ mkdir -p $COMOUT
 
 export pgmout="OUTPUT.$$"
 export pgmerr=errfile
-
-
 
 #####################################
 # wcoss environment settings

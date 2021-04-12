@@ -22,7 +22,7 @@ cd $DATA
 
 # Run setpdy and initialize PDY variables
 export cycle=${cycle:-t${cyc}z}
-if [ ${RUN_ENVIR} = 'nco' ]
+if [ $RUN_ENVIR = 'nco' ]
 then
 setpdy.sh
 . ./PDY
@@ -45,7 +45,6 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
-
 #####################################
 # Define COM/GES input/output directories
 #####################################
@@ -56,7 +55,7 @@ export COMINrap=${COMINrap:-$(compath.py rap/prod/rap.${PDY})}
 export COMINhur=${COMINhur:-$(compath.py hur/prod/inpdata)}
 
 mkdir -p -m 775 $COMOUT
-
+ 
 export pgmout="OUTPUT.$$"
 
 ########################################################

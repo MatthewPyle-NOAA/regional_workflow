@@ -285,7 +285,7 @@
       &ENV_VARS;
       <envar><name>tmmark</name><value>tm00</value></envar>
       <envar><name>job</name><value>hiresw.smartinit_&DOMAIN;_fv3_<cyclestr>@H</cyclestr>_&envir;</value></envar>
-      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hiresw.post_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
+      <envar><name>INPUT_DATA</name><value><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_fv3_@H</cyclestr>_&envir;</value></envar>
       <dependency>
         <and>
            <datadep age="01:00"><cyclestr>&DATAROOT;/hiresw.prdgen_&DOMAIN;_fv3_@H</cyclestr>_&envir;/prdgendone30</datadep>

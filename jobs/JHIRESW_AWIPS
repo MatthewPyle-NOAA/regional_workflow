@@ -34,7 +34,6 @@ export DBN_ALERT_TYPE=${DBN_ALERT_TYPE:-HIRESW_AWIPS}
 ####################################
 # Specify Execution Areas
 ####################################
-
 if [ $MODEL = 'arw' ]
 then
 export HOMEhiresw=${HOMEhiresw:-${NWROOT:?}/hiresw.${hiresw_ver:?}}
@@ -58,11 +57,9 @@ fi
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
-
-###################################
+#####################################
 # Define COM directories
-###################################
-
+#####################################
 export COMIN=${COMIN:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/${RUN}.${PDY}}
 export COMOUTwmo=${COMOUTwmo:-${COMOUT}/wmo}
@@ -70,7 +67,7 @@ export COMOUTwmo=${COMOUTwmo:-${COMOUT}/wmo}
 mkdir -p $COMOUTwmo
 
 export pgmout="OUTPUT.$$"
- 
+
 ########################################################
 # Run the ex-script
 #

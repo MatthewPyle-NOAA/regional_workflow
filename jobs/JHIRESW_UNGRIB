@@ -45,7 +45,7 @@ export USHhiresw=${USHhiresw:-$HOMEhiresw/ush/arw}
 export NET=${NET:-hiresw}
 export RUN=${RUN:-hiresw}
 
-####################################
+#####################################
 # Define COM directories
 #####################################
 ### COMINgfs with be based on $PDY$cyc MINUS 6 hours
@@ -59,7 +59,7 @@ export COMINnamold=${COMINnamold:-$(compath.py nam/prod/nam.$PDYm6h)}
 export COMINhur=${COMINhur:-$(compath.py hur/prod/inpdata)}
 
 mkdir -p -m 775 $COMOUT
-
+ 
 export pgmout="OUTPUT.$$"
 
 ########################################################

@@ -28,7 +28,6 @@ export CDATE=${PDY}${cyc}
 export month=`echo $CDATE | cut -c 5-6`
 export day=`echo $CDATE | cut -c 7-8`
 
-
 ####################################
 # Specify Execution Areas
 ####################################
@@ -79,12 +78,12 @@ fi
 export CDAS=gfs
 export LEVS=65
 export LSOIL=4
-export REGIONAL=2               # REGIONAL=0 - uniform, stretch, or nest
-                                # REGIONAL=1 - generate data and boundary (for regional case)
-                                # REGIONAL=2 - generate boundaries only (for regional case)
+export REGIONAL=2		# REGIONAL=0 - uniform, stretch, or nest
+				# REGIONAL=1 - generate data and boundary (for regional case)
+				# REGIONAL=2 - generate boundaries only (for regional case)
 export HALO=4
 export ictype=pfv3gfs
-export nst_anl=.false.          # false or true to include NST analysis
+export nst_anl=.false.		# false or true to include NST analysis
 export KMP_AFFINITY=disabled
 
 env

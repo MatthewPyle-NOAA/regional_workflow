@@ -15,7 +15,7 @@ export SENDDBN=${SENDDBN:-NO}
 ###########################################################
 export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
 mkdir $DATA
-cd $DATA
+cd $DATA 
 
 # Run setpdy and initialize PDY variables
 export cycle=${cycle:-t${cyc}z}
@@ -65,8 +65,8 @@ fi
 # Specify NET and RUN name
 ###############################
 export NET=${NET:-hiresw}
-export RUN=${RUN:-hiresw}
-
+export RUN=${RUN:-hiresw} 
+  
 #####################################
 # Define COM directories
 #####################################
@@ -76,7 +76,7 @@ export COMOUT=${COMOUT:-${COMROOT:?}/${NET}/${envir}/hiresw.${PDY}}
 if [ ! -f $COMOUT/gempak ] ; then
   mkdir -p -m 775 $COMOUT/gempak
 fi
-
+ 
 export pgmout="OUTPUT.$$"
 
 env
