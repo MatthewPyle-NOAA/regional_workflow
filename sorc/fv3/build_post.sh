@@ -16,5 +16,7 @@ if [ ! -d "../exec" ]; then
   mkdir ../exec
 fi
 
+## how modify this one?
+
 cd hireswfv3_post.fd/sorc
 sh build_ncep_post.sh

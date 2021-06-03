@@ -346,7 +346,7 @@
     VALIDPT,HAVESREF,GFLD,GFLD8)
 
 	write(0,*) 'after GETGRIB...associated(gfld8%fld): ', associated(gfld8%fld)
-	write(0,*) 'after GETGRIB...allocated(gfld8%fld): ', allocated(gfld8%fld)
+!tst	write(0,*) 'after GETGRIB...allocated(gfld8%fld): ', allocated(gfld8%fld)
 
         write(0,*) 'minval(WETFRZ),maxval(WETFRZ): ', &
                     minval(WETFRZ),maxval(WETFRZ)
@@ -748,7 +748,7 @@
         DEC=3.0
 
 	write(0,*) 'associated(gfld8%fld):' , associated(gfld8%fld)
-	write(0,*) 'allocated(gfld8%fld):' , allocated(gfld8%fld)
+!tst	write(0,*) 'allocated(gfld8%fld):' , allocated(gfld8%fld)
 
        CALL FILL_FLD(GFLD8,NUMV,IM,JM,POP3)
 

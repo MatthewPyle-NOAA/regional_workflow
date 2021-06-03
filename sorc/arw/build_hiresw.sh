@@ -1,11 +1,16 @@
 #! /bin/sh
 set -eux
+
 module purge
 
-module load ncep
-module load craype-sandybridge
-module use -a /opt/cray/modulefiles
-module load ../modulefiles_arw/HIRESW/v8.0.0
+# module load ncep
+# module load craype-sandybridge
+# module use -a /opt/cray/modulefiles
+
+source /apps/prod/lmodules/startLmod
+
+module use -a ../modulefiles_arw/HIRESW
+module load v8.0.0
 module list
 
 
@@ -17,7 +22,7 @@ module list
 # setting a BUILD* variable to 0 (technically anything but 1)
 # will skip the build of that component.
 
-BUILD_hiresw_wrfarwfcst=1
+BUILD_hiresw_wrfarwfcst=0
 BUILD_hiresw_bucket=1
 BUILD_hiresw_wrfbufr=1
 BUILD_hiresw_wps=1

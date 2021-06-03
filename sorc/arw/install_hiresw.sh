@@ -1,11 +1,11 @@
 set -x
-module purge
 
-module load ncep
-module load craype-sandybridge
-module use -a /opt/cray/modulefiles
-module load ../modulefiles/HIRESW/v8.0.0
-module list
+# module purge
+# module load ncep
+# module load craype-sandybridge
+# module use -a /opt/cray/modulefiles
+# module load ../modulefiles/HIRESW/v8.0.0
+# module list
 
 
 ##################################

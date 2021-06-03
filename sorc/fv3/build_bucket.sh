@@ -3,11 +3,15 @@
 
 module purge >& /dev/null
 
-module load ncep
-module load craype-sandybridge
-module use -a /opt/cray/modulefiles
+# module load ncep
+# module load craype-sandybridge
+# module use -a /opt/cray/modulefiles
 
-module load -a ../modulefiles_fv3/build_v8.0.0-cray-intel
+source /apps/prod/lmodules/startLmod
+
+
+module use -a ../modulefiles_fv3/
+module load build_v8.0.0-cray-intel
 
 
 
