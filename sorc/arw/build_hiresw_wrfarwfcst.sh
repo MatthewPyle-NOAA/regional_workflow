@@ -23,7 +23,8 @@ TARGDIR=../../exec
 cd ${BASE}/hiresw_wrfarwfcst.fd
 
 ./clean -a
-cp configure.wrf_wcoss configure.wrf
+# cp configure.wrf_wcoss configure.wrf
+cp configure.wrf_acorn configure.wrf
 
 # build model
 ./compile  em_real 

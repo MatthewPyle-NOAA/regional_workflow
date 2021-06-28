@@ -5,7 +5,7 @@ BASE=`pwd`
 ##############################
 
 cd ${BASE}/hiresw_wrfarwfcst.fd
-clean -a
+./clean -a
 
 ##############################
 
@@ -20,7 +20,7 @@ make clean
 ##############################
 
 cd ${BASE}/hiresw_wps.fd
-clean -a
+./clean -a
 
 ##############################
 

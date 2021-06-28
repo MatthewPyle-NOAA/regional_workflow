@@ -22,7 +22,7 @@ cd ${BASE}/hiresw_wps.fd
 
 ./clean -a
 
-cp configure.wps_serial_nowrf configure.wps
+cp configure.wps_acorn_serial configure.wps
 
 ./compile ungrib >& build_wps_ungrib.log
 
@@ -31,7 +31,7 @@ cp configure.wps_serial_nowrf configure.wps
 
 # ./compile geogrid >& build_geogrid.log
 
-cp configure.wps_serial configure.wps
+# cp configure.wps_serial_acorn configure.wps
 
 ./compile metgrid >& build_wps_metgrid.log
 
