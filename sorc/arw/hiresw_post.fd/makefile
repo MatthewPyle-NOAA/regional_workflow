@@ -27,10 +27,11 @@ SFCIO_LIB  = ${SFCIO_LIB4}
 
 BACIO_LIB  = ${BACIO_LIB4}
 
-SIGIO_INC  = -I${SIGIO_INC4}
-SIGIO_LIB  = ${SIGIO_LIB4}
+# SIGIO_INC  = -I${SIGIO_INC4}
+# SIGIO_LIB  = ${SIGIO_LIB4}
 
-WRFPATH    = /gpfs/hps/nco/ops/nwprod/wrf_shared.v1.1.0-intel
+# WRFPATH    = /gpfs/hps/nco/ops/nwprod/wrf_shared.v1.1.0-intel
+WRFPATH =  ../hiresw_wrfarwfcst.fd
 WRF_INC    = -I$(WRFPATH)/external/io_quilt -I$(WRFPATH)/frame
 WRF_LIB    = $(WRFPATH)/main/libwrflib.a  \
              $(WRFPATH)/frame/pack_utils.o  \
@@ -45,8 +46,8 @@ WRF_LIB    = $(WRFPATH)/main/libwrflib.a  \
 G2_INC     = -I${G2_INC4} -I${G2TMPL_INC}
 G2_LIB     = ${G2TMPL_LIB} ${G2_LIB4} ${JASPER_LIB} ${PNG_LIB} ${Z_LIB}
 
-XML_INC    = -I${XMLPARSE_INC}
-XML_LIB    = ${XMLPARSE_LIB}
+XML_INC    = -I${XML2_INC}
+XML_LIB    = ${LIBXML2_LIB}
 
 GFSIO_INC  = -I${GFSIO_INC4}
 GFSIO_LIB  = ${GFSIO_LIB4}

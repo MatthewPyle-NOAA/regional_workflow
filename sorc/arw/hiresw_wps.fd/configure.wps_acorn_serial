@@ -44,7 +44,8 @@ WRF_LIB         =       -L$(WRF_DIR)/external/io_grib1 -lio_grib1 \
                         -L$(WRF_DIR)/external/io_grib_share -lio_grib_share \
                         -L$(WRF_DIR)/external/io_int -lwrfio_int \
                         -L$(WRF_DIR)/external/io_netcdf -lwrfio_nf \
-                        -L$(NETCDF)/lib  -lnetcdf
+                        -L$(NETCDF)/lib -lnetcdf -lnetcdff \
+
 
 #### Architecture specific settings ####
 
@@ -72,7 +73,7 @@ FCSUFFIX            =
 FNGFLAGS            = $(FFLAGS)
 LDFLAGS             = 
 CFLAGS              = -w
-CPP                 = /lib/cpp -P 
+CPP                 = /lib/cpp -P  -traditional
 CPPFLAGS            = -D_UNDERSCORE -DBYTESWAP -DLINUX -DIO_NETCDF -DIO_BINARY -DIO_GRIB1 -DBIT32 
 ARFLAGS             =
 CC_TOOLS            = 
