@@ -36,15 +36,15 @@ FREE     = -FR
 TRAPS    = 
 DEBUG    = -g # -traceback -fpe0 -ftrapuv # -check all 
 
- WRFLIB    = ./wrflibs/libwrflib.a  \
-             ./wrflibs/pack_utils.o  \
-             ./wrflibs/libfftpack.a \
-            ./wrflibs/libio_grib1.a \
-            ./wrflibs/libio_grib_share.a \
-            ./wrflibs/libwrfio_int.a \
-            ./wrflibs/libwrfio_nf.a \
-            ./wrflibs/libesmf_time.a \
-            ./wrflibs/librsl_lite.a
+WRFLIB   = ./wrflibs/libwrflib.a  \
+           ./wrflibs/pack_utils.o  \
+           ./wrflibs/libfftpack.a \
+           ./wrflibs/libio_grib1.a \
+           ./wrflibs/libio_grib_share.a \
+           ./wrflibs/libwrfio_int.a \
+           ./wrflibs/libwrfio_nf.a \
+           ./wrflibs/libesmf_time.a \
+           ./wrflibs/librsl_lite.a
 
 
 #

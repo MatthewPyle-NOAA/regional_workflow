@@ -51,13 +51,13 @@ DEBUG    = -g -traceback #  -fpe0 -ftrapuv  -check all
 #
 # Assemble Options
 #
-FFLAGS   = $(OPTS) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC) $(NETCDF_INCLUDE)
-FFLAGST  = $(OPTS) $(FREE) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC)
+FFLAGS   = $(OPTS) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC) -I$(NETCDF_INC)
+FFLAGST  = $(OPTS) $(FREE) $(TRAPS) $(DEBUG) $(WRFFLAGS) -I$(NEMSIO_INC) -I$(NETCDF_INC)
 LDFLAGS  =
 LIBS     = $(WRFLIB) \
            $(NEMSIO_LIB) \
            $(W3EMC_LIB4) $(W3NCO_LIB4) $(BACIO_LIB4) \
-           $(NETCDF_LDFLAGS)  $(NETCDF_INCLUDE)
+           -L$(NETCDF_LIB) -lnetcdf -lnetcdff
 #
 #
 # free-format object files
